@@ -30,6 +30,7 @@ imports = [
   "ontology/bootstrap-project.ttl",
   "ontology/bootstrap-runtime.ttl",
   "ontology/ecosystem-corpus.ttl",
+  "ontology/ecosystem-sources.ttl",
 ]
 
 
