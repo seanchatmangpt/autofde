@@ -8,6 +8,8 @@ on:
       - "templates/**"
       - "scripts/**"
       - "tests/**"
+      - "src/**"
+      - "capabilities/**"
       - "generated/**"
       - "requirements.txt"
       - "ggen.toml"
@@ -49,7 +51,7 @@ jobs:
           echo "$(dirname "$GGEN_BIN")" >> "$GITHUB_PATH"
           "$GGEN_BIN" --version
       - name: Compile verifier surfaces
-        run: python -m compileall -q scripts tests generated
+        run: python -m compileall -q scripts tests generated src
       - name: Execute exact ggen projection
         shell: bash
         run: |
@@ -72,4 +74,6 @@ jobs:
       - name: Execute ontology verifier
         run: python scripts/verify_ontology.py
       - name: Execute falsifier suite
+        env:
+          PYTHONPATH: src
         run: python -m unittest discover -s tests -v
