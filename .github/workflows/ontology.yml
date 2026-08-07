@@ -51,7 +51,20 @@ jobs:
       - name: Compile verifier surfaces
         run: python -m compileall -q scripts tests generated
       - name: Execute exact ggen projection
-        run: ggen sync run --config ggen.toml
+        shell: bash
+        run: |
+          set +e
+          ggen sync run --config ggen.toml 2>&1 | tee /tmp/ggen-sync.log
+          status=${PIPESTATUS[0]}
+          set -e
+          if [ "$status" -ne 0 ]; then
+            diagnostic="$(head -c 6000 /tmp/ggen-sync.log)"
+            diagnostic="${diagnostic//'%'/'%25'}"
+            diagnostic="${diagnostic//$'\r'/'%0D'}"
+            diagnostic="${diagnostic//$'\n'/'%0A'}"
+            echo "::error title=ggen sync failed::$diagnostic"
+          fi
+          exit "$status"
       - name: Refuse generated drift
         run: git diff --exit-code -- generated
       - name: Verify independent reference correspondence
