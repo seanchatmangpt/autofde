@@ -1,0 +1,29 @@
+{
+  "ocel:objects": [
+    {"ocel:oid":"cap-1","ocel:type":"Capability","autofde:attributes":{"name":"filesystem.create-file","version":"1"}},
+    {"ocel:oid":"lab-1","ocel:type":"LabExperiment","autofde:attributes":{"standing":"LAB_ALIVE"}},
+    {"ocel:oid":"promotion-1","ocel:type":"PromotionCandidate","autofde:attributes":{"contract_digest":"sha256:contract"}},
+    {"ocel:oid":"bundle-1","ocel:type":"CapabilityBundle","autofde:attributes":{"digest":"sha256:bundle"}},
+    {"ocel:oid":"session-1","ocel:type":"AgentSession","autofde:attributes":{}},
+    {"ocel:oid":"commitment-1","ocel:type":"POWLCommitment","autofde:attributes":{"digest":"sha256:powl"}},
+    {"ocel:oid":"authority-1","ocel:type":"AuthorityEnvelope","autofde:attributes":{"operation":"filesystem.create"}},
+    {"ocel:oid":"actuation-1","ocel:type":"Actuation","autofde:attributes":{"operation":"filesystem.create"}},
+    {"ocel:oid":"post-1","ocel:type":"PostconditionObservation","autofde:attributes":{"exists":"true"}},
+    {"ocel:oid":"receipt-1","ocel:type":"Receipt","autofde:attributes":{"digest":"sha256:receipt"}},
+    {"ocel:oid":"replay-1","ocel:type":"ReplayRun","autofde:attributes":{"workspace":"isolated"}}
+  ],
+  "ocel:events": [
+    {"ocel:eid":"e01","ocel:activity":"LabProved","ocel:timestamp":"2026-08-07T19:00:00Z","ocel:omap":["cap-1","lab-1"],"autofde:attributes":{"authority":"none"}},
+    {"ocel:eid":"e02","ocel:activity":"PromotionAdmitted","ocel:timestamp":"2026-08-07T19:00:01Z","ocel:omap":["cap-1","promotion-1"],"autofde:attributes":{"authority":"none"}},
+    {"ocel:eid":"e03","ocel:activity":"BundleManufactured","ocel:timestamp":"2026-08-07T19:00:02Z","ocel:omap":["promotion-1","bundle-1"],"autofde:attributes":{"authority":"none"}},
+    {"ocel:eid":"e04","ocel:activity":"BundlePinned","ocel:timestamp":"2026-08-07T19:00:03Z","ocel:omap":["bundle-1"],"autofde:attributes":{"authority":"none"}},
+    {"ocel:eid":"e05","ocel:activity":"SessionStarted","ocel:timestamp":"2026-08-07T19:00:04Z","ocel:omap":["session-1","bundle-1"],"autofde:attributes":{"authority":"none","bundle_digest":"sha256:bundle"}},
+    {"ocel:eid":"e06","ocel:activity":"POWLCommitted","ocel:timestamp":"2026-08-07T19:00:05Z","ocel:omap":["session-1","commitment-1"],"autofde:attributes":{"authority":"none"}},
+    {"ocel:eid":"e07","ocel:activity":"AuthorityAdmitted","ocel:timestamp":"2026-08-07T19:00:06Z","ocel:omap":["session-1","authority-1"],"autofde:attributes":{"authority":"bearer"}},
+    {"ocel:eid":"e08","ocel:activity":"ActuationOpened","ocel:timestamp":"2026-08-07T19:00:07Z","ocel:omap":["actuation-1","authority-1","commitment-1"],"autofde:attributes":{"authority":"bearer","path":"BRCE"}},
+    {"ocel:eid":"e09","ocel:activity":"ActuationClosed","ocel:timestamp":"2026-08-07T19:00:08Z","ocel:omap":["actuation-1"],"autofde:attributes":{"authority":"bearer"}},
+    {"ocel:eid":"e10","ocel:activity":"PostconditionVerified","ocel:timestamp":"2026-08-07T19:00:09Z","ocel:omap":["actuation-1","post-1"],"autofde:attributes":{"authority":"observer","observer":"filesystem-observer","actuator":"brce-actuator"}},
+    {"ocel:eid":"e11","ocel:activity":"ReceiptEmitted","ocel:timestamp":"2026-08-07T19:00:10Z","ocel:omap":["receipt-1","actuation-1","post-1"],"autofde:attributes":{"authority":"receipt"}},
+    {"ocel:eid":"e12","ocel:activity":"ReplayCompleted","ocel:timestamp":"2026-08-07T19:00:11Z","ocel:omap":["replay-1","receipt-1"],"autofde:attributes":{"authority":"replay"}}
+  ]
+}
