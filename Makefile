@@ -1,7 +1,7 @@
 .PHONY: generate generate-reference verify test crown-ontology
 
 generate:
-	ggen sync run --config ggen.toml
+	ggen sync run
 
 generate-reference:
 	python3 scripts/render_reference.py --write
