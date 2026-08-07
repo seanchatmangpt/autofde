@@ -214,8 +214,8 @@ autofde:ChatmanEcosystemCorpus a autofde:RepositoryCorpus ;
     dcterms:title "Sean Chatman owned repository semantic corpus" ;
     dcat:theme <https://seanchatmangpt.github.io/autofde/ontology#SemanticAsset> ;
     foaf:maker <https://github.com/seanchatmangpt> ;
-    autofde:expectedRepositoryCount 342 ;
-    autofde:observedRepositoryCount 342 ;
+    autofde:expectedRepositoryCount 340 ;
+    autofde:observedRepositoryCount 340 ;
     autofde:scanExtension ".ttl", ".rq", ".sparql", ".nt", ".nq", ".trig", ".rdf", ".owl", ".jsonld", ".json-ld", ".n3", ".shacl", ".trix" ;
     autofde:authorityCeiling "CONSTRUCT" ;
     autofde:admissionRationale "Repository identity is admitted account-wide; file-level admission is manufactured by the exact-ref census and federation verifier." .

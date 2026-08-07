@@ -95,7 +95,7 @@ def main() -> int:
 
     expected = int(next(dataset.objects(AUTOFDE.ChatmanEcosystemCorpus, AUTOFDE.expectedRepositoryCount)))
     observed = int(next(dataset.objects(AUTOFDE.ChatmanEcosystemCorpus, AUTOFDE.observedRepositoryCount)))
-    if expected != 342 or observed != 342:
+    if expected != 340 or observed != 340:
         raise SystemExit(f"ECOSYSTEM_REFUSED repository_inventory expected={expected} observed={observed}")
 
     profile_path = ROOT / "corpus/admission-profile.json"
@@ -106,7 +106,7 @@ def main() -> int:
     federation_receipt = json.loads(federation_receipt_path.read_text(encoding="utf-8"))
     if profile["mode"] != "EXPLOIT_ONLY" or profile["authority_ceiling"] != "CONSTRUCT":
         raise SystemExit("ECOSYSTEM_REFUSED profile_authority")
-    if profile["census"]["owned_repository_count"] != 342:
+    if profile["census"]["owned_repository_count"] != 340:
         raise SystemExit("ECOSYSTEM_REFUSED profile_inventory")
     if len(admitted["sources"]) != 31:
         raise SystemExit("ECOSYSTEM_REFUSED admitted_source_count")

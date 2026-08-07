@@ -134,7 +134,7 @@ class SemanticAdmissionTests(unittest.TestCase):
         actions = [item["errc_action"] for item in p["sources"]]
         self.assertEqual(actions.count("CREATE"), 17)
         self.assertEqual(actions.count("RAISE"), 14)
-        self.assertEqual(p["census"]["owned_repository_count"], 342)
+        self.assertEqual(p["census"]["owned_repository_count"], 340)
         self.assertEqual(p["authority_ceiling"], "CONSTRUCT")
 
 
