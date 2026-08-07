@@ -41,11 +41,7 @@ class ResourceDisabledVerifier:
 
     def verify(self, payload, result):
         self.calls += 1
-        return (
-            self.accept
-            and result.get("resource_id") == payload["resource_id"]
-            and result.get("state") == "disabled"
-        )
+        return self.accept and result.get("resource_id") == payload["resource_id"] and result.get("state") == "disabled"
 
 
 class RuntimeKernelTests(unittest.TestCase):
@@ -77,10 +73,7 @@ class RuntimeKernelTests(unittest.TestCase):
             subject="azure:test-subscription",
             consequence="azure:disable-public-access",
             capability_digest=self.bundle.digest,
-            payload={
-                "key": key,
-                "resource_id": "/subscriptions/test/resourceGroups/rg/providers/X/y",
-            },
+            payload={"key": key, "resource_id": "/subscriptions/test/resourceGroups/rg/providers/X/y"},
         )
 
     def test_sqlite_wal_is_enabled(self) -> None:
@@ -128,10 +121,7 @@ class RuntimeKernelTests(unittest.TestCase):
         original = self.store.get_by_key("incident-1")
         assert original is not None
         self.assertEqual(original["state"], OccurrenceState.VERIFIED)
-        self.assertIn(
-            "IDEMPOTENCY_CONFLICT_REFUSAL",
-            self.store.receipt_kinds(int(original["id"])),
-        )
+        self.assertIn("IDEMPOTENCY_CONFLICT_REFUSAL", self.store.receipt_kinds(int(original["id"])))
         self.assertEqual(actuator.calls, 1)
 
     def test_unpinned_capability_refuses_before_actuation(self) -> None:
@@ -183,23 +173,18 @@ class RuntimeKernelTests(unittest.TestCase):
         self.assertEqual(second.state, OccurrenceState.UNKNOWN_RECONCILIATION)
         self.assertEqual(actuator.calls, 1)
 
+
     def test_restart_preserves_unknown_and_prevents_reactuation(self) -> None:
         db_path = Path(self.tmp.name) / "runtime.db"
         actuator = CountingActuator(fail=True)
         broker = BRCEBroker(self.store)
         first = broker.do(
-            self.item(),
-            authority=self.authority,
-            actuator=actuator,
-            verifier=ResourceDisabledVerifier(),
+            self.item(), authority=self.authority, actuator=actuator, verifier=ResourceDisabledVerifier()
         )
         self.assertEqual(first.state, OccurrenceState.UNKNOWN_RECONCILIATION)
         reopened = RuntimeStore(db_path)
         second = BRCEBroker(reopened).do(
-            self.item(),
-            authority=self.authority,
-            actuator=actuator,
-            verifier=ResourceDisabledVerifier(),
+            self.item(), authority=self.authority, actuator=actuator, verifier=ResourceDisabledVerifier()
         )
         self.assertEqual(second.state, OccurrenceState.UNKNOWN_RECONCILIATION)
         self.assertEqual(actuator.calls, 1)
