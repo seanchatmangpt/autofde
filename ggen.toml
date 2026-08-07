@@ -29,6 +29,7 @@ imports = [
   "ontology/bootstrap-to-breach.ttl",
   "ontology/bootstrap-project.ttl",
   "ontology/bootstrap-runtime.ttl",
+  "ontology/ecosystem-corpus.ttl",
 ]
 
 
@@ -43,6 +44,8 @@ prov = "http://www.w3.org/ns/prov#"
 dcat = "http://www.w3.org/ns/dcat#"
 dcterms = "http://purl.org/dc/terms/"
 sh = "http://www.w3.org/ns/shacl#"
+odrl = "http://www.w3.org/ns/odrl/2/"
+foaf = "http://xmlns.com/foaf/0.1/"
 
 [validation]
 gates = [
@@ -53,6 +56,7 @@ gates = [
   "queries/gates/every-source-is-pinned.rq",
   "queries/gates/every-standing-is-receipted.rq",
   "queries/gates/every-generation-rule-is-closed.rq",
+  "queries/gates/ecosystem-admission.rq",
 ]
 
 [generation]
