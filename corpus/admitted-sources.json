@@ -3,9 +3,9 @@
   "census": {
     "duplicate_groups": 227,
     "namespace_collisions": 16,
-    "owned_repository_count": 342,
+    "owned_repository_count": 340,
     "parse_failures": 451,
-    "private_repository_count": 77,
+    "private_repository_count": 75,
     "public_artifact_sha256": "13ea4d29fa97aae703ddd0bead40565d8840a647feb578862c0feb6394e80c90",
     "public_corpus_sha256": "d6bad33c863234956dc595a4950bcf5e6559f7a0654199bf90733cdddba1592d",
     "public_nonempty_repository_count": 261,
@@ -13,7 +13,7 @@
     "public_semantic_asset_count": 11877
   },
   "mode": "EXPLOIT_ONLY",
-  "profile_sha256": "ccf0c4cac39ec2065e1bb2d53fda00d772a809000a1d2149a14c3a52c30969ac",
+  "profile_sha256": "cec1756a7efcfa3630a0095ab7a27a241ac1d846803df60119a573f280c8a2fe",
   "schema": "autofde.admitted-semantic-federation.v1",
   "sources": [
     {
