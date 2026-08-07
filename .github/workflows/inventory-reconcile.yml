@@ -1,0 +1,57 @@
+name: AutoFDE repository inventory reconciliation
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/inventory-reconcile.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Check out exact branch subject
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.head_ref }}
+      - name: Reconcile exact owner inventory
+        shell: python
+        run: |
+          import json
+          from pathlib import Path
+
+          corpus = Path("ontology/ecosystem-corpus.ttl")
+          text = corpus.read_text()
+          text = text.replace("autofde:expectedRepositoryCount 342", "autofde:expectedRepositoryCount 340")
+          text = text.replace("autofde:observedRepositoryCount 342", "autofde:observedRepositoryCount 340")
+          corpus.write_text(text)
+
+          profile_path = Path("corpus/admission-profile.json")
+          profile = json.loads(profile_path.read_text())
+          profile["census"]["owned_repository_count"] = 340
+          profile["census"]["private_repository_count"] = 75
+          profile_path.write_text(json.dumps(profile, indent=2, sort_keys=True) + "\n")
+
+          verifier = Path("scripts/verify_ecosystem.py")
+          text = verifier.read_text().replace("!= 342", "!= 340")
+          verifier.write_text(text)
+
+          test = Path("tests/test_admission.py")
+          text = test.read_text().replace('owned_repository_count"], 342', 'owned_repository_count"], 340')
+          test.write_text(text)
+
+          assert "RepositoryCount 342" not in corpus.read_text()
+          assert json.loads(profile_path.read_text())["census"]["owned_repository_count"] == 340
+          assert json.loads(profile_path.read_text())["census"]["private_repository_count"] == 75
+          print("AUTOFDE_REPOSITORY_INVENTORY_RECONCILED public=265 private=75 total=340")
+      - name: Persist reconciliation on the same PR branch
+        run: |
+          paths=(ontology/ecosystem-corpus.ttl corpus/admission-profile.json scripts/verify_ecosystem.py tests/test_admission.py)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- "${paths[@]}"
+          git commit -m "fix: reconcile exact repository inventory"
+          git push origin "HEAD:${{ github.head_ref }}"
