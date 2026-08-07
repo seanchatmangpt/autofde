@@ -48,7 +48,7 @@ autofde:AutoFDEOntologyLicense a autofde:LicenseEvidence ;
     autofde:licenseIdentifier "MIT" ; autofde:licenseAdmitted true .
 autofde:AutoFDEOntologyDigest a autofde:ArtifactDigest ;
     autofde:digestAlgorithm "sha256" ;
-    autofde:digestValue "ef971075939f63c68d21ca1cd5f3e24f89b4e385393f17bfae0ca028473cf7ff"^^xsd:hexBinary .
+    autofde:digestValue "e3a877138e6e9f7de1e0ef35af5027cb8070c395c4c0e5f3125dfb5572431406"^^xsd:hexBinary .
 autofde:AutoFDEOntologySource a autofde:SemanticSource ;
     rdfs:label "AutoFDE canonical ontology" ;
     autofde:sourceLocation "ontology/autofde.ttl"^^xsd:anyURI ;
