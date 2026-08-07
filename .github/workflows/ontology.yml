@@ -59,6 +59,23 @@ jobs:
             --hydrate all \
             --output /tmp/fixture-census.json \
             --receipt /tmp/fixture-census-receipt.json
+          python - <<'PY'
+          import json
+          from scripts.census_semantic_assets import FixtureClient
+          from scripts.census_semantic_assets_fast import scan_fast
+          fixture = json.load(open('tests/fixtures/semantic-census.json'))
+          _, receipt = scan_fast(
+              FixtureClient(fixture),
+              'seanchatmangpt',
+              hydrate='all',
+              expected_repositories=5,
+              workers=4,
+          )
+          expected = json.load(open('/tmp/fixture-census-receipt.json'))
+          assert receipt['standing'] == 'ALIVE'
+          assert receipt['corpus_sha256'] == expected['corpus_sha256']
+          print('AUTOFDE_PARALLEL_CENSUS_EQUIVALENT')
+          PY
       - name: Execute exact ggen projection
         shell: bash
         run: |
@@ -88,7 +105,7 @@ jobs:
   semantic-census:
     name: Owned repository semantic census
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 12
     steps:
       - name: Check out exact subject
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -105,9 +122,10 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           mkdir -p census
-          python scripts/census_semantic_assets.py \
+          python scripts/census_semantic_assets_fast.py \
             --owner seanchatmangpt \
             --expected-repositories 342 \
+            --workers 20 \
             --hydrate source \
             --output census/semantic-census.json \
             --receipt census/semantic-census-receipt.json
