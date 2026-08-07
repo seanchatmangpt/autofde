@@ -1,0 +1,14 @@
+{
+  "authority_ceiling": "CONSTRUCT",
+  "create_alive": 17,
+  "create_sources": 17,
+  "federation_sha256": "725d1b54f553b8bf61b844c663675d849a2fcde9d1b440af96806070e3ee38da",
+  "mode": "EXPLOIT_ONLY",
+  "profile_sha256": "ccf0c4cac39ec2065e1bb2d53fda00d772a809000a1d2149a14c3a52c30969ac",
+  "raised_sources": 14,
+  "schema": "autofde.semantic-federation-receipt.v1",
+  "sources": 31,
+  "standing": "ALIVE",
+  "subject": "ontology/ecosystem-sources.ttl@0.1.0",
+  "ttl_sha256": "79559e5e9c7fb23e05722dbf3fd9c1f5366bbf2b32377f5589704bf7925631d6"
+}

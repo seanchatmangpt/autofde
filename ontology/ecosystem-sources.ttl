@@ -1,0 +1,716 @@
+@prefix autofde: <https://seanchatmangpt.github.io/autofde/ontology#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://seanchatmangpt.github.io/autofde/ontology/ecosystem-sources>
+    a owl:Ontology ;
+    dcterms:title "AutoFDE admitted ecosystem source federation" ;
+    dcterms:description "Generated from corpus/admission-profile.json; CREATE sources are exact, licensed, parsed, and digest-bound. RAISE sources remain quarantined." ;
+    owl:versionInfo "0.1.0" ;
+    owl:imports <https://raw.githubusercontent.com/seanchatmangpt/ggen-spec-kit/d7556ebaabeaf6206b346d1c9e7eaefb1296170f/ontology/jtbd-schema.ttl>
+        , <https://raw.githubusercontent.com/seanchatmangpt/ggen-spec-kit/d7556ebaabeaf6206b346d1c9e7eaefb1296170f/ontology/spec-kit-schema.ttl>
+        , <https://raw.githubusercontent.com/seanchatmangpt/ggen/c36d72161b847b13555c24132819281f17e40e40/.specify/authority-model-schema.ttl>
+        , <https://raw.githubusercontent.com/seanchatmangpt/ggen/c36d72161b847b13555c24132819281f17e40e40/.specify/authority-model-shapes.ttl>
+        , <https://raw.githubusercontent.com/seanchatmangpt/ggen/c36d72161b847b13555c24132819281f17e40e40/crates/praxis-graphlaw/ontologies/project/process-tree.ttl>
+        , <https://raw.githubusercontent.com/seanchatmangpt/ggen/c36d72161b847b13555c24132819281f17e40e40/crates/praxis-graphlaw/ontologies/shapes/process-conformance.shacl.ttl>
+        , <https://raw.githubusercontent.com/seanchatmangpt/ggen/c36d72161b847b13555c24132819281f17e40e40/marketplace/packages/payment-admission/ontology/payment.ttl>
+        , <https://raw.githubusercontent.com/seanchatmangpt/lsp-max/2bc341561312b81c3b6d1b4585e82e0cd524b839/ontology/lsif06.ttl>
+        , <https://raw.githubusercontent.com/seanchatmangpt/lsp-max/2bc341561312b81c3b6d1b4585e82e0cd524b839/ontology/lsp318.ttl>
+        , <https://raw.githubusercontent.com/seanchatmangpt/lsp-max/2bc341561312b81c3b6d1b4585e82e0cd524b839/ontology/max-protocol.ttl>
+        , <https://raw.githubusercontent.com/seanchatmangpt/open-ontologies/16d01cfcbc2a8efe2f074776fa4a4e5fe6701b99/ontology/mcpp-proof-chain.ttl>
+        , <https://raw.githubusercontent.com/seanchatmangpt/open-ontologies/16d01cfcbc2a8efe2f074776fa4a4e5fe6701b99/ontology/powl-process-mining.ttl>
+        , <https://raw.githubusercontent.com/seanchatmangpt/open-ontologies/16d01cfcbc2a8efe2f074776fa4a4e5fe6701b99/ontology/requirements.ttl>
+        , <https://raw.githubusercontent.com/seanchatmangpt/open-ontologies/16d01cfcbc2a8efe2f074776fa4a4e5fe6701b99/ontology/shared-receipt-shapes.ttl>
+        , <https://raw.githubusercontent.com/seanchatmangpt/wasm4pm-compat/c501363cb0f360f441eaad110b56fc1ba4155fd8/ggen/ontology/audit-machinery.ttl>
+        , <https://raw.githubusercontent.com/seanchatmangpt/wasm4pm-compat/c501363cb0f360f441eaad110b56fc1ba4155fd8/ggen/ontology/process-intelligence.ttl>
+        , <https://raw.githubusercontent.com/seanchatmangpt/wasm4pm-compat/c501363cb0f360f441eaad110b56fc1ba4155fd8/ggen/ontology/standing-law.ttl> .
+
+<https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-bcinr>
+    a autofde:SemanticRepository ;
+    autofde:repositoryFullName "seanchatmangpt/bcinr" ;
+    autofde:visibility "public" .
+
+<https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-cargo-cicd>
+    a autofde:SemanticRepository ;
+    autofde:repositoryFullName "seanchatmangpt/cargo-cicd" ;
+    autofde:visibility "public" .
+
+<https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-ggen>
+    a autofde:SemanticRepository ;
+    autofde:repositoryFullName "seanchatmangpt/ggen" ;
+    autofde:visibility "public" .
+
+<https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-ggen-spec-kit>
+    a autofde:SemanticRepository ;
+    autofde:repositoryFullName "seanchatmangpt/ggen-spec-kit" ;
+    autofde:visibility "public" .
+
+<https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-kgold>
+    a autofde:SemanticRepository ;
+    autofde:repositoryFullName "seanchatmangpt/kgold" ;
+    autofde:visibility "private" .
+
+<https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-lsp-max>
+    a autofde:SemanticRepository ;
+    autofde:repositoryFullName "seanchatmangpt/lsp-max" ;
+    autofde:visibility "public" .
+
+<https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-mfact>
+    a autofde:SemanticRepository ;
+    autofde:repositoryFullName "seanchatmangpt/mfact" ;
+    autofde:visibility "public" .
+
+<https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-open-ontologies>
+    a autofde:SemanticRepository ;
+    autofde:repositoryFullName "seanchatmangpt/open-ontologies" ;
+    autofde:visibility "public" .
+
+<https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-star-toml>
+    a autofde:SemanticRepository ;
+    autofde:repositoryFullName "seanchatmangpt/star-toml" ;
+    autofde:visibility "public" .
+
+<https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-wasm4pm>
+    a autofde:SemanticRepository ;
+    autofde:repositoryFullName "seanchatmangpt/wasm4pm" ;
+    autofde:visibility "public" .
+
+<https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-wasm4pm-compat>
+    a autofde:SemanticRepository ;
+    autofde:repositoryFullName "seanchatmangpt/wasm4pm-compat" ;
+    autofde:visibility "public" .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-1304c056ab69700d0655>
+    a autofde:SemanticAsset, prov:Entity, dcat:Distribution ;
+    autofde:sourceRepository <https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-bcinr> ;
+    autofde:assetPath "ontology/bcinr.ttl" ;
+    autofde:resolvedCommit "db438edf0940fbce6af71c7b54a6ce9ea572bbfe" ;
+    autofde:treeIdentity "680a0dda4cb53c6fd34d6ffe1d57b18db2de9bec" ;
+    autofde:blobIdentity "98059b5b5b1ee82876d967ce942f7c724df409c2" ;
+    autofde:licenseId "NOASSERTION" ;
+    autofde:sourceDisposition autofde:QuarantineDisposition ;
+    autofde:errcAction autofde:Raise ;
+    autofde:authorityCeiling "CONSTRUCT" ;
+    autofde:parseStanding "ALIVE" ;
+    dcat:accessURL <https://raw.githubusercontent.com/seanchatmangpt/bcinr/db438edf0940fbce6af71c7b54a6ce9ea572bbfe/ontology/bcinr.ttl> ;
+    autofde:digest "b083221a98895bf531300cc0b030f33ae5552038e74e4e5a4c9dcb8909b0b9b2" ;
+    autofde:hasDigest <https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-1304c056ab69700d0655-Digest> ;
+    autofde:admissionRationale "Quarantined until license, parse, namespace, and authority evidence close." .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-1304c056ab69700d0655-Digest>
+    a autofde:ArtifactDigest ;
+    autofde:digestAlgorithm "sha256" ;
+    autofde:digestValue "b083221a98895bf531300cc0b030f33ae5552038e74e4e5a4c9dcb8909b0b9b2" .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-89b7c9c51d64c4dd3ca0>
+    a autofde:SemanticAsset, prov:Entity, dcat:Distribution ;
+    autofde:sourceRepository <https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-cargo-cicd> ;
+    autofde:assetPath "ontology/cargo-cicd.ttl" ;
+    autofde:resolvedCommit "e64f8224c23771e8c4e5d1d22fb939f812b04e1b" ;
+    autofde:treeIdentity "326138779f52052164e2aec1916c2bb4fef40361" ;
+    autofde:blobIdentity "adb4d92c6668e749af3c43f3d53d43bd0c5f55d7" ;
+    autofde:licenseId "NOASSERTION" ;
+    autofde:sourceDisposition autofde:QuarantineDisposition ;
+    autofde:errcAction autofde:Raise ;
+    autofde:authorityCeiling "CONSTRUCT" ;
+    autofde:parseStanding "ALIVE" ;
+    dcat:accessURL <https://raw.githubusercontent.com/seanchatmangpt/cargo-cicd/e64f8224c23771e8c4e5d1d22fb939f812b04e1b/ontology/cargo-cicd.ttl> ;
+    autofde:digest "4fbb30c6df543fb3b6c33e358e17b44c9b7e56b5283f8b4a34059a62618052ac" ;
+    autofde:hasDigest <https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-89b7c9c51d64c4dd3ca0-Digest> ;
+    autofde:admissionRationale "Quarantined until license, parse, namespace, and authority evidence close." .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-89b7c9c51d64c4dd3ca0-Digest>
+    a autofde:ArtifactDigest ;
+    autofde:digestAlgorithm "sha256" ;
+    autofde:digestValue "4fbb30c6df543fb3b6c33e358e17b44c9b7e56b5283f8b4a34059a62618052ac" .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-ced1ab096d35935f1f25>
+    a autofde:SemanticAsset, prov:Entity, dcat:Distribution ;
+    autofde:sourceRepository <https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-cargo-cicd> ;
+    autofde:assetPath "ontology/cicd-process.ttl" ;
+    autofde:resolvedCommit "e64f8224c23771e8c4e5d1d22fb939f812b04e1b" ;
+    autofde:treeIdentity "326138779f52052164e2aec1916c2bb4fef40361" ;
+    autofde:blobIdentity "91df6ab5e79408eb24ddb66d8acfc0193027b581" ;
+    autofde:licenseId "NOASSERTION" ;
+    autofde:sourceDisposition autofde:QuarantineDisposition ;
+    autofde:errcAction autofde:Raise ;
+    autofde:authorityCeiling "CONSTRUCT" ;
+    autofde:parseStanding "ALIVE" ;
+    dcat:accessURL <https://raw.githubusercontent.com/seanchatmangpt/cargo-cicd/e64f8224c23771e8c4e5d1d22fb939f812b04e1b/ontology/cicd-process.ttl> ;
+    autofde:digest "66d5246f12d5501cf9467479887458bb47f2f3384ed388c4f1c7acf9a73cb3b8" ;
+    autofde:hasDigest <https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-ced1ab096d35935f1f25-Digest> ;
+    autofde:namespaceIRI <https://cargo-cicd.dev/vocab#> ;
+    autofde:admissionRationale "Quarantined until license, parse, namespace, and authority evidence close." .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-ced1ab096d35935f1f25-Digest>
+    a autofde:ArtifactDigest ;
+    autofde:digestAlgorithm "sha256" ;
+    autofde:digestValue "66d5246f12d5501cf9467479887458bb47f2f3384ed388c4f1c7acf9a73cb3b8" .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-ec2fab80a5aa855c507e>
+    a autofde:SemanticAsset, prov:Entity, dcat:Distribution ;
+    autofde:sourceRepository <https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-cargo-cicd> ;
+    autofde:assetPath "ontology/public/cargo-cicd-capabilities.ttl" ;
+    autofde:resolvedCommit "e64f8224c23771e8c4e5d1d22fb939f812b04e1b" ;
+    autofde:treeIdentity "326138779f52052164e2aec1916c2bb4fef40361" ;
+    autofde:blobIdentity "19afcaa55dbe1d639b234e43595a03b84ce69d55" ;
+    autofde:licenseId "NOASSERTION" ;
+    autofde:sourceDisposition autofde:QuarantineDisposition ;
+    autofde:errcAction autofde:Raise ;
+    autofde:authorityCeiling "CONSTRUCT" ;
+    autofde:parseStanding "ALIVE" ;
+    dcat:accessURL <https://raw.githubusercontent.com/seanchatmangpt/cargo-cicd/e64f8224c23771e8c4e5d1d22fb939f812b04e1b/ontology/public/cargo-cicd-capabilities.ttl> ;
+    autofde:digest "2aa6b40f125545d67dff359690ea0958a1d45ddcf8d41f710548ea605ebedfa2" ;
+    autofde:hasDigest <https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-ec2fab80a5aa855c507e-Digest> ;
+    autofde:namespaceIRI <https://cargo-cicd.rs/ontology/capabilities> ;
+    autofde:admissionRationale "Quarantined until license, parse, namespace, and authority evidence close." .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-ec2fab80a5aa855c507e-Digest>
+    a autofde:ArtifactDigest ;
+    autofde:digestAlgorithm "sha256" ;
+    autofde:digestValue "2aa6b40f125545d67dff359690ea0958a1d45ddcf8d41f710548ea605ebedfa2" .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-218cc686e7a9a360d43e>
+    a autofde:SemanticAsset, prov:Entity, dcat:Distribution ;
+    autofde:sourceRepository <https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-ggen> ;
+    autofde:assetPath ".specify/authority-model-schema.ttl" ;
+    autofde:resolvedCommit "c36d72161b847b13555c24132819281f17e40e40" ;
+    autofde:treeIdentity "0e7018fcdfc8346647e7cea4e1a5c8f3cf33979e" ;
+    autofde:blobIdentity "c6d62b7e6d7ad40404e165cba28a0c905d6b9dda" ;
+    autofde:licenseId "MIT" ;
+    autofde:sourceDisposition autofde:CanonicalSourceDisposition ;
+    autofde:errcAction autofde:Create ;
+    autofde:authorityCeiling "CONSTRUCT" ;
+    autofde:parseStanding "ALIVE" ;
+    dcat:accessURL <https://raw.githubusercontent.com/seanchatmangpt/ggen/c36d72161b847b13555c24132819281f17e40e40/.specify/authority-model-schema.ttl> ;
+    autofde:digest "1a252aeeb475eaf0ab10c89321efbaf511ec5dc27b46d47a6169466c3658804f" ;
+    autofde:hasDigest <https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-218cc686e7a9a360d43e-Digest> ;
+    autofde:namespaceIRI <https://raw.githubusercontent.com/seanchatmangpt/ggen/c36d72161b847b13555c24132819281f17e40e40/.specify/authority-model-schema.ttl> ;
+    autofde:admissionRationale "Exact public commit, tree, blob, admitted license, successful parse, and digest closure." .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-218cc686e7a9a360d43e-Digest>
+    a autofde:ArtifactDigest ;
+    autofde:digestAlgorithm "sha256" ;
+    autofde:digestValue "1a252aeeb475eaf0ab10c89321efbaf511ec5dc27b46d47a6169466c3658804f" .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-990a94c40c2b33377a36>
+    a autofde:SemanticAsset, prov:Entity, dcat:Distribution ;
+    autofde:sourceRepository <https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-ggen> ;
+    autofde:assetPath ".specify/authority-model-shapes.ttl" ;
+    autofde:resolvedCommit "c36d72161b847b13555c24132819281f17e40e40" ;
+    autofde:treeIdentity "0e7018fcdfc8346647e7cea4e1a5c8f3cf33979e" ;
+    autofde:blobIdentity "162a3870a9d4b751edc94635484181c864af51e1" ;
+    autofde:licenseId "MIT" ;
+    autofde:sourceDisposition autofde:CanonicalSourceDisposition ;
+    autofde:errcAction autofde:Create ;
+    autofde:authorityCeiling "CONSTRUCT" ;
+    autofde:parseStanding "ALIVE" ;
+    dcat:accessURL <https://raw.githubusercontent.com/seanchatmangpt/ggen/c36d72161b847b13555c24132819281f17e40e40/.specify/authority-model-shapes.ttl> ;
+    autofde:digest "3233434aa2067904b0a8402a02515d72a10b57f28bb01687c701ed623b17378b" ;
+    autofde:hasDigest <https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-990a94c40c2b33377a36-Digest> ;
+    autofde:namespaceIRI <https://raw.githubusercontent.com/seanchatmangpt/ggen/c36d72161b847b13555c24132819281f17e40e40/.specify/authority-model-shapes.ttl> ;
+    autofde:admissionRationale "Exact public commit, tree, blob, admitted license, successful parse, and digest closure." .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-990a94c40c2b33377a36-Digest>
+    a autofde:ArtifactDigest ;
+    autofde:digestAlgorithm "sha256" ;
+    autofde:digestValue "3233434aa2067904b0a8402a02515d72a10b57f28bb01687c701ed623b17378b" .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-2f31f6108396bdaa3e6b>
+    a autofde:SemanticAsset, prov:Entity, dcat:Distribution ;
+    autofde:sourceRepository <https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-ggen> ;
+    autofde:assetPath "crates/praxis-graphlaw/ontologies/project/process-tree.ttl" ;
+    autofde:resolvedCommit "c36d72161b847b13555c24132819281f17e40e40" ;
+    autofde:treeIdentity "0e7018fcdfc8346647e7cea4e1a5c8f3cf33979e" ;
+    autofde:blobIdentity "9ec451ef1a28570b36b66e68ef590427a3ee4654" ;
+    autofde:licenseId "MIT" ;
+    autofde:sourceDisposition autofde:CanonicalSourceDisposition ;
+    autofde:errcAction autofde:Create ;
+    autofde:authorityCeiling "CONSTRUCT" ;
+    autofde:parseStanding "ALIVE" ;
+    dcat:accessURL <https://raw.githubusercontent.com/seanchatmangpt/ggen/c36d72161b847b13555c24132819281f17e40e40/crates/praxis-graphlaw/ontologies/project/process-tree.ttl> ;
+    autofde:digest "16fa611ce492db75d60e45e34bf92af464ebb5b747882ae8f7a6b8e62e806637" ;
+    autofde:hasDigest <https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-2f31f6108396bdaa3e6b-Digest> ;
+    autofde:namespaceIRI <https://ggen.io/ontology/process-tree> ;
+    autofde:admissionRationale "Exact public commit, tree, blob, admitted license, successful parse, and digest closure." .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-2f31f6108396bdaa3e6b-Digest>
+    a autofde:ArtifactDigest ;
+    autofde:digestAlgorithm "sha256" ;
+    autofde:digestValue "16fa611ce492db75d60e45e34bf92af464ebb5b747882ae8f7a6b8e62e806637" .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-2275dcb85c435f4a549e>
+    a autofde:SemanticAsset, prov:Entity, dcat:Distribution ;
+    autofde:sourceRepository <https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-ggen> ;
+    autofde:assetPath "crates/praxis-graphlaw/ontologies/shapes/process-conformance.shacl.ttl" ;
+    autofde:resolvedCommit "c36d72161b847b13555c24132819281f17e40e40" ;
+    autofde:treeIdentity "0e7018fcdfc8346647e7cea4e1a5c8f3cf33979e" ;
+    autofde:blobIdentity "ee7a474b78fa1fa03cf0dcaf7000aae30cfa348b" ;
+    autofde:licenseId "MIT" ;
+    autofde:sourceDisposition autofde:CanonicalSourceDisposition ;
+    autofde:errcAction autofde:Create ;
+    autofde:authorityCeiling "CONSTRUCT" ;
+    autofde:parseStanding "ALIVE" ;
+    dcat:accessURL <https://raw.githubusercontent.com/seanchatmangpt/ggen/c36d72161b847b13555c24132819281f17e40e40/crates/praxis-graphlaw/ontologies/shapes/process-conformance.shacl.ttl> ;
+    autofde:digest "735e3d5fdd71ee01341fb92ad66772a2d363467413028bd158fd13c2d8477ecd" ;
+    autofde:hasDigest <https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-2275dcb85c435f4a549e-Digest> ;
+    autofde:namespaceIRI <https://ggen.io/ontology/conformance> ;
+    autofde:admissionRationale "Exact public commit, tree, blob, admitted license, successful parse, and digest closure." .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-2275dcb85c435f4a549e-Digest>
+    a autofde:ArtifactDigest ;
+    autofde:digestAlgorithm "sha256" ;
+    autofde:digestValue "735e3d5fdd71ee01341fb92ad66772a2d363467413028bd158fd13c2d8477ecd" .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-0c9249973ffe51d45bca>
+    a autofde:SemanticAsset, prov:Entity, dcat:Distribution ;
+    autofde:sourceRepository <https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-ggen> ;
+    autofde:assetPath "marketplace/packages/payment-admission/ontology/payment.ttl" ;
+    autofde:resolvedCommit "c36d72161b847b13555c24132819281f17e40e40" ;
+    autofde:treeIdentity "0e7018fcdfc8346647e7cea4e1a5c8f3cf33979e" ;
+    autofde:blobIdentity "8f7432ad72f6270bd0748148da83671f56849385" ;
+    autofde:licenseId "MIT" ;
+    autofde:sourceDisposition autofde:CanonicalSourceDisposition ;
+    autofde:errcAction autofde:Create ;
+    autofde:authorityCeiling "CONSTRUCT" ;
+    autofde:parseStanding "ALIVE" ;
+    dcat:accessURL <https://raw.githubusercontent.com/seanchatmangpt/ggen/c36d72161b847b13555c24132819281f17e40e40/marketplace/packages/payment-admission/ontology/payment.ttl> ;
+    autofde:digest "fdaf1ddc4922e9fb63811acee32f35ec8234ab3b28f25999fcdfc26fb04f7975" ;
+    autofde:hasDigest <https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-0c9249973ffe51d45bca-Digest> ;
+    autofde:namespaceIRI <https://raw.githubusercontent.com/seanchatmangpt/ggen/c36d72161b847b13555c24132819281f17e40e40/marketplace/packages/payment-admission/ontology/payment.ttl> ;
+    autofde:admissionRationale "Exact public commit, tree, blob, admitted license, successful parse, and digest closure." .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-0c9249973ffe51d45bca-Digest>
+    a autofde:ArtifactDigest ;
+    autofde:digestAlgorithm "sha256" ;
+    autofde:digestValue "fdaf1ddc4922e9fb63811acee32f35ec8234ab3b28f25999fcdfc26fb04f7975" .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-a27e5158c6c728179e0e>
+    a autofde:SemanticAsset, prov:Entity, dcat:Distribution ;
+    autofde:sourceRepository <https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-ggen-spec-kit> ;
+    autofde:assetPath "ontology/jtbd-schema.ttl" ;
+    autofde:resolvedCommit "d7556ebaabeaf6206b346d1c9e7eaefb1296170f" ;
+    autofde:treeIdentity "b07788f833294cd0a9aa20a5a0ba229fab81fbee" ;
+    autofde:blobIdentity "1ca142266921744dd0bab22bcbf5b254a5636af8" ;
+    autofde:licenseId "MIT" ;
+    autofde:sourceDisposition autofde:CanonicalSourceDisposition ;
+    autofde:errcAction autofde:Create ;
+    autofde:authorityCeiling "CONSTRUCT" ;
+    autofde:parseStanding "ALIVE" ;
+    dcat:accessURL <https://raw.githubusercontent.com/seanchatmangpt/ggen-spec-kit/d7556ebaabeaf6206b346d1c9e7eaefb1296170f/ontology/jtbd-schema.ttl> ;
+    autofde:digest "d0fe8a447ccd77bde6385b9b3bf017b3a3c03fdc3f75a1f1f3a0ffa8db3ae764" ;
+    autofde:hasDigest <https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-a27e5158c6c728179e0e-Digest> ;
+    autofde:namespaceIRI <https://raw.githubusercontent.com/seanchatmangpt/ggen-spec-kit/d7556ebaabeaf6206b346d1c9e7eaefb1296170f/ontology/jtbd-schema.ttl> ;
+    autofde:admissionRationale "Exact public commit, tree, blob, admitted license, successful parse, and digest closure." .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-a27e5158c6c728179e0e-Digest>
+    a autofde:ArtifactDigest ;
+    autofde:digestAlgorithm "sha256" ;
+    autofde:digestValue "d0fe8a447ccd77bde6385b9b3bf017b3a3c03fdc3f75a1f1f3a0ffa8db3ae764" .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-937e026c7b7610a207a8>
+    a autofde:SemanticAsset, prov:Entity, dcat:Distribution ;
+    autofde:sourceRepository <https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-ggen-spec-kit> ;
+    autofde:assetPath "ontology/spec-kit-schema.ttl" ;
+    autofde:resolvedCommit "d7556ebaabeaf6206b346d1c9e7eaefb1296170f" ;
+    autofde:treeIdentity "b07788f833294cd0a9aa20a5a0ba229fab81fbee" ;
+    autofde:blobIdentity "7d7898d4b9cf9ceb9dad91c4b9ebca652ce9b7c2" ;
+    autofde:licenseId "MIT" ;
+    autofde:sourceDisposition autofde:CanonicalSourceDisposition ;
+    autofde:errcAction autofde:Create ;
+    autofde:authorityCeiling "CONSTRUCT" ;
+    autofde:parseStanding "ALIVE" ;
+    dcat:accessURL <https://raw.githubusercontent.com/seanchatmangpt/ggen-spec-kit/d7556ebaabeaf6206b346d1c9e7eaefb1296170f/ontology/spec-kit-schema.ttl> ;
+    autofde:digest "29cf688f1303ba7f6278ae9ba3ef664bc52e0e8a40c9ea183081cfb1d7770e31" ;
+    autofde:hasDigest <https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-937e026c7b7610a207a8-Digest> ;
+    autofde:namespaceIRI <https://raw.githubusercontent.com/seanchatmangpt/ggen-spec-kit/d7556ebaabeaf6206b346d1c9e7eaefb1296170f/ontology/spec-kit-schema.ttl> ;
+    autofde:admissionRationale "Exact public commit, tree, blob, admitted license, successful parse, and digest closure." .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-937e026c7b7610a207a8-Digest>
+    a autofde:ArtifactDigest ;
+    autofde:digestAlgorithm "sha256" ;
+    autofde:digestValue "29cf688f1303ba7f6278ae9ba3ef664bc52e0e8a40c9ea183081cfb1d7770e31" .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-60992f96492c2c28b481>
+    a autofde:SemanticAsset, prov:Entity, dcat:Distribution ;
+    autofde:sourceRepository <https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-kgold> ;
+    autofde:assetPath "ontology/decision-ontology.ttl" ;
+    autofde:resolvedCommit "24f58403e19a8439f11eea28677f8d8843aa50a5" ;
+    autofde:treeIdentity "8a3e5bf690b55437605b57adbcdb27b0ccd350b0" ;
+    autofde:blobIdentity "ca60a7e0a875a627be4f457f353f24cba3453e82" ;
+    autofde:licenseId "NOASSERTION" ;
+    autofde:sourceDisposition autofde:QuarantineDisposition ;
+    autofde:errcAction autofde:Raise ;
+    autofde:authorityCeiling "CONSTRUCT" ;
+    autofde:parseStanding "UNKNOWN" ;
+    dcat:accessURL <https://raw.githubusercontent.com/seanchatmangpt/kgold/24f58403e19a8439f11eea28677f8d8843aa50a5/ontology/decision-ontology.ttl> ;
+    autofde:admissionRationale "Quarantined until license, parse, namespace, and authority evidence close." .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-842160060bfc5e4ba0b6>
+    a autofde:SemanticAsset, prov:Entity, dcat:Distribution ;
+    autofde:sourceRepository <https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-kgold> ;
+    autofde:assetPath "ontology/kgold-acl.ttl" ;
+    autofde:resolvedCommit "24f58403e19a8439f11eea28677f8d8843aa50a5" ;
+    autofde:treeIdentity "8a3e5bf690b55437605b57adbcdb27b0ccd350b0" ;
+    autofde:blobIdentity "380a69af28cf91ebfdc889f50d6f77357941f83c" ;
+    autofde:licenseId "NOASSERTION" ;
+    autofde:sourceDisposition autofde:QuarantineDisposition ;
+    autofde:errcAction autofde:Raise ;
+    autofde:authorityCeiling "CONSTRUCT" ;
+    autofde:parseStanding "UNKNOWN" ;
+    dcat:accessURL <https://raw.githubusercontent.com/seanchatmangpt/kgold/24f58403e19a8439f11eea28677f8d8843aa50a5/ontology/kgold-acl.ttl> ;
+    autofde:admissionRationale "Quarantined until license, parse, namespace, and authority evidence close." .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-572b75bcf20934924598>
+    a autofde:SemanticAsset, prov:Entity, dcat:Distribution ;
+    autofde:sourceRepository <https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-kgold> ;
+    autofde:assetPath "ontology/kgold-ontology.ttl" ;
+    autofde:resolvedCommit "24f58403e19a8439f11eea28677f8d8843aa50a5" ;
+    autofde:treeIdentity "8a3e5bf690b55437605b57adbcdb27b0ccd350b0" ;
+    autofde:blobIdentity "94b9f150e442c0869e3dcf6ad5e3cf663d141ef5" ;
+    autofde:licenseId "NOASSERTION" ;
+    autofde:sourceDisposition autofde:QuarantineDisposition ;
+    autofde:errcAction autofde:Raise ;
+    autofde:authorityCeiling "CONSTRUCT" ;
+    autofde:parseStanding "UNKNOWN" ;
+    dcat:accessURL <https://raw.githubusercontent.com/seanchatmangpt/kgold/24f58403e19a8439f11eea28677f8d8843aa50a5/ontology/kgold-ontology.ttl> ;
+    autofde:admissionRationale "Quarantined until license, parse, namespace, and authority evidence close." .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-72a5a6e921ce631cc9d0>
+    a autofde:SemanticAsset, prov:Entity, dcat:Distribution ;
+    autofde:sourceRepository <https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-kgold> ;
+    autofde:assetPath "ontology/kgold-shacl-shapes.ttl" ;
+    autofde:resolvedCommit "24f58403e19a8439f11eea28677f8d8843aa50a5" ;
+    autofde:treeIdentity "8a3e5bf690b55437605b57adbcdb27b0ccd350b0" ;
+    autofde:blobIdentity "a2c0b5b75b9af72e389e543663304f5928462c16" ;
+    autofde:licenseId "NOASSERTION" ;
+    autofde:sourceDisposition autofde:QuarantineDisposition ;
+    autofde:errcAction autofde:Raise ;
+    autofde:authorityCeiling "CONSTRUCT" ;
+    autofde:parseStanding "UNKNOWN" ;
+    dcat:accessURL <https://raw.githubusercontent.com/seanchatmangpt/kgold/24f58403e19a8439f11eea28677f8d8843aa50a5/ontology/kgold-shacl-shapes.ttl> ;
+    autofde:admissionRationale "Quarantined until license, parse, namespace, and authority evidence close." .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-e21ad424448c8067c8cd>
+    a autofde:SemanticAsset, prov:Entity, dcat:Distribution ;
+    autofde:sourceRepository <https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-kgold> ;
+    autofde:assetPath "ontology/provenance-chain.ttl" ;
+    autofde:resolvedCommit "24f58403e19a8439f11eea28677f8d8843aa50a5" ;
+    autofde:treeIdentity "8a3e5bf690b55437605b57adbcdb27b0ccd350b0" ;
+    autofde:blobIdentity "9a85e7cb7b3b44b84faf0a7b1172c8ba525322da" ;
+    autofde:licenseId "NOASSERTION" ;
+    autofde:sourceDisposition autofde:QuarantineDisposition ;
+    autofde:errcAction autofde:Raise ;
+    autofde:authorityCeiling "CONSTRUCT" ;
+    autofde:parseStanding "UNKNOWN" ;
+    dcat:accessURL <https://raw.githubusercontent.com/seanchatmangpt/kgold/24f58403e19a8439f11eea28677f8d8843aa50a5/ontology/provenance-chain.ttl> ;
+    autofde:admissionRationale "Quarantined until license, parse, namespace, and authority evidence close." .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-46168a83cff3ba595140>
+    a autofde:SemanticAsset, prov:Entity, dcat:Distribution ;
+    autofde:sourceRepository <https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-lsp-max> ;
+    autofde:assetPath "ontology/lsif06.ttl" ;
+    autofde:resolvedCommit "2bc341561312b81c3b6d1b4585e82e0cd524b839" ;
+    autofde:treeIdentity "897f90eeb1748bfcea164dfbb4afb61cfc898172" ;
+    autofde:blobIdentity "eb525abe62947b5677f0dbfa2d9aaaf1b7d57a83" ;
+    autofde:licenseId "Apache-2.0" ;
+    autofde:sourceDisposition autofde:CanonicalSourceDisposition ;
+    autofde:errcAction autofde:Create ;
+    autofde:authorityCeiling "CONSTRUCT" ;
+    autofde:parseStanding "ALIVE" ;
+    dcat:accessURL <https://raw.githubusercontent.com/seanchatmangpt/lsp-max/2bc341561312b81c3b6d1b4585e82e0cd524b839/ontology/lsif06.ttl> ;
+    autofde:digest "daa17b2fb7d7c41c368f8ec4f65422b6f2d3aaebb7644ab221a9175d559230d1" ;
+    autofde:hasDigest <https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-46168a83cff3ba595140-Digest> ;
+    autofde:namespaceIRI <https://lsp-max.rs/ontology/lsif/> ;
+    autofde:admissionRationale "Exact public commit, tree, blob, admitted license, successful parse, and digest closure." .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-46168a83cff3ba595140-Digest>
+    a autofde:ArtifactDigest ;
+    autofde:digestAlgorithm "sha256" ;
+    autofde:digestValue "daa17b2fb7d7c41c368f8ec4f65422b6f2d3aaebb7644ab221a9175d559230d1" .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-e463605d68337cc6b12c>
+    a autofde:SemanticAsset, prov:Entity, dcat:Distribution ;
+    autofde:sourceRepository <https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-lsp-max> ;
+    autofde:assetPath "ontology/lsp318.ttl" ;
+    autofde:resolvedCommit "2bc341561312b81c3b6d1b4585e82e0cd524b839" ;
+    autofde:treeIdentity "897f90eeb1748bfcea164dfbb4afb61cfc898172" ;
+    autofde:blobIdentity "69577b52cd9c6404c04466b11ec82b0cf974c2fa" ;
+    autofde:licenseId "Apache-2.0" ;
+    autofde:sourceDisposition autofde:CanonicalSourceDisposition ;
+    autofde:errcAction autofde:Create ;
+    autofde:authorityCeiling "CONSTRUCT" ;
+    autofde:parseStanding "ALIVE" ;
+    dcat:accessURL <https://raw.githubusercontent.com/seanchatmangpt/lsp-max/2bc341561312b81c3b6d1b4585e82e0cd524b839/ontology/lsp318.ttl> ;
+    autofde:digest "7169c709da85bca1b11fd1c7b2ec3ec7941bb539d55eef56f7a9a2e80d9025cc" ;
+    autofde:hasDigest <https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-e463605d68337cc6b12c-Digest> ;
+    autofde:namespaceIRI <https://lsp-max.rs/ontology/> ;
+    autofde:admissionRationale "Exact public commit, tree, blob, admitted license, successful parse, and digest closure." .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-e463605d68337cc6b12c-Digest>
+    a autofde:ArtifactDigest ;
+    autofde:digestAlgorithm "sha256" ;
+    autofde:digestValue "7169c709da85bca1b11fd1c7b2ec3ec7941bb539d55eef56f7a9a2e80d9025cc" .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-6863cc5996b695d0579c>
+    a autofde:SemanticAsset, prov:Entity, dcat:Distribution ;
+    autofde:sourceRepository <https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-lsp-max> ;
+    autofde:assetPath "ontology/max-protocol.ttl" ;
+    autofde:resolvedCommit "2bc341561312b81c3b6d1b4585e82e0cd524b839" ;
+    autofde:treeIdentity "897f90eeb1748bfcea164dfbb4afb61cfc898172" ;
+    autofde:blobIdentity "66568212e5e257a6465e54d14761236abd7fcdba" ;
+    autofde:licenseId "Apache-2.0" ;
+    autofde:sourceDisposition autofde:CanonicalSourceDisposition ;
+    autofde:errcAction autofde:Create ;
+    autofde:authorityCeiling "CONSTRUCT" ;
+    autofde:parseStanding "ALIVE" ;
+    dcat:accessURL <https://raw.githubusercontent.com/seanchatmangpt/lsp-max/2bc341561312b81c3b6d1b4585e82e0cd524b839/ontology/max-protocol.ttl> ;
+    autofde:digest "a2459fdeae7ddae2b000b3b37f55925831af082f45fc3321f057c0eed1bde99e" ;
+    autofde:hasDigest <https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-6863cc5996b695d0579c-Digest> ;
+    autofde:namespaceIRI <https://lsp-max.rs/ontology/max/> ;
+    autofde:admissionRationale "Exact public commit, tree, blob, admitted license, successful parse, and digest closure." .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-6863cc5996b695d0579c-Digest>
+    a autofde:ArtifactDigest ;
+    autofde:digestAlgorithm "sha256" ;
+    autofde:digestValue "a2459fdeae7ddae2b000b3b37f55925831af082f45fc3321f057c0eed1bde99e" .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-5a0fb4f806e5fa791cc5>
+    a autofde:SemanticAsset, prov:Entity, dcat:Distribution ;
+    autofde:sourceRepository <https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-mfact> ;
+    autofde:assetPath "ontology/procint-schema.ttl" ;
+    autofde:resolvedCommit "308384002a15b9946acbcd6f560c5819723d79dc" ;
+    autofde:treeIdentity "00d9705137cc36d9745bfe75dc7079640bc5a2c8" ;
+    autofde:blobIdentity "9881d065e60a821a5b506bbe2885a9fadd4c6d79" ;
+    autofde:licenseId "NOASSERTION" ;
+    autofde:sourceDisposition autofde:QuarantineDisposition ;
+    autofde:errcAction autofde:Raise ;
+    autofde:authorityCeiling "CONSTRUCT" ;
+    autofde:parseStanding "BLOCKED" ;
+    dcat:accessURL <https://raw.githubusercontent.com/seanchatmangpt/mfact/308384002a15b9946acbcd6f560c5819723d79dc/ontology/procint-schema.ttl> ;
+    autofde:admissionRationale "Quarantined until license, parse, namespace, and authority evidence close." .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-58d85449f671c54a98d6>
+    a autofde:SemanticAsset, prov:Entity, dcat:Distribution ;
+    autofde:sourceRepository <https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-open-ontologies> ;
+    autofde:assetPath "ontology/mcpp-proof-chain.ttl" ;
+    autofde:resolvedCommit "16d01cfcbc2a8efe2f074776fa4a4e5fe6701b99" ;
+    autofde:treeIdentity "de7f9963bcd75e5f3b16903d1fb49ca0c7a71c6e" ;
+    autofde:blobIdentity "b624fcb5c9b74b2fd67562971f6faf9cd04ac33b" ;
+    autofde:licenseId "MIT" ;
+    autofde:sourceDisposition autofde:CanonicalSourceDisposition ;
+    autofde:errcAction autofde:Create ;
+    autofde:authorityCeiling "CONSTRUCT" ;
+    autofde:parseStanding "ALIVE" ;
+    dcat:accessURL <https://raw.githubusercontent.com/seanchatmangpt/open-ontologies/16d01cfcbc2a8efe2f074776fa4a4e5fe6701b99/ontology/mcpp-proof-chain.ttl> ;
+    autofde:digest "5461efaa05bc4465964e40303b7f55eb58ff4f7c1d34089e7d5abebf22da2883" ;
+    autofde:hasDigest <https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-58d85449f671c54a98d6-Digest> ;
+    autofde:namespaceIRI <urn:ontostar:mcpp:Ontology> ;
+    autofde:admissionRationale "Exact public commit, tree, blob, admitted license, successful parse, and digest closure." .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-58d85449f671c54a98d6-Digest>
+    a autofde:ArtifactDigest ;
+    autofde:digestAlgorithm "sha256" ;
+    autofde:digestValue "5461efaa05bc4465964e40303b7f55eb58ff4f7c1d34089e7d5abebf22da2883" .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-084dcfcede44a41f6673>
+    a autofde:SemanticAsset, prov:Entity, dcat:Distribution ;
+    autofde:sourceRepository <https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-open-ontologies> ;
+    autofde:assetPath "ontology/powl-process-mining.ttl" ;
+    autofde:resolvedCommit "16d01cfcbc2a8efe2f074776fa4a4e5fe6701b99" ;
+    autofde:treeIdentity "de7f9963bcd75e5f3b16903d1fb49ca0c7a71c6e" ;
+    autofde:blobIdentity "8e9ab2547961a2c16b42d5845807b7c888537fcd" ;
+    autofde:licenseId "MIT" ;
+    autofde:sourceDisposition autofde:CanonicalSourceDisposition ;
+    autofde:errcAction autofde:Create ;
+    autofde:authorityCeiling "CONSTRUCT" ;
+    autofde:parseStanding "ALIVE" ;
+    dcat:accessURL <https://raw.githubusercontent.com/seanchatmangpt/open-ontologies/16d01cfcbc2a8efe2f074776fa4a4e5fe6701b99/ontology/powl-process-mining.ttl> ;
+    autofde:digest "fedb030b4cd22ca0c0115afe94cf20b40a9eb9227b4420c634030e46d7d1fac8" ;
+    autofde:hasDigest <https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-084dcfcede44a41f6673-Digest> ;
+    autofde:namespaceIRI <urn:ontostar:powl:ontology> ;
+    autofde:admissionRationale "Exact public commit, tree, blob, admitted license, successful parse, and digest closure." .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-084dcfcede44a41f6673-Digest>
+    a autofde:ArtifactDigest ;
+    autofde:digestAlgorithm "sha256" ;
+    autofde:digestValue "fedb030b4cd22ca0c0115afe94cf20b40a9eb9227b4420c634030e46d7d1fac8" .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-9a9d4ad7d1ced88cd4c2>
+    a autofde:SemanticAsset, prov:Entity, dcat:Distribution ;
+    autofde:sourceRepository <https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-open-ontologies> ;
+    autofde:assetPath "ontology/requirements.ttl" ;
+    autofde:resolvedCommit "16d01cfcbc2a8efe2f074776fa4a4e5fe6701b99" ;
+    autofde:treeIdentity "de7f9963bcd75e5f3b16903d1fb49ca0c7a71c6e" ;
+    autofde:blobIdentity "bd9157a6bc7bed260a91dd6e2f2139297b365fc4" ;
+    autofde:licenseId "MIT" ;
+    autofde:sourceDisposition autofde:CanonicalSourceDisposition ;
+    autofde:errcAction autofde:Create ;
+    autofde:authorityCeiling "CONSTRUCT" ;
+    autofde:parseStanding "ALIVE" ;
+    dcat:accessURL <https://raw.githubusercontent.com/seanchatmangpt/open-ontologies/16d01cfcbc2a8efe2f074776fa4a4e5fe6701b99/ontology/requirements.ttl> ;
+    autofde:digest "f897444c026cc296ec7275d2aa0fdd26f942b1ceebae9dce8748969398c6b961" ;
+    autofde:hasDigest <https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-9a9d4ad7d1ced88cd4c2-Digest> ;
+    autofde:namespaceIRI <https://ggen.io/onto/requirements/Ontology> ;
+    autofde:admissionRationale "Exact public commit, tree, blob, admitted license, successful parse, and digest closure." .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-9a9d4ad7d1ced88cd4c2-Digest>
+    a autofde:ArtifactDigest ;
+    autofde:digestAlgorithm "sha256" ;
+    autofde:digestValue "f897444c026cc296ec7275d2aa0fdd26f942b1ceebae9dce8748969398c6b961" .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-31ab7e60a8706923e929>
+    a autofde:SemanticAsset, prov:Entity, dcat:Distribution ;
+    autofde:sourceRepository <https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-open-ontologies> ;
+    autofde:assetPath "ontology/shared-receipt-shapes.ttl" ;
+    autofde:resolvedCommit "16d01cfcbc2a8efe2f074776fa4a4e5fe6701b99" ;
+    autofde:treeIdentity "de7f9963bcd75e5f3b16903d1fb49ca0c7a71c6e" ;
+    autofde:blobIdentity "99c80eb72570a26fa41c8a4af60e87cbc3ceaf87" ;
+    autofde:licenseId "MIT" ;
+    autofde:sourceDisposition autofde:CanonicalSourceDisposition ;
+    autofde:errcAction autofde:Create ;
+    autofde:authorityCeiling "CONSTRUCT" ;
+    autofde:parseStanding "ALIVE" ;
+    dcat:accessURL <https://raw.githubusercontent.com/seanchatmangpt/open-ontologies/16d01cfcbc2a8efe2f074776fa4a4e5fe6701b99/ontology/shared-receipt-shapes.ttl> ;
+    autofde:digest "7cf06c9daae3ac2358ceedca14a5bc4ce7c05ca490c57b4839436c2044e2758a" ;
+    autofde:hasDigest <https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-31ab7e60a8706923e929-Digest> ;
+    autofde:namespaceIRI <https://raw.githubusercontent.com/seanchatmangpt/open-ontologies/16d01cfcbc2a8efe2f074776fa4a4e5fe6701b99/ontology/shared-receipt-shapes.ttl> ;
+    autofde:admissionRationale "Exact public commit, tree, blob, admitted license, successful parse, and digest closure." .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-31ab7e60a8706923e929-Digest>
+    a autofde:ArtifactDigest ;
+    autofde:digestAlgorithm "sha256" ;
+    autofde:digestValue "7cf06c9daae3ac2358ceedca14a5bc4ce7c05ca490c57b4839436c2044e2758a" .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-f808585bc32b8bd9a35b>
+    a autofde:SemanticAsset, prov:Entity, dcat:Distribution ;
+    autofde:sourceRepository <https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-star-toml> ;
+    autofde:assetPath "docs/ontology/star-toml.core.ttl" ;
+    autofde:resolvedCommit "8395515cf8e68bfdc9edff49fb358c4f1da7c795" ;
+    autofde:treeIdentity "5850639f2d16a547549a0b792dd8641cc51d550a" ;
+    autofde:blobIdentity "311d6f7da89acfb5cdfd3d973dc424e2eb20e521" ;
+    autofde:licenseId "NOASSERTION" ;
+    autofde:sourceDisposition autofde:QuarantineDisposition ;
+    autofde:errcAction autofde:Raise ;
+    autofde:authorityCeiling "CONSTRUCT" ;
+    autofde:parseStanding "BLOCKED" ;
+    dcat:accessURL <https://raw.githubusercontent.com/seanchatmangpt/star-toml/8395515cf8e68bfdc9edff49fb358c4f1da7c795/docs/ontology/star-toml.core.ttl> ;
+    autofde:admissionRationale "Quarantined until license, parse, namespace, and authority evidence close." .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-8ba96d16a0e70127c3d6>
+    a autofde:SemanticAsset, prov:Entity, dcat:Distribution ;
+    autofde:sourceRepository <https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-star-toml> ;
+    autofde:assetPath "docs/ontology/star-toml.detectors.ttl" ;
+    autofde:resolvedCommit "8395515cf8e68bfdc9edff49fb358c4f1da7c795" ;
+    autofde:treeIdentity "5850639f2d16a547549a0b792dd8641cc51d550a" ;
+    autofde:blobIdentity "1a959b7b43a352e9e44dd1aeb6065716b00fee13" ;
+    autofde:licenseId "NOASSERTION" ;
+    autofde:sourceDisposition autofde:QuarantineDisposition ;
+    autofde:errcAction autofde:Raise ;
+    autofde:authorityCeiling "CONSTRUCT" ;
+    autofde:parseStanding "BLOCKED" ;
+    dcat:accessURL <https://raw.githubusercontent.com/seanchatmangpt/star-toml/8395515cf8e68bfdc9edff49fb358c4f1da7c795/docs/ontology/star-toml.detectors.ttl> ;
+    autofde:admissionRationale "Quarantined until license, parse, namespace, and authority evidence close." .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-64e988bba80a2f732482>
+    a autofde:SemanticAsset, prov:Entity, dcat:Distribution ;
+    autofde:sourceRepository <https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-star-toml> ;
+    autofde:assetPath "docs/ontology/star-toml.ocel.ttl" ;
+    autofde:resolvedCommit "8395515cf8e68bfdc9edff49fb358c4f1da7c795" ;
+    autofde:treeIdentity "5850639f2d16a547549a0b792dd8641cc51d550a" ;
+    autofde:blobIdentity "e429ec1dc805fb79f1032d367359cba3397bd5bd" ;
+    autofde:licenseId "NOASSERTION" ;
+    autofde:sourceDisposition autofde:QuarantineDisposition ;
+    autofde:errcAction autofde:Raise ;
+    autofde:authorityCeiling "CONSTRUCT" ;
+    autofde:parseStanding "BLOCKED" ;
+    dcat:accessURL <https://raw.githubusercontent.com/seanchatmangpt/star-toml/8395515cf8e68bfdc9edff49fb358c4f1da7c795/docs/ontology/star-toml.ocel.ttl> ;
+    autofde:admissionRationale "Quarantined until license, parse, namespace, and authority evidence close." .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-1efc4357c5b7a6919de3>
+    a autofde:SemanticAsset, prov:Entity, dcat:Distribution ;
+    autofde:sourceRepository <https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-wasm4pm> ;
+    autofde:assetPath "ontology/standards/ocel20.ttl" ;
+    autofde:resolvedCommit "f519356a73bcf426b03bb3c960407edd028d3c68" ;
+    autofde:treeIdentity "8ed70cced1172a50fc229adb6fb73558fb4ccee8" ;
+    autofde:blobIdentity "1dd5ec53757f15be1b627dd25e29964c8ad80bb2" ;
+    autofde:licenseId "NOASSERTION" ;
+    autofde:sourceDisposition autofde:QuarantineDisposition ;
+    autofde:errcAction autofde:Raise ;
+    autofde:authorityCeiling "CONSTRUCT" ;
+    autofde:parseStanding "BLOCKED" ;
+    dcat:accessURL <https://raw.githubusercontent.com/seanchatmangpt/wasm4pm/f519356a73bcf426b03bb3c960407edd028d3c68/ontology/standards/ocel20.ttl> ;
+    autofde:admissionRationale "Quarantined until license, parse, namespace, and authority evidence close." .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-b5d5550981d69253e426>
+    a autofde:SemanticAsset, prov:Entity, dcat:Distribution ;
+    autofde:sourceRepository <https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-wasm4pm-compat> ;
+    autofde:assetPath "ggen/ontology/audit-machinery.ttl" ;
+    autofde:resolvedCommit "c501363cb0f360f441eaad110b56fc1ba4155fd8" ;
+    autofde:treeIdentity "7ab2ca594c143ecf4ed03581f08de48cfbbcbd21" ;
+    autofde:blobIdentity "35e9394cfe579a60928ad713cb13a58f618ea982" ;
+    autofde:licenseId "Apache-2.0" ;
+    autofde:sourceDisposition autofde:CanonicalSourceDisposition ;
+    autofde:errcAction autofde:Create ;
+    autofde:authorityCeiling "CONSTRUCT" ;
+    autofde:parseStanding "ALIVE" ;
+    dcat:accessURL <https://raw.githubusercontent.com/seanchatmangpt/wasm4pm-compat/c501363cb0f360f441eaad110b56fc1ba4155fd8/ggen/ontology/audit-machinery.ttl> ;
+    autofde:digest "f9d3a1afcd0039db3e87fcae43530c047a774c346120a9f9064b10f9840779b8" ;
+    autofde:hasDigest <https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-b5d5550981d69253e426-Digest> ;
+    autofde:namespaceIRI <https://wasm4pm-compat.rs/audit> ;
+    autofde:admissionRationale "Exact public commit, tree, blob, admitted license, successful parse, and digest closure." .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-b5d5550981d69253e426-Digest>
+    a autofde:ArtifactDigest ;
+    autofde:digestAlgorithm "sha256" ;
+    autofde:digestValue "f9d3a1afcd0039db3e87fcae43530c047a774c346120a9f9064b10f9840779b8" .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-606a5ec5460a1b1df026>
+    a autofde:SemanticAsset, prov:Entity, dcat:Distribution ;
+    autofde:sourceRepository <https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-wasm4pm-compat> ;
+    autofde:assetPath "ggen/ontology/process-intelligence.ttl" ;
+    autofde:resolvedCommit "c501363cb0f360f441eaad110b56fc1ba4155fd8" ;
+    autofde:treeIdentity "7ab2ca594c143ecf4ed03581f08de48cfbbcbd21" ;
+    autofde:blobIdentity "6d88196a964b05ae86d13849990dd1700381af20" ;
+    autofde:licenseId "Apache-2.0" ;
+    autofde:sourceDisposition autofde:CanonicalSourceDisposition ;
+    autofde:errcAction autofde:Create ;
+    autofde:authorityCeiling "CONSTRUCT" ;
+    autofde:parseStanding "ALIVE" ;
+    dcat:accessURL <https://raw.githubusercontent.com/seanchatmangpt/wasm4pm-compat/c501363cb0f360f441eaad110b56fc1ba4155fd8/ggen/ontology/process-intelligence.ttl> ;
+    autofde:digest "57f5ca675c18aa8040ac75cc29c52eab4f195a7cda19d8178ef781266b44f338" ;
+    autofde:hasDigest <https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-606a5ec5460a1b1df026-Digest> ;
+    autofde:namespaceIRI <https://wasm4pm.org/process-intelligence> ;
+    autofde:admissionRationale "Exact public commit, tree, blob, admitted license, successful parse, and digest closure." .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-606a5ec5460a1b1df026-Digest>
+    a autofde:ArtifactDigest ;
+    autofde:digestAlgorithm "sha256" ;
+    autofde:digestValue "57f5ca675c18aa8040ac75cc29c52eab4f195a7cda19d8178ef781266b44f338" .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-e4e42fca909c4877cb23>
+    a autofde:SemanticAsset, prov:Entity, dcat:Distribution ;
+    autofde:sourceRepository <https://seanchatmangpt.github.io/autofde/ontology#Repository-seanchatmangpt-wasm4pm-compat> ;
+    autofde:assetPath "ggen/ontology/standing-law.ttl" ;
+    autofde:resolvedCommit "c501363cb0f360f441eaad110b56fc1ba4155fd8" ;
+    autofde:treeIdentity "7ab2ca594c143ecf4ed03581f08de48cfbbcbd21" ;
+    autofde:blobIdentity "e39bca53c0251ff05e45eb04aaf95a13fd6027c7" ;
+    autofde:licenseId "Apache-2.0" ;
+    autofde:sourceDisposition autofde:CanonicalSourceDisposition ;
+    autofde:errcAction autofde:Create ;
+    autofde:authorityCeiling "CONSTRUCT" ;
+    autofde:parseStanding "ALIVE" ;
+    dcat:accessURL <https://raw.githubusercontent.com/seanchatmangpt/wasm4pm-compat/c501363cb0f360f441eaad110b56fc1ba4155fd8/ggen/ontology/standing-law.ttl> ;
+    autofde:digest "7159e0e8b613b12cd97562cf91251983b9ad09436f08af87630517b8af94a4dc" ;
+    autofde:hasDigest <https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-e4e42fca909c4877cb23-Digest> ;
+    autofde:namespaceIRI <https://raw.githubusercontent.com/seanchatmangpt/wasm4pm-compat/c501363cb0f360f441eaad110b56fc1ba4155fd8/ggen/ontology/standing-law.ttl> ;
+    autofde:admissionRationale "Exact public commit, tree, blob, admitted license, successful parse, and digest closure." .
+
+<https://seanchatmangpt.github.io/autofde/ontology#FederatedSource-e4e42fca909c4877cb23-Digest>
+    a autofde:ArtifactDigest ;
+    autofde:digestAlgorithm "sha256" ;
+    autofde:digestValue "7159e0e8b613b12cd97562cf91251983b9ad09436f08af87630517b8af94a4dc" .
