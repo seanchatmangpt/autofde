@@ -72,7 +72,7 @@ class ClosedVerticalTests(unittest.TestCase):
     def vertical(self):
         return AzureClosedVertical(
             store=RuntimeStore(Path(self.tmp.name) / "runtime.db"), bundle_bytes=self.bundle,
-            source_repo="seanchatmangpt/autofde-lab", source_sha="6d58eb96a249182a5c54b245e219ec45032dd212",
+            source_repo="seanchatmangpt/autofde-lab", source_sha="58ae98371b962a93d46ce4aa039539a5d4d0aef1",
             generator_repo="seanchatmangpt/ggen", generator_sha="a9fce3c1db64d3e6dff72f61e5dabf4d0af45e73",
             authority=self.authority, clock=Clock(),
         )
