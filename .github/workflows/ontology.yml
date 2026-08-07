@@ -50,6 +50,15 @@ jobs:
           "$GGEN_BIN" --version
       - name: Compile verifier surfaces
         run: python -m compileall -q scripts tests generated
+      - name: Replay deterministic census fixture
+        run: |
+          python scripts/census_semantic_assets.py \
+            --fixture tests/fixtures/semantic-census.json \
+            --owner seanchatmangpt \
+            --expected-repositories 5 \
+            --hydrate all \
+            --output /tmp/fixture-census.json \
+            --receipt /tmp/fixture-census-receipt.json
       - name: Execute exact ggen projection
         shell: bash
         run: |
@@ -70,6 +79,43 @@ jobs:
       - name: Verify independent reference correspondence
         run: python scripts/render_reference.py --check
       - name: Execute ontology verifier
-        run: python scripts/verify_ontology.py
+        run: |
+          python scripts/verify_ontology.py
+          python scripts/verify_ecosystem.py
       - name: Execute falsifier suite
         run: python -m unittest discover -s tests -v
+
+  semantic-census:
+    name: Owned repository semantic census
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out exact subject
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Install Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - name: Install bounded verifier dependencies
+        run: python -m pip install --disable-pip-version-check --requirement requirements.txt
+      - name: Execute account-wide semantic census
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p census
+          python scripts/census_semantic_assets.py \
+            --owner seanchatmangpt \
+            --expected-repositories 342 \
+            --hydrate source \
+            --output census/semantic-census.json \
+            --receipt census/semantic-census-receipt.json
+          cat census/semantic-census-receipt.json
+      - name: Upload exact census receipt and corpus
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: semantic-census-${{ github.sha }}
+          path: census/
+          if-no-files-found: error
+          retention-days: 14
