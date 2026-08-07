@@ -1,0 +1,22 @@
+{
+  "schema": "chatman.autofde.process-constitution.v1",
+  "notation": "POWL-v2-sequence-profile",
+  "sequence": [
+    {"name":"LabProved","requires":["Capability","LabExperiment"],"authority":"none"},
+    {"name":"PromotionAdmitted","requires":["Capability","PromotionCandidate"],"authority":"none"},
+    {"name":"BundleManufactured","requires":["PromotionCandidate","CapabilityBundle"],"authority":"none"},
+    {"name":"BundlePinned","requires":["CapabilityBundle"],"authority":"none"},
+    {"name":"SessionStarted","requires":["AgentSession","CapabilityBundle"],"authority":"none"},
+    {"name":"POWLCommitted","requires":["AgentSession","POWLCommitment"],"authority":"none"},
+    {"name":"AuthorityAdmitted","requires":["AgentSession","AuthorityEnvelope"],"authority":"bearer"},
+    {"name":"ActuationOpened","requires":["Actuation","AuthorityEnvelope","POWLCommitment"],"authority":"bearer"},
+    {"name":"ActuationClosed","requires":["Actuation"],"authority":"bearer"},
+    {"name":"PostconditionVerified","requires":["Actuation","PostconditionObservation"],"authority":"observer"},
+    {"name":"ReceiptEmitted","requires":["Receipt","Actuation","PostconditionObservation"],"authority":"receipt"},
+    {"name":"ReplayCompleted","requires":["ReplayRun","Receipt"],"authority":"replay"}
+  ],
+  "required_object_types": [
+    "Capability","LabExperiment","PromotionCandidate","CapabilityBundle","AgentSession",
+    "POWLCommitment","AuthorityEnvelope","Actuation","PostconditionObservation","Receipt","ReplayRun"
+  ]
+}
