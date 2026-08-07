@@ -4,6 +4,7 @@
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
+# The product has exactly one execution mode and it is EXPLOIT-only.
 autofde:AutoFDEProductShape a sh:NodeShape ;
     sh:targetClass autofde:AutoFDEProduct ;
     sh:property [
@@ -19,6 +20,7 @@ autofde:AutoFDEProductShape a sh:NodeShape ;
         sh:minCount 1 ;
     ] .
 
+# Every source entering the compiler is classified, versioned, licensed, and digested.
 autofde:SemanticSourceShape a sh:NodeShape ;
     sh:targetClass autofde:SemanticSource ;
     sh:property [ sh:path autofde:hasSourceKind ; sh:class autofde:SourceKind ; sh:minCount 1 ; sh:maxCount 1 ] ;
@@ -42,6 +44,7 @@ autofde:LicenseShape a sh:NodeShape ;
     sh:property [ sh:path autofde:licenseIdentifier ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
     sh:property [ sh:path autofde:licenseAdmitted ; sh:hasValue true ; sh:minCount 1 ; sh:maxCount 1 ] .
 
+# A portfolio is not admitted by name recognition; it must answer concrete questions.
 autofde:SemanticPortfolioShape a sh:NodeShape ;
     sh:targetClass autofde:SemanticPortfolio ;
     sh:property [ sh:path autofde:selectsSource ; sh:class autofde:SemanticSource ; sh:minCount 1 ] ;
@@ -53,11 +56,13 @@ autofde:CompetencyQuestionShape a sh:NodeShape ;
     sh:property [ sh:path autofde:identifier ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
     sh:property [ sh:path autofde:questionText ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ; sh:minLength 8 ] .
 
+# Hooks have observation and intent authority only.
 autofde:KnowledgeHookShape a sh:NodeShape ;
     sh:targetClass autofde:KnowledgeHook ;
     sh:property [ sh:path autofde:mayActuate ; sh:hasValue false ; sh:minCount 1 ; sh:maxCount 1 ] ;
     sh:property [ sh:path autofde:manufacturesIntent ; sh:class autofde:Intent ; sh:minCount 1 ] .
 
+# Every actuation has an exact broker path, authority intersection, and open receipt.
 autofde:ActuationShape a sh:NodeShape ;
     sh:targetClass autofde:Actuation ;
     sh:property [ sh:path autofde:routedThroughBroker ; sh:class autofde:BRCEBroker ; sh:minCount 1 ; sh:maxCount 1 ] ;
@@ -74,6 +79,7 @@ autofde:AuthorityIntersectionShape a sh:NodeShape ;
     sh:property [ sh:path autofde:hasApproval ; sh:class autofde:Approval ; sh:minCount 1 ; sh:maxCount 1 ] ;
     sh:property [ sh:path autofde:hasAuthorityClass ; sh:hasValue autofde:DO ; sh:minCount 1 ; sh:maxCount 1 ] .
 
+# Evidence binds identity and replay.
 autofde:ReceiptShape a sh:NodeShape ;
     sh:targetClass autofde:Receipt ;
     sh:property [ sh:path autofde:receiptFor ; sh:class autofde:AutoFDEEntity ; sh:minCount 1 ; sh:maxCount 1 ] ;
@@ -86,6 +92,7 @@ autofde:StandingShape a sh:NodeShape ;
     sh:property [ sh:path autofde:bindsSubject ; sh:class autofde:ExactSubject ; sh:minCount 1 ; sh:maxCount 1 ] ;
     sh:property [ sh:path autofde:hasReceipt ; sh:class autofde:Receipt ; sh:minCount 1 ; sh:maxCount 1 ] .
 
+# Work and provisioning graphs remain distinct.
 autofde:WorkDependencyShape a sh:NodeShape ;
     sh:targetClass autofde:WorkDependency ;
     sh:property [ sh:path autofde:workPredecessor ; sh:class autofde:WorkItem ; sh:minCount 1 ; sh:maxCount 1 ] ;
@@ -98,6 +105,7 @@ autofde:ProvisioningDependencyShape a sh:NodeShape ;
     sh:property [ sh:path autofde:provisioningSuccessor ; sh:class autofde:Artifact ; sh:minCount 1 ; sh:maxCount 1 ] ;
     sh:not [ sh:property [ sh:path autofde:workPredecessor ; sh:minCount 1 ] ] .
 
+# Generator rules are dependency closed and overwrite projections deterministically.
 autofde:GenerationRuleShape a sh:NodeShape ;
     sh:targetClass autofde:GenerationRule ;
     sh:property [ sh:path autofde:identifier ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
@@ -111,6 +119,7 @@ autofde:GeneratedProjectionShape a sh:NodeShape ;
     sh:property [ sh:path autofde:outputFile ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
     sh:property [ sh:path autofde:hasProjectionOwnership ; sh:hasValue autofde:GeneratorOwned ; sh:minCount 1 ; sh:maxCount 1 ] .
 
+# Phase order must be present and unique within the canonical phase graph.
 autofde:PhaseShape a sh:NodeShape ;
     sh:targetClass autofde:Phase ;
     sh:property [ sh:path autofde:identifier ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;

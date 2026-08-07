@@ -17,3 +17,4 @@
     dcterms:license <https://opensource.org/license/mit> ;
     dcterms:description "EXPLOIT-only ontology for the Forward Deployment Operating System. It binds admitted observations, deterministic construction, bounded actuation, receipts, replay, standing, semantic manufacture, delivery projections, and operational adaptation." ;
     autofde:executionMode autofde:ExploitOnly .
+

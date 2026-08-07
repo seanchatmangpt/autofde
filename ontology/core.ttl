@@ -68,3 +68,4 @@ autofde:CapabilityGap a owl:Class ; rdfs:subClassOf autofde:Evidence .
 autofde:CompatibilityIdentity a owl:Class ; rdfs:subClassOf autofde:AutoFDEEntity .
 autofde:DeprecationWindow a owl:Class ; rdfs:subClassOf autofde:AutoFDEEntity .
 autofde:MigrationReceipt a owl:Class ; rdfs:subClassOf autofde:Receipt .
+
