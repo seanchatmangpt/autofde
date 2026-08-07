@@ -1,0 +1,35 @@
+@prefix afde: <https://w3id.org/autofde#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<https://w3id.org/autofde> a owl:Ontology ;
+  dcterms:title "AutoFDE Process Constitution" ;
+  dcterms:description "Object and event vocabulary for lab-to-production promotion, BRCE actuation, independent verification, receipt, and replay." .
+
+afde:Capability a owl:Class ; rdfs:subClassOf prov:Entity .
+afde:LabExperiment a owl:Class ; rdfs:subClassOf prov:Activity .
+afde:PromotionCandidate a owl:Class ; rdfs:subClassOf prov:Entity .
+afde:CapabilityBundle a owl:Class ; rdfs:subClassOf prov:Entity .
+afde:AgentSession a owl:Class ; rdfs:subClassOf prov:Activity .
+afde:POWLCommitment a owl:Class ; rdfs:subClassOf prov:Entity .
+afde:AuthorityEnvelope a owl:Class ; rdfs:subClassOf prov:Entity .
+afde:Actuation a owl:Class ; rdfs:subClassOf prov:Activity .
+afde:PostconditionObservation a owl:Class ; rdfs:subClassOf prov:Entity .
+afde:Receipt a owl:Class ; rdfs:subClassOf prov:Entity .
+afde:ReplayRun a owl:Class ; rdfs:subClassOf prov:Activity .
+
+afde:labProved a skos:Concept .
+afde:promotionAdmitted a skos:Concept .
+afde:bundleManufactured a skos:Concept .
+afde:bundlePinned a skos:Concept .
+afde:sessionStarted a skos:Concept .
+afde:powlCommitted a skos:Concept .
+afde:authorityAdmitted a skos:Concept .
+afde:actuationOpened a skos:Concept .
+afde:actuationClosed a skos:Concept .
+afde:postconditionVerified a skos:Concept .
+afde:receiptEmitted a skos:Concept .
+afde:replayCompleted a skos:Concept .
