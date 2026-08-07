@@ -13,3 +13,4 @@ ontology/product.ttl
 ontology/phases.ttl
 ontology/generation-rules.ttl
 ontology/axioms.ttl
+ontology/ecosystem-corpus.ttl
