@@ -1,0 +1,88 @@
+PREFIX autofde: <https://seanchatmangpt.github.io/autofde/ontology#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+ASK {
+  {
+    ?asset a autofde:SemanticAsset .
+    FILTER NOT EXISTS { ?asset autofde:sourceRepository ?repository }
+  }
+  UNION
+  {
+    ?asset a autofde:SemanticAsset .
+    FILTER NOT EXISTS { ?asset autofde:assetPath ?path }
+  }
+  UNION
+  {
+    ?asset a autofde:SemanticAsset .
+    FILTER NOT EXISTS { ?asset autofde:blobIdentity ?blob }
+  }
+  UNION
+  {
+    ?asset a autofde:SemanticAsset ;
+           autofde:sourceDisposition autofde:CanonicalSourceDisposition .
+    FILTER NOT EXISTS { ?asset autofde:digest ?digest }
+  }
+  UNION
+  {
+    ?asset a autofde:SemanticAsset ;
+           autofde:sourceDisposition autofde:CanonicalSourceDisposition .
+    FILTER NOT EXISTS { ?asset autofde:licenseId ?license }
+  }
+  UNION
+  {
+    ?asset a autofde:SemanticAsset ;
+           autofde:sourceDisposition autofde:CanonicalSourceDisposition .
+    FILTER NOT EXISTS { ?asset autofde:namespaceIRI ?namespace }
+  }
+  UNION
+  {
+    ?asset a autofde:SemanticAsset ;
+           autofde:sourceDisposition ?disposition .
+    VALUES ?disposition {
+      autofde:ValidationFixtureDisposition
+      autofde:GeneratedProjectionDisposition
+      autofde:VendorDisposition
+      autofde:ArchiveDisposition
+    }
+    ?asset autofde:errcAction autofde:Create .
+  }
+  UNION
+  {
+    ?left a autofde:SemanticAsset ;
+          autofde:sourceDisposition autofde:CanonicalSourceDisposition ;
+          autofde:namespaceIRI ?namespace ;
+          autofde:digest ?leftDigest .
+    ?right a autofde:SemanticAsset ;
+           autofde:sourceDisposition autofde:CanonicalSourceDisposition ;
+           autofde:namespaceIRI ?namespace ;
+           autofde:digest ?rightDigest .
+    FILTER(STR(?left) < STR(?right))
+    FILTER(?leftDigest != ?rightDigest)
+    FILTER NOT EXISTS { ?left autofde:supersedesAsset ?right }
+    FILTER NOT EXISTS { ?right autofde:supersedesAsset ?left }
+  }
+  UNION
+  {
+    ?asset a autofde:SemanticAsset ;
+           autofde:authorityCeiling "DO" .
+  }
+  UNION
+  {
+    ?decision a autofde:ERRCDecision .
+    FILTER NOT EXISTS { ?decision autofde:decisionSubject ?subject }
+  }
+  UNION
+  {
+    ?decision a autofde:ERRCDecision .
+    FILTER NOT EXISTS { ?decision autofde:errcAction ?action }
+  }
+  UNION
+  {
+    ?decision a autofde:ERRCDecision .
+    FILTER NOT EXISTS { ?decision autofde:admissionRationale ?rationale }
+  }
+  UNION
+  {
+    ?decision a autofde:ERRCDecision .
+    FILTER NOT EXISTS { ?decision prov:wasDerivedFrom ?evidence }
+  }
+}
