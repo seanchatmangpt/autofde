@@ -1,0 +1,58 @@
+name: AutoFDE ontology crown
+
+on:
+  pull_request:
+    paths:
+      - "ontology/**"
+      - "queries/**"
+      - "templates/**"
+      - "scripts/**"
+      - "tests/**"
+      - "generated/**"
+      - "ggen.toml"
+      - "Makefile"
+      - ".github/workflows/ontology.yml"
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ontology-crown:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install bounded verifier dependencies
+        run: python -m pip install --disable-pip-version-check rdflib==7.5.0 Jinja2==3.1.6
+      - name: Install exact ggen v26.8.6
+        env:
+          GGEN_URL: https://github.com/seanchatmangpt/ggen/releases/download/v26.8.6/ggen-x86_64-unknown-linux-gnu.tar.gz
+          GGEN_SHA256: 4a8e957858423ae88e50278442c8c6bf5d44d24f8061774a911185cfe74ee469
+        run: |
+          curl --fail --location --silent --show-error "$GGEN_URL" --output /tmp/ggen.tar.gz
+          echo "$GGEN_SHA256  /tmp/ggen.tar.gz" | sha256sum --check --strict
+          mkdir -p /tmp/ggen-bin
+          tar -xzf /tmp/ggen.tar.gz -C /tmp/ggen-bin
+          GGEN_BIN="$(find /tmp/ggen-bin -type f -name ggen -perm -u+x | head -n 1)"
+          test -n "$GGEN_BIN"
+          echo "$(dirname "$GGEN_BIN")" >> "$GITHUB_PATH"
+          "$GGEN_BIN" --version
+      - name: Compile verifier surfaces
+        run: python -m compileall -q scripts tests generated
+      - name: Execute exact ggen projection
+        run: ggen sync run --config ggen.toml
+      - name: Refuse generated drift
+        run: git diff --exit-code -- generated
+      - name: Verify independent reference correspondence
+        run: python scripts/render_reference.py --check
+      - name: Execute ontology verifier
+        run: python scripts/verify_ontology.py
+      - name: Execute falsifier suite
+        run: python -m unittest discover -s tests -v

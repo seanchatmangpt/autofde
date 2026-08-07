@@ -1,0 +1,72 @@
+@prefix autofde: <https://seanchatmangpt.github.io/autofde/ontology#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+
+# Canonical AutoFDE product and modules
+#################################################################
+
+autofde:AutoFDE a autofde:AutoFDEProduct ;
+    rdfs:label "AutoFDE" ;
+    autofde:executionMode autofde:ExploitOnly ;
+    autofde:hasModule autofde:CoreModule, autofde:ForgeModule, autofde:WorkflowModule,
+        autofde:ProcessModule, autofde:ProcessLanguageModule, autofde:CodeIntelligenceModule,
+        autofde:ModelsModule, autofde:FoundationGraphModule, autofde:ManufactureModule ;
+    autofde:hasCompatibilityIdentity autofde:ScikitDecideCoordinate, autofde:GgenCoordinate,
+        autofde:MFWCoordinate, autofde:Wasm4pmCoordinate, autofde:POWLCoordinate,
+        autofde:LspMaxCoordinate, autofde:MmdioCoordinate, autofde:FGNCoordinate .
+
+autofde:CoreModule a autofde:CapabilityModule ;
+    rdfs:label "AutoFDE Core" ; autofde:moduleId "core" ; autofde:order 10 ;
+    autofde:sourceCoordinate "seanchatmangpt/scikit-decide" ;
+    rdfs:comment "Admission, orchestration, authority, BRCE, receipts, replay, standing, and promotion." .
+autofde:ForgeModule a autofde:CapabilityModule ;
+    rdfs:label "AutoFDE Forge" ; autofde:moduleId "forge" ; autofde:order 20 ;
+    autofde:sourceCoordinate "seanchatmangpt/ggen" ;
+    rdfs:comment "Ontology-to-artifact manufacture and deterministic projections." .
+autofde:WorkflowModule a autofde:CapabilityModule ;
+    rdfs:label "AutoFDE Workflow" ; autofde:moduleId "workflow" ; autofde:order 30 ;
+    autofde:sourceCoordinate "seanchatmangpt/mfw" ;
+    rdfs:comment "Proof-carrying workflow, candidate plans, execution evidence, and replay." .
+autofde:ProcessModule a autofde:CapabilityModule ;
+    rdfs:label "AutoFDE Process" ; autofde:moduleId "process" ; autofde:order 40 ;
+    autofde:sourceCoordinate "seanchatmangpt/wasm4pm" ;
+    rdfs:comment "Process mining, OCEL, conformance, portable runtime bindings, and execution analysis." .
+autofde:ProcessLanguageModule a autofde:CapabilityModule ;
+    rdfs:label "AutoFDE Process Language" ; autofde:moduleId "process-language" ; autofde:order 50 ;
+    autofde:sourceCoordinate "seanchatmangpt/POWL" ;
+    rdfs:comment "POWL concurrency, choice, partial order, supersession, preservation, and revision semantics." .
+autofde:CodeIntelligenceModule a autofde:CapabilityModule ;
+    rdfs:label "AutoFDE Code Intelligence" ; autofde:moduleId "code-intelligence" ; autofde:order 60 ;
+    autofde:sourceCoordinate "seanchatmangpt/lsp-max" ;
+    rdfs:comment "Protocol-aware code observation, diagnostics, bounded repair, and consumer verification." .
+autofde:ModelsModule a autofde:CapabilityModule ;
+    rdfs:label "AutoFDE Models" ; autofde:moduleId "models" ; autofde:order 70 ;
+    autofde:sourceCoordinate "seanchatmangpt/mmdio" ;
+    rdfs:comment "Visual and semantic model projections." .
+autofde:FoundationGraphModule a autofde:CapabilityModule ;
+    rdfs:label "AutoFDE Foundation Graph" ; autofde:moduleId "foundation-graph" ; autofde:order 80 ;
+    autofde:sourceCoordinate "seanchatmangpt/FGN" ;
+    rdfs:comment "Admitted graph and package substrate." .
+autofde:ManufactureModule a autofde:CapabilityModule ;
+    rdfs:label "AutoFDE Manufacture" ; autofde:moduleId "manufacture" ; autofde:order 90 ;
+    autofde:sourceCoordinate "MU" ;
+    rdfs:comment "The lawful manufacturing operator μ in A = μ(O*)." .
+
+# Compatibility coordinates remain explicit until migration receipts authorize replacement.
+autofde:ScikitDecideCoordinate a autofde:CompatibilityIdentity ; autofde:identifier "seanchatmangpt/scikit-decide" .
+autofde:GgenCoordinate a autofde:CompatibilityIdentity ; autofde:identifier "seanchatmangpt/ggen" .
+autofde:MFWCoordinate a autofde:CompatibilityIdentity ; autofde:identifier "seanchatmangpt/mfw" .
+autofde:Wasm4pmCoordinate a autofde:CompatibilityIdentity ; autofde:identifier "seanchatmangpt/wasm4pm" .
+autofde:POWLCoordinate a autofde:CompatibilityIdentity ; autofde:identifier "seanchatmangpt/POWL" .
+autofde:LspMaxCoordinate a autofde:CompatibilityIdentity ; autofde:identifier "seanchatmangpt/lsp-max" .
+autofde:MmdioCoordinate a autofde:CompatibilityIdentity ; autofde:identifier "seanchatmangpt/mmdio" .
+autofde:FGNCoordinate a autofde:CompatibilityIdentity ; autofde:identifier "seanchatmangpt/FGN" .
+
+#################################################################

@@ -1,0 +1,70 @@
+@prefix autofde: <https://seanchatmangpt.github.io/autofde/ontology#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+
+#################################################################
+# Annotation properties
+#################################################################
+
+autofde:axiomId a owl:AnnotationProperty .
+autofde:canonicalName a owl:AnnotationProperty .
+autofde:generatedOwnership a owl:AnnotationProperty .
+autofde:invariant a owl:AnnotationProperty .
+autofde:publicPromise a owl:AnnotationProperty .
+autofde:replacementFor a owl:AnnotationProperty .
+autofde:sourceCoordinate a owl:AnnotationProperty .
+
+#################################################################
+# Root calculus
+#################################################################
+
+autofde:AutoFDEEntity a owl:Class ; rdfs:label "AutoFDE entity" .
+autofde:ProductSystem a owl:Class ; rdfs:subClassOf autofde:AutoFDEEntity .
+autofde:ExploitSystem a owl:Class ;
+    rdfs:subClassOf autofde:ProductSystem ,
+        [ a owl:Restriction ; owl:onProperty autofde:executionMode ; owl:hasValue autofde:ExploitOnly ] ;
+    autofde:invariant "Consumes admitted bounded inputs and manufactures governed consequences." .
+autofde:AutoFDEProduct a owl:Class ;
+    rdfs:subClassOf autofde:ExploitSystem ;
+    autofde:publicPromise "Compile admitted enterprise intent into a semantic foundation, delivery system, executable capability, governed operation, and replayable evidence." .
+
+autofde:Observation a owl:Class ; rdfs:subClassOf autofde:AutoFDEEntity .
+autofde:AdmittedObservation a owl:Class ; rdfs:subClassOf autofde:Observation .
+autofde:Candidate a owl:Class ; rdfs:subClassOf autofde:AutoFDEEntity .
+autofde:Classification a owl:Class ; rdfs:subClassOf autofde:AutoFDEEntity .
+autofde:Intent a owl:Class ; rdfs:subClassOf autofde:AutoFDEEntity .
+autofde:AdmittedIntent a owl:Class ; rdfs:subClassOf autofde:Intent .
+autofde:RefusedIntent a owl:Class ; rdfs:subClassOf autofde:Intent .
+autofde:Construction a owl:Class ; rdfs:subClassOf autofde:provActivity .
+autofde:Artifact a owl:Class ; rdfs:subClassOf autofde:AutoFDEEntity , prov:Entity .
+autofde:Action a owl:Class ; rdfs:subClassOf autofde:AutoFDEEntity .
+autofde:Actuation a owl:Class ; rdfs:subClassOf autofde:Action , prov:Activity .
+autofde:Consequence a owl:Class ; rdfs:subClassOf autofde:AutoFDEEntity , prov:Entity .
+autofde:Evidence a owl:Class ; rdfs:subClassOf autofde:AutoFDEEntity , prov:Entity .
+autofde:Receipt a owl:Class ; rdfs:subClassOf autofde:Evidence .
+autofde:Replay a owl:Class ; rdfs:subClassOf autofde:AutoFDEEntity , prov:Activity .
+autofde:StandingAssertion a owl:Class ; rdfs:subClassOf autofde:Evidence .
+autofde:Refusal a owl:Class ; rdfs:subClassOf autofde:Evidence .
+autofde:Blockage a owl:Class ; rdfs:subClassOf autofde:Evidence .
+
+# Alias used to keep PROV alignment explicit without redefining PROV.
+autofde:provActivity a owl:Class ; owl:equivalentClass prov:Activity .
+
+#################################################################
+# Product modules and capability bundles
+#################################################################
+
+autofde:Capability a owl:Class ; rdfs:subClassOf autofde:AutoFDEEntity .
+autofde:CapabilityModule a owl:Class ; rdfs:subClassOf autofde:Capability .
+autofde:PromotedCapabilityBundle a owl:Class ; rdfs:subClassOf autofde:Capability .
+autofde:CapabilityGap a owl:Class ; rdfs:subClassOf autofde:Evidence .
+autofde:CompatibilityIdentity a owl:Class ; rdfs:subClassOf autofde:AutoFDEEntity .
+autofde:DeprecationWindow a owl:Class ; rdfs:subClassOf autofde:AutoFDEEntity .
+autofde:MigrationReceipt a owl:Class ; rdfs:subClassOf autofde:Receipt .

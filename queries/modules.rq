@@ -1,0 +1,12 @@
+PREFIX autofde: <https://seanchatmangpt.github.io/autofde/ontology#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?module ?moduleId ?label ?order ?coordinate ?comment
+WHERE {
+  ?module a autofde:CapabilityModule ;
+          autofde:moduleId ?moduleId ;
+          rdfs:label ?label ;
+          autofde:order ?order .
+  OPTIONAL { ?module autofde:sourceCoordinate ?coordinate }
+  OPTIONAL { ?module rdfs:comment ?comment }
+}
+ORDER BY ?order ?moduleId

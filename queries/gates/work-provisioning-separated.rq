@@ -1,0 +1,14 @@
+PREFIX autofde: <https://seanchatmangpt.github.io/autofde/ontology#>
+ASK {
+  {
+    ?edge a autofde:WorkDependency ; autofde:provisioningPredecessor|autofde:provisioningSuccessor ?node .
+  }
+  UNION
+  {
+    ?edge a autofde:ProvisioningDependency ; autofde:workPredecessor|autofde:workSuccessor ?node .
+  }
+  UNION
+  {
+    ?edge a autofde:WorkDependency, autofde:ProvisioningDependency .
+  }
+}

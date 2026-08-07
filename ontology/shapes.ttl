@@ -1,0 +1,117 @@
+@prefix autofde: <https://seanchatmangpt.github.io/autofde/ontology#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+autofde:AutoFDEProductShape a sh:NodeShape ;
+    sh:targetClass autofde:AutoFDEProduct ;
+    sh:property [
+        sh:path autofde:executionMode ;
+        sh:hasValue autofde:ExploitOnly ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "AutoFDE products must use the single ExploitOnly mode." ;
+    ] ;
+    sh:property [
+        sh:path autofde:hasModule ;
+        sh:class autofde:CapabilityModule ;
+        sh:minCount 1 ;
+    ] .
+
+autofde:SemanticSourceShape a sh:NodeShape ;
+    sh:targetClass autofde:SemanticSource ;
+    sh:property [ sh:path autofde:hasSourceKind ; sh:class autofde:SourceKind ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path autofde:hasSourceVersion ; sh:class autofde:SourceVersion ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path autofde:hasLicenseEvidence ; sh:class autofde:LicenseEvidence ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path autofde:hasDigest ; sh:class autofde:ArtifactDigest ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path autofde:hasSourceAuthority ; sh:class autofde:SourceAuthority ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path autofde:publishedBy ; sh:class autofde:ProviderIdentity ; sh:minCount 1 ; sh:maxCount 1 ] .
+
+autofde:SourceVersionShape a sh:NodeShape ;
+    sh:targetClass autofde:SourceVersion ;
+    sh:property [ sh:path autofde:versionValue ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ; sh:minLength 1 ] .
+
+autofde:DigestShape a sh:NodeShape ;
+    sh:targetClass autofde:ArtifactDigest ;
+    sh:property [ sh:path autofde:digestAlgorithm ; sh:datatype xsd:string ; sh:in ( "sha256" "blake3" ) ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path autofde:digestValue ; sh:datatype xsd:hexBinary ; sh:minCount 1 ; sh:maxCount 1 ] .
+
+autofde:LicenseShape a sh:NodeShape ;
+    sh:targetClass autofde:LicenseEvidence ;
+    sh:property [ sh:path autofde:licenseIdentifier ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path autofde:licenseAdmitted ; sh:hasValue true ; sh:minCount 1 ; sh:maxCount 1 ] .
+
+autofde:SemanticPortfolioShape a sh:NodeShape ;
+    sh:targetClass autofde:SemanticPortfolio ;
+    sh:property [ sh:path autofde:selectsSource ; sh:class autofde:SemanticSource ; sh:minCount 1 ] ;
+    sh:property [ sh:path autofde:answersQuestion ; sh:class autofde:CompetencyQuestion ; sh:minCount 1 ] ;
+    sh:property [ sh:path autofde:hasReceipt ; sh:class autofde:Receipt ; sh:minCount 1 ] .
+
+autofde:CompetencyQuestionShape a sh:NodeShape ;
+    sh:targetClass autofde:CompetencyQuestion ;
+    sh:property [ sh:path autofde:identifier ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path autofde:questionText ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ; sh:minLength 8 ] .
+
+autofde:KnowledgeHookShape a sh:NodeShape ;
+    sh:targetClass autofde:KnowledgeHook ;
+    sh:property [ sh:path autofde:mayActuate ; sh:hasValue false ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path autofde:manufacturesIntent ; sh:class autofde:Intent ; sh:minCount 1 ] .
+
+autofde:ActuationShape a sh:NodeShape ;
+    sh:targetClass autofde:Actuation ;
+    sh:property [ sh:path autofde:routedThroughBroker ; sh:class autofde:BRCEBroker ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path autofde:hasPreActuationReceipt ; sh:class autofde:Receipt ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path [ sh:inversePath autofde:authorizes ] ; sh:class autofde:AuthorityIntersection ; sh:minCount 1 ] .
+
+autofde:AuthorityIntersectionShape a sh:NodeShape ;
+    sh:targetClass autofde:AuthorityIntersection ;
+    sh:property [ sh:path autofde:hasActor ; sh:class autofde:Actor ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path autofde:hasSubject ; sh:class autofde:Subject ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path autofde:hasOperation ; sh:class autofde:Operation ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path autofde:hasEnvironment ; sh:class autofde:Environment ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path autofde:hasPolicy ; sh:class autofde:Policy ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path autofde:hasApproval ; sh:class autofde:Approval ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path autofde:hasAuthorityClass ; sh:hasValue autofde:DO ; sh:minCount 1 ; sh:maxCount 1 ] .
+
+autofde:ReceiptShape a sh:NodeShape ;
+    sh:targetClass autofde:Receipt ;
+    sh:property [ sh:path autofde:receiptFor ; sh:class autofde:AutoFDEEntity ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path autofde:bindsSubject ; sh:class autofde:ExactSubject ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path autofde:hasDigest ; sh:class autofde:ArtifactDigest ; sh:minCount 1 ; sh:maxCount 1 ] .
+
+autofde:StandingShape a sh:NodeShape ;
+    sh:targetClass autofde:StandingAssertion ;
+    sh:property [ sh:path autofde:assertsStanding ; sh:class autofde:StandingCode ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path autofde:bindsSubject ; sh:class autofde:ExactSubject ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path autofde:hasReceipt ; sh:class autofde:Receipt ; sh:minCount 1 ; sh:maxCount 1 ] .
+
+autofde:WorkDependencyShape a sh:NodeShape ;
+    sh:targetClass autofde:WorkDependency ;
+    sh:property [ sh:path autofde:workPredecessor ; sh:class autofde:WorkItem ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path autofde:workSuccessor ; sh:class autofde:WorkItem ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:not [ sh:property [ sh:path autofde:provisioningPredecessor ; sh:minCount 1 ] ] .
+
+autofde:ProvisioningDependencyShape a sh:NodeShape ;
+    sh:targetClass autofde:ProvisioningDependency ;
+    sh:property [ sh:path autofde:provisioningPredecessor ; sh:class autofde:Artifact ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path autofde:provisioningSuccessor ; sh:class autofde:Artifact ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:not [ sh:property [ sh:path autofde:workPredecessor ; sh:minCount 1 ] ] .
+
+autofde:GenerationRuleShape a sh:NodeShape ;
+    sh:targetClass autofde:GenerationRule ;
+    sh:property [ sh:path autofde:identifier ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path autofde:hasQuery ; sh:class autofde:SPARQLQuery ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path autofde:hasTemplate ; sh:class autofde:TeraTemplate ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path autofde:hasOutput ; sh:class autofde:GeneratedProjection ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path autofde:generationMode ; sh:hasValue "Overwrite" ; sh:minCount 1 ; sh:maxCount 1 ] .
+
+autofde:GeneratedProjectionShape a sh:NodeShape ;
+    sh:targetClass autofde:GeneratedProjection ;
+    sh:property [ sh:path autofde:outputFile ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path autofde:hasProjectionOwnership ; sh:hasValue autofde:GeneratorOwned ; sh:minCount 1 ; sh:maxCount 1 ] .
+
+autofde:PhaseShape a sh:NodeShape ;
+    sh:targetClass autofde:Phase ;
+    sh:property [ sh:path autofde:identifier ; sh:datatype xsd:string ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path autofde:order ; sh:datatype xsd:integer ; sh:minCount 1 ; sh:maxCount 1 ; sh:minInclusive 0 ] .

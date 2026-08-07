@@ -1,0 +1,91 @@
+[project]
+name = "autofde"
+version = "0.1.0"
+description = "EXPLOIT-only Forward Deployment Operating System generated from the canonical AutoFDE ontology"
+authors = ["Sean Chatman <sean@chatmangpt.com>"]
+license = "MIT"
+repository = "https://github.com/seanchatmangpt/autofde"
+
+[ontology]
+source = "ontology/autofde.ttl"
+base_iri = "https://seanchatmangpt.github.io/autofde/ontology#"
+imports = [
+  "ontology/autofde.ttl",
+  "ontology/core.ttl",
+  "ontology/semantics.ttl",
+  "ontology/work.ttl",
+  "ontology/authority.ttl",
+  "ontology/evidence.ttl",
+  "ontology/generator.ttl",
+  "ontology/object-properties-foundation.ttl",
+  "ontology/object-properties-runtime.ttl",
+  "ontology/datatype-properties.ttl",
+  "ontology/vocabulary.ttl",
+  "ontology/product.ttl",
+  "ontology/phases.ttl",
+  "ontology/generation-rules.ttl",
+  "ontology/axioms.ttl",
+  "ontology/shapes.ttl",
+  "ontology/bootstrap-to-breach.ttl",
+  "ontology/bootstrap-project.ttl",
+  "ontology/bootstrap-runtime.ttl",
+]
+
+
+[ontology.prefixes]
+autofde = "https://seanchatmangpt.github.io/autofde/ontology#"
+rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+rdfs = "http://www.w3.org/2000/01/rdf-schema#"
+owl = "http://www.w3.org/2002/07/owl#"
+xsd = "http://www.w3.org/2001/XMLSchema#"
+skos = "http://www.w3.org/2004/02/skos/core#"
+prov = "http://www.w3.org/ns/prov#"
+dcat = "http://www.w3.org/ns/dcat#"
+dcterms = "http://purl.org/dc/terms/"
+sh = "http://www.w3.org/ns/shacl#"
+
+[validation]
+gates = [
+  "queries/gates/no-non-exploit-mode.rq",
+  "queries/gates/actuation-through-brce.rq",
+  "queries/gates/hooks-never-actuate.rq",
+  "queries/gates/work-provisioning-separated.rq",
+  "queries/gates/every-source-is-pinned.rq",
+  "queries/gates/every-standing-is-receipted.rq",
+  "queries/gates/every-generation-rule-is-closed.rq",
+]
+
+[generation]
+output_dir = "."
+
+[[generation.rules]]
+name = "autofde-ontology-catalog"
+query = { file = "queries/catalog.rq" }
+template = { file = "templates/ontology-catalog.md.tera" }
+output_file = "generated/ONTOLOGY_CATALOG.md"
+skip_empty = false
+mode = "Overwrite"
+
+[[generation.rules]]
+name = "autofde-module-manifest"
+query = { file = "queries/modules.rq" }
+template = { file = "templates/modules.json.tera" }
+output_file = "generated/autofde-modules.json"
+skip_empty = false
+mode = "Overwrite"
+
+[[generation.rules]]
+name = "autofde-standing-python"
+query = { file = "queries/standing.rq" }
+template = { file = "templates/standing.py.tera" }
+output_file = "generated/autofde_standing.py"
+skip_empty = false
+mode = "Overwrite"
+
+[[generation.rules]]
+name = "autofde-phase-manifest"
+query = { file = "queries/phases.rq" }
+template = { file = "templates/phases.yaml.tera" }
+output_file = "generated/autofde-phases.yaml"
+skip_empty = false
+mode = "Overwrite"

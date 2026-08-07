@@ -1,0 +1,41 @@
+@prefix autofde: <https://seanchatmangpt.github.io/autofde/ontology#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+
+#################################################################
+# Semantic Foundation Compiler
+#################################################################
+
+autofde:EnterpriseProblem a owl:Class ; rdfs:subClassOf autofde:AdmittedObservation .
+autofde:SemanticRequirement a owl:Class ; rdfs:subClassOf autofde:AutoFDEEntity .
+autofde:MandatoryConcept a owl:Class ; rdfs:subClassOf autofde:SemanticRequirement .
+autofde:CompetencyQuestion a owl:Class ; rdfs:subClassOf autofde:AutoFDEEntity .
+autofde:SemanticSource a owl:Class ; rdfs:subClassOf autofde:AutoFDEEntity , dcat:Resource .
+autofde:SourceVersion a owl:Class ; rdfs:subClassOf autofde:AutoFDEEntity .
+autofde:SourceKind a owl:Class ; rdfs:subClassOf skos:Concept .
+autofde:LicenseEvidence a owl:Class ; rdfs:subClassOf autofde:Evidence .
+autofde:CoverageClaim a owl:Class ; rdfs:subClassOf autofde:Evidence .
+autofde:SourceClassification a owl:Class ; rdfs:subClassOf autofde:Classification .
+autofde:SemanticPortfolio a owl:Class ; rdfs:subClassOf autofde:Artifact .
+autofde:PortfolioRevision a owl:Class ; rdfs:subClassOf autofde:SemanticPortfolio .
+autofde:SelectionDecision a owl:Class ; rdfs:subClassOf autofde:Evidence .
+autofde:AdmissionDecision a owl:Class ; rdfs:subClassOf autofde:Evidence .
+autofde:RejectionDecision a owl:Class ; rdfs:subClassOf autofde:Evidence .
+autofde:SemanticProfile a owl:Class ; rdfs:subClassOf autofde:Artifact .
+autofde:CrosswalkMapping a owl:Class ; rdfs:subClassOf autofde:Artifact .
+autofde:ShapeSet a owl:Class ; rdfs:subClassOf autofde:Artifact .
+autofde:GeneratedSDK a owl:Class ; rdfs:subClassOf autofde:Artifact .
+autofde:CompetencyResult a owl:Class ; rdfs:subClassOf autofde:Evidence .
+autofde:SemanticCompilerRun a owl:Class ; rdfs:subClassOf autofde:Construction .
+autofde:SourceRegistry a owl:Class ; rdfs:subClassOf autofde:Artifact , dcat:Catalog .
+autofde:ProviderIdentity a owl:Class ; rdfs:subClassOf autofde:AutoFDEEntity .
+autofde:SourceAuthority a owl:Class ; rdfs:subClassOf skos:Concept .
+
+#################################################################

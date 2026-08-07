@@ -1,0 +1,91 @@
+@prefix autofde: <https://seanchatmangpt.github.io/autofde/ontology#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+#################################################################
+# Canonical case: Bootstrap to governed breach response
+#################################################################
+
+autofde:BootstrapToBreach a autofde:EnterpriseProblem ;
+    rdfs:label "Bootstrap-to-Breach" ;
+    dcterms:description "Manufacture the semantic foundation, delivery graph, POWL work projection, GitHub/Terraform plan, runtime authority, Knowledge Hooks, governed breach response, dual revision, and replay." ;
+    autofde:hasRequirement autofde:RCloudTopology, autofde:RAuthority, autofde:RIncident,
+        autofde:RProcess, autofde:REvidence, autofde:RProvenance, autofde:RQuantity ;
+    autofde:hasCompetencyQuestion autofde:CQCloudIdentityAccess, autofde:CQAuthorityRevoke,
+        autofde:CQAuthorityPopulation, autofde:CQEvidenceBasis, autofde:CQConcurrentWork,
+        autofde:CQExclusiveContainment, autofde:CQSupersededCommitment,
+        autofde:CQPreservedOccurrence, autofde:CQReplanTrigger, autofde:CQSourceLineage .
+
+autofde:RCloudTopology a autofde:SemanticRequirement ; autofde:identifier "REQ-CLOUD" ; rdfs:label "Cloud resource topology and ownership" .
+autofde:RAuthority a autofde:SemanticRequirement ; autofde:identifier "REQ-AUTH" ; rdfs:label "Executable authority and decision rights" .
+autofde:RIncident a autofde:SemanticRequirement ; autofde:identifier "REQ-INCIDENT" ; rdfs:label "Security observations and incident semantics" .
+autofde:RProcess a autofde:SemanticRequirement ; autofde:identifier "REQ-PROCESS" ; rdfs:label "Partial-order commitments, alternatives, supersession, and preservation" .
+autofde:REvidence a autofde:SemanticRequirement ; autofde:identifier "REQ-EVIDENCE" ; rdfs:label "Object-centric execution evidence" .
+autofde:RProvenance a autofde:SemanticRequirement ; autofde:identifier "REQ-PROVENANCE" ; rdfs:label "Source identity, version, lineage, and replay" .
+autofde:RQuantity a autofde:SemanticRequirement ; autofde:identifier "REQ-QUANTITY" ; rdfs:label "Quantities, cost, duration, and severity" .
+
+autofde:CQCloudIdentityAccess a autofde:CompetencyQuestion ; autofde:identifier "CQ-CLOUD-001" ; autofde:questionText "Which identity accessed which cloud resource and which capability owns it?" .
+autofde:CQAuthorityRevoke a autofde:CompetencyQuestion ; autofde:identifier "CQ-AUTH-001" ; autofde:questionText "Who may revoke the affected identity in the admitted environment?" .
+autofde:CQAuthorityPopulation a autofde:CompetencyQuestion ; autofde:identifier "CQ-AUTH-002" ; autofde:questionText "Does the admitted notification authority cover the newly affected population?" .
+autofde:CQEvidenceBasis a autofde:CompetencyQuestion ; autofde:identifier "CQ-INCIDENT-001" ; autofde:questionText "Which admitted observations support the suspected breach and which claims remain unknown?" .
+autofde:CQConcurrentWork a autofde:CompetencyQuestion ; autofde:identifier "CQ-PROCESS-001" ; autofde:questionText "Which investigation activities may execute concurrently?" .
+autofde:CQExclusiveContainment a autofde:CompetencyQuestion ; autofde:identifier "CQ-PROCESS-002" ; autofde:questionText "Which containment alternatives are mutually exclusive?" .
+autofde:CQSupersededCommitment a autofde:CompetencyQuestion ; autofde:identifier "CQ-PROCESS-003" ; autofde:questionText "Which process commitment was superseded after new evidence arrived?" .
+autofde:CQPreservedOccurrence a autofde:CompetencyQuestion ; autofde:identifier "CQ-PROCESS-004" ; autofde:questionText "Which completed containment occurrences were preserved across revision?" .
+autofde:CQReplanTrigger a autofde:CompetencyQuestion ; autofde:identifier "CQ-EVIDENCE-001" ; autofde:questionText "Which exact observation caused operational and delivery revision?" .
+autofde:CQSourceLineage a autofde:CompetencyQuestion ; autofde:identifier "CQ-PROVENANCE-001" ; autofde:questionText "Which source identity and version define every generated term?" .
+
+#################################################################
+# Internal exact source and portfolio receipt
+#################################################################
+
+autofde:SeanChatmanProvider a autofde:ProviderIdentity ; rdfs:label "Sean Chatman" .
+autofde:AutoFDEOntologyVersion010 a autofde:SourceVersion ; autofde:versionValue "0.1.0" .
+autofde:AutoFDEOntologyLicense a autofde:LicenseEvidence ;
+    autofde:licenseIdentifier "MIT" ; autofde:licenseAdmitted true .
+autofde:AutoFDEOntologyDigest a autofde:ArtifactDigest ;
+    autofde:digestAlgorithm "sha256" ;
+    autofde:digestValue "068519f6da3874dd809515b7aecb96f78257edb17d3b8cfbd3e5c1789aa2f378"^^xsd:hexBinary .
+autofde:AutoFDEOntologySource a autofde:SemanticSource ;
+    rdfs:label "AutoFDE canonical ontology" ;
+    autofde:sourceLocation "ontology/autofde.ttl"^^xsd:anyURI ;
+    autofde:hasSourceKind autofde:OntologySource ;
+    autofde:hasSourceVersion autofde:AutoFDEOntologyVersion010 ;
+    autofde:hasLicenseEvidence autofde:AutoFDEOntologyLicense ;
+    autofde:hasDigest autofde:AutoFDEOntologyDigest ;
+    autofde:hasSourceAuthority autofde:AuthoritativeProvider ;
+    autofde:publishedBy autofde:SeanChatmanProvider ;
+    autofde:authorityScore 1.0 ; autofde:mappingCost 0.0 ;
+    autofde:maintenanceRisk 0.0 ; autofde:semanticOverlap 0.0 .
+
+autofde:LocalSourceRegistry a autofde:SourceRegistry ;
+    rdfs:label "AutoFDE local admitted source registry" .
+
+autofde:SemanticPortfolioV1Subject a autofde:ExactSubject ; autofde:identifier "bootstrap-to-breach/semantic-portfolio/v1" .
+autofde:SemanticPortfolioV1Digest a autofde:ArtifactDigest ;
+    autofde:digestAlgorithm "sha256" ;
+    autofde:digestValue "5a9f6a967c7181ce9ab64f4d7dd4232f43fa9c0e49f940e5b69613b75089f842"^^xsd:hexBinary .
+autofde:SemanticPortfolioV1Receipt a autofde:Receipt ;
+    autofde:receiptFor autofde:SemanticPortfolioV1 ;
+    autofde:bindsSubject autofde:SemanticPortfolioV1Subject ;
+    autofde:hasDigest autofde:SemanticPortfolioV1Digest .
+autofde:SemanticPortfolioV1 a autofde:PortfolioRevision ;
+    rdfs:label "Bootstrap-to-Breach semantic portfolio v1" ;
+    autofde:selectsSource autofde:AutoFDEOntologySource ;
+    autofde:answersQuestion autofde:CQCloudIdentityAccess, autofde:CQAuthorityRevoke,
+        autofde:CQAuthorityPopulation, autofde:CQEvidenceBasis, autofde:CQConcurrentWork,
+        autofde:CQExclusiveContainment, autofde:CQSupersededCommitment,
+        autofde:CQPreservedOccurrence, autofde:CQReplanTrigger, autofde:CQSourceLineage ;
+    autofde:hasReceipt autofde:SemanticPortfolioV1Receipt .
+
+autofde:SemanticCompileV1 a autofde:SemanticCompilerRun ;
+    autofde:usesRegistry autofde:LocalSourceRegistry ;
+    autofde:considersSource autofde:AutoFDEOntologySource ;
+    autofde:constructs autofde:SemanticPortfolioV1 .
+
+#################################################################
+# Delivery work graph and process projection
+#################################################################

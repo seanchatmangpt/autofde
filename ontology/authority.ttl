@@ -1,0 +1,35 @@
+@prefix autofde: <https://seanchatmangpt.github.io/autofde/ontology#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+
+# Runtime, authority, hooks, and BRCE
+#################################################################
+
+autofde:Actor a owl:Class ; rdfs:subClassOf autofde:AutoFDEEntity .
+autofde:Subject a owl:Class ; rdfs:subClassOf autofde:AutoFDEEntity .
+autofde:Operation a owl:Class ; rdfs:subClassOf autofde:AutoFDEEntity .
+autofde:Environment a owl:Class ; rdfs:subClassOf autofde:AutoFDEEntity .
+autofde:Policy a owl:Class ; rdfs:subClassOf autofde:AutoFDEEntity .
+autofde:Approval a owl:Class ; rdfs:subClassOf autofde:Evidence .
+autofde:AuthorityClass a owl:Class ; rdfs:subClassOf skos:Concept .
+autofde:AuthorityGrant a owl:Class ; rdfs:subClassOf autofde:Evidence .
+autofde:AuthorityIntersection a owl:Class ; rdfs:subClassOf autofde:Evidence .
+autofde:BRCEBroker a owl:Class ; rdfs:subClassOf autofde:Capability .
+autofde:BoundedAction a owl:Class ; rdfs:subClassOf autofde:Actuation .
+autofde:KnowledgeHook a owl:Class ; rdfs:subClassOf autofde:Capability .
+autofde:AgentSession a owl:Class ; rdfs:subClassOf autofde:AutoFDEEntity .
+autofde:Signal a owl:Class ; rdfs:subClassOf autofde:Observation .
+autofde:BreachObservation a owl:Class ; rdfs:subClassOf autofde:Signal .
+autofde:Decision a owl:Class ; rdfs:subClassOf autofde:Evidence .
+autofde:OperationalRevision a owl:Class ; rdfs:subClassOf autofde:ProcessCommitment .
+autofde:DeliveryRevision a owl:Class ; rdfs:subClassOf autofde:PhaseGraph .
+autofde:PromotionDecision a owl:Class ; rdfs:subClassOf autofde:Evidence .
+
+#################################################################

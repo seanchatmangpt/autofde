@@ -1,0 +1,11 @@
+PREFIX autofde: <https://seanchatmangpt.github.io/autofde/ontology#>
+ASK {
+  ?hook a autofde:KnowledgeHook .
+  {
+    ?hook autofde:mayActuate true
+  }
+  UNION
+  {
+    ?hook autofde:actuates ?action
+  }
+}

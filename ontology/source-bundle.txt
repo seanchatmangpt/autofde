@@ -1,0 +1,15 @@
+ontology/autofde.ttl
+ontology/core.ttl
+ontology/semantics.ttl
+ontology/work.ttl
+ontology/authority.ttl
+ontology/evidence.ttl
+ontology/generator.ttl
+ontology/object-properties-foundation.ttl
+ontology/object-properties-runtime.ttl
+ontology/datatype-properties.ttl
+ontology/vocabulary.ttl
+ontology/product.ttl
+ontology/phases.ttl
+ontology/generation-rules.ttl
+ontology/axioms.ttl

@@ -1,0 +1,59 @@
+@prefix autofde: <https://seanchatmangpt.github.io/autofde/ontology#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+
+autofde:workSuccessor a owl:ObjectProperty ; rdfs:domain autofde:WorkDependency ; rdfs:range autofde:WorkItem .
+autofde:provisioningPredecessor a owl:ObjectProperty ; rdfs:domain autofde:ProvisioningDependency ; rdfs:range autofde:Artifact .
+autofde:provisioningSuccessor a owl:ObjectProperty ; rdfs:domain autofde:ProvisioningDependency ; rdfs:range autofde:Artifact .
+autofde:concurrentMember a owl:ObjectProperty ; rdfs:domain autofde:ConcurrencyRelation ; rdfs:range autofde:WorkItem .
+autofde:choiceMember a owl:ObjectProperty ; rdfs:domain autofde:ExclusiveChoiceRelation ; rdfs:range autofde:WorkItem .
+autofde:supersedesCommitment a owl:ObjectProperty ; rdfs:domain autofde:SupersessionRelation ; rdfs:range autofde:ProcessCommitment .
+autofde:preservesOccurrence a owl:ObjectProperty ; rdfs:domain autofde:PreservationRelation ; rdfs:range autofde:Consequence .
+autofde:projectsGraph a owl:ObjectProperty ; rdfs:domain autofde:Artifact ; rdfs:range autofde:PhaseGraph .
+autofde:equivalentProjection a owl:ObjectProperty ; rdfs:domain autofde:SemanticEquivalenceClaim ; rdfs:range autofde:Artifact .
+autofde:belongsToMilestone a owl:ObjectProperty ; rdfs:domain autofde:Issue ; rdfs:range autofde:Milestone .
+autofde:hasLabel a owl:ObjectProperty ; rdfs:domain autofde:Issue ; rdfs:range autofde:Label .
+
+autofde:hasActor a owl:ObjectProperty ; rdfs:range autofde:Actor .
+autofde:hasSubject a owl:ObjectProperty ; rdfs:range autofde:Subject .
+autofde:hasOperation a owl:ObjectProperty ; rdfs:range autofde:Operation .
+autofde:hasEnvironment a owl:ObjectProperty ; rdfs:range autofde:Environment .
+autofde:hasPolicy a owl:ObjectProperty ; rdfs:range autofde:Policy .
+autofde:hasApproval a owl:ObjectProperty ; rdfs:range autofde:Approval .
+autofde:hasAuthorityClass a owl:ObjectProperty ; rdfs:range autofde:AuthorityClass .
+autofde:derivedFromGrant a owl:ObjectProperty ; rdfs:domain autofde:AuthorityIntersection ; rdfs:range autofde:AuthorityGrant .
+autofde:routedThroughBroker a owl:ObjectProperty ; rdfs:domain autofde:Actuation ; rdfs:range autofde:BRCEBroker .
+autofde:hasPreActuationReceipt a owl:ObjectProperty ; rdfs:domain autofde:Actuation ; rdfs:range autofde:Receipt .
+autofde:manufacturesIntent a owl:ObjectProperty ; rdfs:domain autofde:KnowledgeHook ; rdfs:range autofde:Intent .
+autofde:mayObserve a owl:ObjectProperty ; rdfs:domain autofde:KnowledgeHook ; rdfs:range autofde:Observation .
+autofde:mayEnrich a owl:ObjectProperty ; rdfs:domain autofde:KnowledgeHook ; rdfs:range autofde:Observation .
+autofde:mayRoute a owl:ObjectProperty ; rdfs:domain autofde:KnowledgeHook ; rdfs:range autofde:Intent .
+autofde:mayActuate a owl:DatatypeProperty ; rdfs:domain autofde:KnowledgeHook ; rdfs:range xsd:boolean .
+autofde:triggeredBy a owl:ObjectProperty ; rdfs:range autofde:Observation .
+autofde:detectsGap a owl:ObjectProperty ; rdfs:range autofde:CapabilityGap .
+autofde:createsDeliveryRevision a owl:ObjectProperty ; rdfs:domain autofde:CapabilityGap ; rdfs:range autofde:DeliveryRevision .
+autofde:createsOperationalRevision a owl:ObjectProperty ; rdfs:domain autofde:BreachObservation ; rdfs:range autofde:OperationalRevision .
+
+autofde:bindsSubject a owl:ObjectProperty ; rdfs:range autofde:ExactSubject .
+autofde:bindsSourceCapsule a owl:ObjectProperty ; rdfs:range autofde:SourceCapsule .
+autofde:bindsValidationPack a owl:ObjectProperty ; rdfs:range autofde:ValidationPack .
+autofde:bindsExecutionMode a owl:ObjectProperty ; rdfs:range autofde:ExecutionMode .
+autofde:bindsToolchainCapsule a owl:ObjectProperty ; rdfs:range autofde:ToolchainCapsule .
+autofde:predecessorReceipt a owl:ObjectProperty ; rdfs:domain autofde:Receipt ; rdfs:range autofde:Receipt .
+autofde:receiptFor a owl:ObjectProperty ; rdfs:domain autofde:Receipt ; rdfs:range autofde:AutoFDEEntity .
+autofde:observedConsequence a owl:ObjectProperty ; rdfs:domain autofde:ConsequenceObservation ; rdfs:range autofde:Consequence .
+autofde:hasCommandExecution a owl:ObjectProperty ; rdfs:domain autofde:ValidationPack ; rdfs:range autofde:CommandExecution .
+autofde:hasRefusalCode a owl:ObjectProperty ; rdfs:domain autofde:Refusal ; rdfs:range autofde:RefusalCode .
+
+autofde:hasQuery a owl:ObjectProperty ; rdfs:domain autofde:GenerationRule ; rdfs:range autofde:SPARQLQuery .
+autofde:hasTemplate a owl:ObjectProperty ; rdfs:domain autofde:GenerationRule ; rdfs:range autofde:TeraTemplate .
+autofde:hasOutput a owl:ObjectProperty ; rdfs:domain autofde:GenerationRule ; rdfs:range autofde:GeneratedProjection .
+autofde:hasProjectionOwnership a owl:ObjectProperty ; rdfs:domain autofde:GeneratedProjection ; rdfs:range autofde:ProjectionOwnership .
+autofde:generatedByRule a owl:ObjectProperty ; rdfs:domain autofde:GeneratedProjection ; rdfs:range autofde:GenerationRule .

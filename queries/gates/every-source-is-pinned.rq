@@ -1,0 +1,23 @@
+PREFIX autofde: <https://seanchatmangpt.github.io/autofde/ontology#>
+ASK {
+  ?source a autofde:SemanticSource .
+  {
+    FILTER NOT EXISTS { ?source autofde:hasSourceVersion ?version . ?version autofde:versionValue ?value }
+  }
+  UNION
+  {
+    FILTER NOT EXISTS { ?source autofde:hasDigest ?digest . ?digest autofde:digestAlgorithm ?algorithm ; autofde:digestValue ?value }
+  }
+  UNION
+  {
+    FILTER NOT EXISTS { ?source autofde:hasLicenseEvidence ?license . ?license autofde:licenseAdmitted true }
+  }
+  UNION
+  {
+    FILTER NOT EXISTS { ?source autofde:hasSourceKind ?kind }
+  }
+  UNION
+  {
+    FILTER NOT EXISTS { ?source autofde:hasSourceAuthority ?authority }
+  }
+}

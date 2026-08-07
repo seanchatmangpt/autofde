@@ -1,0 +1,50 @@
+@prefix autofde: <https://seanchatmangpt.github.io/autofde/ontology#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+
+
+#################################################################
+# Datatype properties
+#################################################################
+
+autofde:identifier a owl:DatatypeProperty ; rdfs:range xsd:string .
+autofde:moduleId a owl:DatatypeProperty ; rdfs:domain autofde:CapabilityModule ; rdfs:range xsd:string .
+autofde:capabilityId a owl:DatatypeProperty ; rdfs:domain autofde:Capability ; rdfs:range xsd:string .
+autofde:order a owl:DatatypeProperty ; rdfs:range xsd:integer .
+autofde:sourceLocation a owl:DatatypeProperty ; rdfs:domain autofde:SemanticSource ; rdfs:range xsd:anyURI .
+autofde:versionValue a owl:DatatypeProperty ; rdfs:domain autofde:SourceVersion ; rdfs:range xsd:string .
+autofde:digestAlgorithm a owl:DatatypeProperty ; rdfs:domain autofde:ArtifactDigest ; rdfs:range xsd:string .
+autofde:digestValue a owl:DatatypeProperty ; rdfs:domain autofde:ArtifactDigest ; rdfs:range xsd:hexBinary .
+autofde:licenseIdentifier a owl:DatatypeProperty ; rdfs:domain autofde:LicenseEvidence ; rdfs:range xsd:string .
+autofde:licenseAdmitted a owl:DatatypeProperty ; rdfs:domain autofde:LicenseEvidence ; rdfs:range xsd:boolean .
+autofde:coverageRatio a owl:DatatypeProperty ; rdfs:domain autofde:CoverageClaim ; rdfs:range xsd:decimal .
+autofde:questionText a owl:DatatypeProperty ; rdfs:domain autofde:CompetencyQuestion ; rdfs:range xsd:string .
+autofde:answerable a owl:DatatypeProperty ; rdfs:domain autofde:CompetencyResult ; rdfs:range xsd:boolean .
+autofde:authorityScore a owl:DatatypeProperty ; rdfs:domain autofde:SemanticSource ; rdfs:range xsd:decimal .
+autofde:mappingCost a owl:DatatypeProperty ; rdfs:domain autofde:SemanticSource ; rdfs:range xsd:decimal .
+autofde:maintenanceRisk a owl:DatatypeProperty ; rdfs:domain autofde:SemanticSource ; rdfs:range xsd:decimal .
+autofde:semanticOverlap a owl:DatatypeProperty ; rdfs:domain autofde:SemanticSource ; rdfs:range xsd:decimal .
+autofde:validFrom a owl:DatatypeProperty ; rdfs:range xsd:dateTime .
+autofde:validUntil a owl:DatatypeProperty ; rdfs:range xsd:dateTime .
+autofde:commandArgv a owl:DatatypeProperty ; rdfs:domain autofde:CommandExecution ; rdfs:range xsd:string .
+autofde:exitCode a owl:DatatypeProperty ; rdfs:domain autofde:CommandExecution ; rdfs:range xsd:integer .
+autofde:durationMs a owl:DatatypeProperty ; rdfs:domain autofde:CommandExecution ; rdfs:range xsd:integer .
+autofde:standingCode a owl:DatatypeProperty ; rdfs:domain autofde:StandingCode ; rdfs:range xsd:string .
+autofde:refusalCode a owl:DatatypeProperty ; rdfs:domain autofde:RefusalCode ; rdfs:range xsd:string .
+autofde:queryFile a owl:DatatypeProperty ; rdfs:domain autofde:SPARQLQuery ; rdfs:range xsd:string .
+autofde:templateFile a owl:DatatypeProperty ; rdfs:domain autofde:TeraTemplate ; rdfs:range xsd:string .
+autofde:outputFile a owl:DatatypeProperty ; rdfs:domain autofde:GeneratedProjection ; rdfs:range xsd:string .
+autofde:generationMode a owl:DatatypeProperty ; rdfs:domain autofde:GenerationRule ; rdfs:range xsd:string .
+autofde:generatedDigest a owl:DatatypeProperty ; rdfs:domain autofde:GeneratedProjection ; rdfs:range xsd:string .
+autofde:immutable a owl:DatatypeProperty ; rdfs:range xsd:boolean .
+autofde:actuationClass a owl:DatatypeProperty ; rdfs:domain autofde:Action ; rdfs:range xsd:string .
+autofde:projectionKind a owl:DatatypeProperty ; rdfs:domain autofde:Artifact ; rdfs:range xsd:string .
+
+#################################################################
