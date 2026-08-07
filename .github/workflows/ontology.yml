@@ -107,9 +107,13 @@ jobs:
     name: Exact 80/20 semantic federation
     runs-on: ubuntu-latest
     timeout-minutes: 8
+    permissions:
+      contents: write
     steps:
-      - name: Check out exact subject
+      - name: Check out exact branch subject
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
       - name: Install Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
@@ -120,29 +124,44 @@ jobs:
         run: python -m pip install --disable-pip-version-check --requirement requirements.txt
       - name: Hydrate exact CREATE sources and manufacture federation
         run: |
-          mkdir -p federation
           python scripts/admit_semantic_corpus.py \
             --profile corpus/admission-profile.json \
             --hydrate-create \
-            --output-ttl federation/ecosystem-sources.ttl \
-            --output-json federation/admitted-sources.json \
-            --receipt federation/semantic-federation-receipt.json
+            --output-ttl ontology/ecosystem-sources.ttl \
+            --output-json corpus/admitted-sources.json \
+            --receipt corpus/semantic-federation-receipt.json
           python - <<'PY'
           import json
           from rdflib import Graph
-          receipt = json.load(open('federation/semantic-federation-receipt.json'))
+          receipt = json.load(open('corpus/semantic-federation-receipt.json'))
           assert receipt['standing'] == 'ALIVE', receipt
           assert receipt['create_sources'] == receipt['create_alive'] == 17, receipt
           assert receipt['raised_sources'] == 14, receipt
-          graph = Graph().parse('federation/ecosystem-sources.ttl', format='turtle')
+          graph = Graph().parse('ontology/ecosystem-sources.ttl', format='turtle')
           assert len(graph) > 0
           print('AUTOFDE_FEDERATION_GRAPH_ALIVE', len(graph))
           PY
+      - name: Persist generated federation on the same PR branch
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        run: |
+          paths=(ontology/ecosystem-sources.ttl corpus/admitted-sources.json corpus/semantic-federation-receipt.json)
+          if [ -z "$(git status --porcelain -- "${paths[@]}")" ]; then
+            echo "AUTOFDE_FEDERATION_PERSISTENCE_UNCHANGED"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- "${paths[@]}"
+          git commit -m "chore: persist admitted semantic federation"
+          git push origin "HEAD:${{ github.head_ref }}"
       - name: Upload exact federation and receipt
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: semantic-federation-${{ github.sha }}
-          path: federation/
+          path: |
+            ontology/ecosystem-sources.ttl
+            corpus/admitted-sources.json
+            corpus/semantic-federation-receipt.json
           if-no-files-found: error
           retention-days: 14
 
