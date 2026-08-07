@@ -37,14 +37,17 @@ class PrivateSemanticCensusTests(unittest.TestCase):
         verified = validate_private_census(self.receipt, self.profile)
         self.assertEqual(verified["standing"], "ALIVE")
         self.assertEqual(verified["repositories"], 75)
-        self.assertEqual(verified["recursive_trees"], 71)
-        self.assertEqual(verified["empty_repositories"], 4)
+        self.assertEqual(verified["recursive_trees"], 72)
+        self.assertEqual(verified["empty_repositories"], 3)
 
     def test_repository_count_drift_is_refused(self) -> None:
         self.refused(lambda receipt, profile: receipt.__setitem__("repository_inventory", 74))
 
     def test_tree_count_drift_is_refused(self) -> None:
-        self.refused(lambda receipt, profile: receipt.__setitem__("materialized_recursive_trees", 70))
+        self.refused(lambda receipt, profile: receipt.__setitem__("materialized_recursive_trees", 71))
+
+    def test_empty_repository_count_drift_is_refused(self) -> None:
+        self.refused(lambda receipt, profile: receipt.__setitem__("empty_repositories", 4))
 
     def test_truncated_tree_is_refused(self) -> None:
         self.refused(lambda receipt, profile: receipt.__setitem__("truncated_trees", 1))

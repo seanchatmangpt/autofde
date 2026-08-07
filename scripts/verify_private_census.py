@@ -87,8 +87,8 @@ def validate_private_census(
     expected_counts = {
         "repository_inventory": 75,
         "repositories_scanned": 75,
-        "materialized_recursive_trees": 71,
-        "empty_repositories": 4,
+        "materialized_recursive_trees": 72,
+        "empty_repositories": 3,
         "truncated_trees": 0,
         "repository_failures": 0,
     }
