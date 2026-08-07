@@ -1,0 +1,29 @@
+name: process-constitution
+
+on:
+  pull_request:
+  push:
+    branches:
+      - feat/v26.8.7-process-constitution
+
+permissions:
+  contents: read
+
+jobs:
+  crown:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - name: Format
+        run: cargo fmt --all -- --check
+      - name: Check
+        run: cargo check
+      - name: Test
+        run: cargo test
+      - name: Clippy
+        run: cargo clippy --all-targets -- -D warnings
+      - name: Conformance crown
+        run: cargo run --quiet --bin autofde-conformance -- process/autofde-lifecycle.powl.json fixtures/autofde-lifecycle/valid.ocel.json
