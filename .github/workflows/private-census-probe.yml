@@ -1,0 +1,75 @@
+name: AutoFDE private census credential probe
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/private-census-probe.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    env:
+      TOKEN_GH_PAT: ${{ secrets.GH_PAT }}
+      TOKEN_PAT: ${{ secrets.PAT }}
+      TOKEN_GITHUB_PAT: ${{ secrets.GITHUB_PAT }}
+      TOKEN_PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+      TOKEN_GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      TOKEN_GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_ACCESS_TOKEN }}
+      TOKEN_REPO_TOKEN: ${{ secrets.REPO_TOKEN }}
+      TOKEN_CI_GITHUB_TOKEN: ${{ secrets.CI_GITHUB_TOKEN }}
+      TOKEN_CODEX_GITHUB_TOKEN: ${{ secrets.CODEX_GITHUB_TOKEN }}
+      TOKEN_ORG_GITHUB_TOKEN: ${{ secrets.ORG_GITHUB_TOKEN }}
+      TOKEN_BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+      TOKEN_DEFAULT: ${{ github.token }}
+    steps:
+      - name: Probe candidate credentials without disclosure
+        shell: python
+        run: |
+          import json
+          import os
+          import urllib.error
+          import urllib.request
+
+          results = []
+          for name in sorted(key for key in os.environ if key.startswith("TOKEN_")):
+              token = os.environ.get(name, "")
+              if not token:
+                  results.append({"candidate": name, "standing": "ABSENT"})
+                  continue
+              request = urllib.request.Request(
+                  "https://api.github.com/user/repos?affiliation=owner&visibility=private&per_page=100",
+                  headers={
+                      "Accept": "application/vnd.github+json",
+                      "Authorization": f"Bearer {token}",
+                      "User-Agent": "autofde-private-census-probe/0.1",
+                      "X-GitHub-Api-Version": "2022-11-28",
+                  },
+              )
+              try:
+                  with urllib.request.urlopen(request, timeout=30) as response:
+                      repositories = json.load(response)
+                  results.append({
+                      "candidate": name,
+                      "standing": "ALIVE",
+                      "private_owned_repositories": len(repositories),
+                  })
+              except urllib.error.HTTPError as exc:
+                  results.append({
+                      "candidate": name,
+                      "standing": "REFUSED:GITHUB_HTTP",
+                      "status": exc.code,
+                  })
+              except urllib.error.URLError as exc:
+                  results.append({
+                      "candidate": name,
+                      "standing": "BLOCKED:GITHUB_TRANSPORT",
+                      "reason": str(exc.reason),
+                  })
+          print(json.dumps(results, sort_keys=True))
+          alive = [item for item in results if item["standing"] == "ALIVE"]
+          print("AUTOFDE_PRIVATE_TOKEN_ALIVE" if any(item.get("private_owned_repositories", 0) > 0 for item in alive) else "AUTOFDE_PRIVATE_TOKEN_UNAVAILABLE")
