@@ -55,7 +55,7 @@ make crown-ontology
 With ggen v26.8.6 or a compatible release installed:
 
 ```bash
-ggen sync run --config ggen.toml
+ggen sync run
 git diff --exit-code -- generated
 ```
 
