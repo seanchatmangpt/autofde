@@ -54,7 +54,7 @@ jobs:
         shell: bash
         run: |
           set +e
-          ggen sync run --config ggen.toml 2>&1 | tee /tmp/ggen-sync.log
+          ggen sync run 2>&1 | tee /tmp/ggen-sync.log
           status=${PIPESTATUS[0]}
           set -e
           if [ "$status" -ne 0 ]; then
