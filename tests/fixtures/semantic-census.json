@@ -1,0 +1,74 @@
+{
+  "repositories": [
+    {
+      "default_branch": "main",
+      "files": [
+        {
+          "content": "@prefix owl: <http://www.w3.org/2002/07/owl#> . <https://example.com/core> a owl:Ontology .",
+          "path": "ontology/core.ttl"
+        }
+      ],
+      "full_name": "seanchatmangpt/core-ontology",
+      "head_sha": "1111111111111111111111111111111111111111",
+      "license_id": "MIT",
+      "tree_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "visibility": "public"
+    },
+    {
+      "default_branch": "main",
+      "files": [
+        {
+          "content": "@prefix owl: <http://www.w3.org/2002/07/owl#> . <https://example.com/core> a owl:Ontology .",
+          "path": "tests/fixtures/core.ttl"
+        }
+      ],
+      "full_name": "seanchatmangpt/duplicate-fixture",
+      "head_sha": "2222222222222222222222222222222222222222",
+      "license_id": "MIT",
+      "tree_sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "visibility": "public"
+    },
+    {
+      "default_branch": "main",
+      "files": [
+        {
+          "content": "@prefix owl: <http://www.w3.org/2002/07/owl#> . THIS IS NOT TURTLE",
+          "path": "ontology/broken.ttl"
+        }
+      ],
+      "full_name": "seanchatmangpt/broken-ontology",
+      "head_sha": "3333333333333333333333333333333333333333",
+      "license_id": "NOASSERTION",
+      "tree_sha": "cccccccccccccccccccccccccccccccccccccccc",
+      "visibility": "private"
+    },
+    {
+      "default_branch": "main",
+      "files": [
+        {
+          "content": "SELECT * WHERE { ?s ?p ?o }",
+          "path": "queries/all.rq"
+        }
+      ],
+      "full_name": "seanchatmangpt/query-pack",
+      "head_sha": "4444444444444444444444444444444444444444",
+      "license_id": "Apache-2.0",
+      "tree_sha": "dddddddddddddddddddddddddddddddddddddddd",
+      "visibility": "public"
+    },
+    {
+      "default_branch": "main",
+      "files": [
+        {
+          "content": "<https://example.com/s> <https://example.com/p> <https://example.com/o> .",
+          "path": "generated/model.nt"
+        }
+      ],
+      "full_name": "seanchatmangpt/generated-copy",
+      "head_sha": "5555555555555555555555555555555555555555",
+      "license_id": "MIT",
+      "tree_sha": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "visibility": "public"
+    }
+  ]
+}
