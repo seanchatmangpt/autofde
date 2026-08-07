@@ -1,0 +1,320 @@
+@prefix autofde: <https://seanchatmangpt.github.io/autofde/ontology#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix odrl: <http://www.w3.org/ns/odrl/2/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://seanchatmangpt.github.io/autofde/ontology/ecosystem>
+    a owl:Ontology ;
+    dcterms:title "AutoFDE Chatman Ecosystem Semantic Corpus" ;
+    dcterms:description "EXPLOIT-only, provenance-preserving federation law for semantic assets discovered across repositories owned by Sean Chatman." ;
+    owl:versionInfo "0.1.0" ;
+    dcterms:license <https://spdx.org/licenses/MIT.html> .
+
+autofde:RepositoryCorpus a owl:Class ;
+    rdfs:subClassOf dcat:Catalog, prov:Entity ;
+    rdfs:label "Repository corpus" .
+
+autofde:SemanticRepository a owl:Class ;
+    rdfs:subClassOf dcat:Dataset, prov:Entity ;
+    rdfs:label "Semantic repository" .
+
+autofde:SemanticAsset a owl:Class ;
+    rdfs:subClassOf dcat:Distribution, prov:Entity ;
+    rdfs:label "Semantic asset" .
+
+autofde:CorpusCensus a owl:Class ;
+    rdfs:subClassOf prov:Activity ;
+    rdfs:label "Corpus census" .
+
+autofde:SourceDisposition a owl:Class ;
+    rdfs:subClassOf skos:Concept ;
+    rdfs:label "Source disposition" .
+
+autofde:ERRCAction a owl:Class ;
+    rdfs:subClassOf skos:Concept ;
+    rdfs:label "ERRC action" .
+
+autofde:ERRCDecision a owl:Class ;
+    rdfs:subClassOf prov:Entity ;
+    rdfs:label "ERRC decision" .
+
+autofde:SemanticDialect a owl:Class ;
+    rdfs:subClassOf skos:Concept ;
+    rdfs:label "Semantic dialect" .
+
+autofde:NamespaceClaim a owl:Class ;
+    rdfs:subClassOf prov:Entity ;
+    rdfs:label "Namespace claim" .
+
+autofde:FederationRole a owl:Class ;
+    rdfs:subClassOf skos:Concept ;
+    rdfs:label "Federation role" .
+
+autofde:containsRepository a owl:ObjectProperty ;
+    rdfs:domain autofde:RepositoryCorpus ;
+    rdfs:range autofde:SemanticRepository .
+
+autofde:containsAsset a owl:ObjectProperty ;
+    rdfs:domain autofde:SemanticRepository ;
+    rdfs:range autofde:SemanticAsset .
+
+autofde:sourceRepository a owl:ObjectProperty ;
+    rdfs:domain autofde:SemanticAsset ;
+    rdfs:range autofde:SemanticRepository .
+
+autofde:sourceDisposition a owl:ObjectProperty ;
+    rdfs:domain autofde:SemanticAsset ;
+    rdfs:range autofde:SourceDisposition .
+
+autofde:errcAction a owl:ObjectProperty ;
+    rdfs:range autofde:ERRCAction .
+
+autofde:decisionSubject a owl:ObjectProperty ;
+    rdfs:domain autofde:ERRCDecision ;
+    rdfs:range prov:Entity .
+
+autofde:semanticDialect a owl:ObjectProperty ;
+    rdfs:domain autofde:SemanticAsset ;
+    rdfs:range autofde:SemanticDialect .
+
+autofde:namespaceClaim a owl:ObjectProperty ;
+    rdfs:domain autofde:SemanticAsset ;
+    rdfs:range autofde:NamespaceClaim .
+
+autofde:duplicateOf a owl:ObjectProperty ;
+    rdfs:domain autofde:SemanticAsset ;
+    rdfs:range autofde:SemanticAsset .
+
+autofde:supersedesAsset a owl:ObjectProperty ;
+    rdfs:domain autofde:SemanticAsset ;
+    rdfs:range autofde:SemanticAsset .
+
+autofde:federationRole a owl:ObjectProperty ;
+    rdfs:domain autofde:SemanticRepository ;
+    rdfs:range autofde:FederationRole .
+
+autofde:repositoryFullName a owl:DatatypeProperty ;
+    rdfs:domain autofde:SemanticRepository ;
+    rdfs:range xsd:string .
+
+autofde:defaultRef a owl:DatatypeProperty ;
+    rdfs:domain autofde:SemanticRepository ;
+    rdfs:range xsd:string .
+
+autofde:resolvedCommit a owl:DatatypeProperty ;
+    rdfs:range xsd:string .
+
+autofde:treeIdentity a owl:DatatypeProperty ;
+    rdfs:range xsd:string .
+
+autofde:assetPath a owl:DatatypeProperty ;
+    rdfs:domain autofde:SemanticAsset ;
+    rdfs:range xsd:string .
+
+autofde:blobIdentity a owl:DatatypeProperty ;
+    rdfs:domain autofde:SemanticAsset ;
+    rdfs:range xsd:string .
+
+autofde:fileExtension a owl:DatatypeProperty ;
+    rdfs:domain autofde:SemanticAsset ;
+    rdfs:range xsd:string .
+
+autofde:mediaType a owl:DatatypeProperty ;
+    rdfs:domain autofde:SemanticAsset ;
+    rdfs:range xsd:string .
+
+autofde:namespaceIRI a owl:DatatypeProperty ;
+    rdfs:range xsd:anyURI .
+
+autofde:visibility a owl:DatatypeProperty ;
+    rdfs:domain autofde:SemanticRepository ;
+    rdfs:range xsd:string .
+
+autofde:observedRepositoryCount a owl:DatatypeProperty ;
+    rdfs:domain autofde:RepositoryCorpus ;
+    rdfs:range xsd:nonNegativeInteger .
+
+autofde:expectedRepositoryCount a owl:DatatypeProperty ;
+    rdfs:domain autofde:RepositoryCorpus ;
+    rdfs:range xsd:nonNegativeInteger .
+
+autofde:scanExtension a owl:DatatypeProperty ;
+    rdfs:domain autofde:RepositoryCorpus ;
+    rdfs:range xsd:string .
+
+autofde:admissionRationale a owl:DatatypeProperty ;
+    rdfs:range xsd:string .
+
+autofde:parseStanding a owl:DatatypeProperty ;
+    rdfs:domain autofde:SemanticAsset ;
+    rdfs:range xsd:string .
+
+autofde:authorityCeiling a owl:DatatypeProperty ;
+    rdfs:domain autofde:SemanticAsset ;
+    rdfs:range xsd:string .
+
+autofde:CanonicalSourceDisposition a autofde:SourceDisposition ;
+    skos:prefLabel "Canonical source" ;
+    skos:definition "A parseable, license-admitted, identity-pinned source graph whose namespace claim is non-conflicting." .
+
+autofde:CompatibilityReferenceDisposition a autofde:SourceDisposition ;
+    skos:prefLabel "Compatibility reference" ;
+    skos:definition "An independently versioned protocol or package graph retained as a referenced boundary rather than absorbed as AutoFDE authority." .
+
+autofde:ValidationFixtureDisposition a autofde:SourceDisposition ;
+    skos:prefLabel "Validation fixture" .
+
+autofde:GeneratedProjectionDisposition a autofde:SourceDisposition ;
+    skos:prefLabel "Generated projection" .
+
+autofde:VendorDisposition a autofde:SourceDisposition ;
+    skos:prefLabel "Vendored source" .
+
+autofde:ArchiveDisposition a autofde:SourceDisposition ;
+    skos:prefLabel "Archived source" .
+
+autofde:QuarantineDisposition a autofde:SourceDisposition ;
+    skos:prefLabel "Quarantined candidate" .
+
+autofde:Eliminate a autofde:ERRCAction ; skos:prefLabel "Eliminate" .
+autofde:Reduce a autofde:ERRCAction ; skos:prefLabel "Reduce" .
+autofde:Raise a autofde:ERRCAction ; skos:prefLabel "Raise" .
+autofde:Create a autofde:ERRCAction ; skos:prefLabel "Create" .
+
+autofde:TurtleDialect a autofde:SemanticDialect ; skos:notation ".ttl" ; skos:prefLabel "Turtle" .
+autofde:SPARQLQueryDialect a autofde:SemanticDialect ; skos:notation ".rq" ; skos:prefLabel "SPARQL query" .
+autofde:SPARQLDialect a autofde:SemanticDialect ; skos:notation ".sparql" ; skos:prefLabel "SPARQL" .
+autofde:NTriplesDialect a autofde:SemanticDialect ; skos:notation ".nt" ; skos:prefLabel "N-Triples" .
+autofde:NQuadsDialect a autofde:SemanticDialect ; skos:notation ".nq" ; skos:prefLabel "N-Quads" .
+autofde:TriGDialect a autofde:SemanticDialect ; skos:notation ".trig" ; skos:prefLabel "TriG" .
+autofde:RDFXMLDialect a autofde:SemanticDialect ; skos:notation ".rdf" ; skos:prefLabel "RDF/XML" .
+autofde:OWLDialect a autofde:SemanticDialect ; skos:notation ".owl" ; skos:prefLabel "OWL serialization" .
+autofde:JSONLDDialect a autofde:SemanticDialect ; skos:notation ".jsonld" ; skos:prefLabel "JSON-LD" .
+autofde:N3Dialect a autofde:SemanticDialect ; skos:notation ".n3" ; skos:prefLabel "Notation3" .
+autofde:SHACLDialect a autofde:SemanticDialect ; skos:notation ".shacl" ; skos:prefLabel "SHACL source" .
+autofde:TriXDialect a autofde:SemanticDialect ; skos:notation ".trix" ; skos:prefLabel "TriX" .
+
+autofde:CanonicalParentRole a autofde:FederationRole ; skos:prefLabel "Canonical AutoFDE parent" .
+autofde:ManufacturingRole a autofde:FederationRole ; skos:prefLabel "Deterministic manufacturing source" .
+autofde:WorkflowRole a autofde:FederationRole ; skos:prefLabel "Workflow and planning source" .
+autofde:ProcessEvidenceRole a autofde:FederationRole ; skos:prefLabel "Process execution evidence source" .
+autofde:ProtocolRole a autofde:FederationRole ; skos:prefLabel "Independent protocol boundary" .
+autofde:FormalEvidenceRole a autofde:FederationRole ; skos:prefLabel "Formal evidence source" .
+autofde:CompatibilityRole a autofde:FederationRole ; skos:prefLabel "Compatibility surface" .
+autofde:ProvenanceRole a autofde:FederationRole ; skos:prefLabel "Historical provenance source" .
+
+autofde:ChatmanEcosystemCorpus a autofde:RepositoryCorpus ;
+    dcterms:title "Sean Chatman owned repository semantic corpus" ;
+    dcat:theme <https://seanchatmangpt.github.io/autofde/ontology#SemanticAsset> ;
+    foaf:maker <https://github.com/seanchatmangpt> ;
+    autofde:expectedRepositoryCount 342 ;
+    autofde:observedRepositoryCount 342 ;
+    autofde:scanExtension ".ttl", ".rq", ".sparql", ".nt", ".nq", ".trig", ".rdf", ".owl", ".jsonld", ".json-ld", ".n3", ".shacl", ".trix" ;
+    autofde:authorityCeiling "CONSTRUCT" ;
+    autofde:admissionRationale "Repository identity is admitted account-wide; file-level admission is manufactured by the exact-ref census and federation verifier." .
+
+autofde:OwnedRepositoryCensus a autofde:CorpusCensus ;
+    prov:used autofde:ChatmanEcosystemCorpus ;
+    autofde:resolvedCommit "dynamic-exact-default-heads" ;
+    autofde:authorityCeiling "SELECT" ;
+    autofde:admissionRationale "Census observes repository trees and manufactures candidate intents; it never actuates." .
+
+autofde:AutoFDERepository a autofde:SemanticRepository ;
+    autofde:repositoryFullName "seanchatmangpt/autofde" ;
+    autofde:defaultRef "main" ;
+    autofde:federationRole autofde:CanonicalParentRole ;
+    autofde:visibility "public" ;
+    dcterms:license <https://spdx.org/licenses/MIT.html> .
+
+autofde:AutoFDELabRepository a autofde:SemanticRepository ;
+    autofde:repositoryFullName "seanchatmangpt/autofde-lab" ;
+    autofde:defaultRef "master" ;
+    autofde:federationRole autofde:WorkflowRole ;
+    autofde:visibility "public" ;
+    prov:alternateOf <https://github.com/seanchatmangpt/scikit-decide> .
+
+autofde:GGenRepository a autofde:SemanticRepository ;
+    autofde:repositoryFullName "seanchatmangpt/ggen" ;
+    autofde:defaultRef "main" ;
+    autofde:resolvedCommit "c36d72161b847b13555c24132819281f17e40e40" ;
+    autofde:treeIdentity "0e7018fcdfc8346647e7cea4e1a5c8f3cf33979e" ;
+    autofde:federationRole autofde:ManufacturingRole ;
+    autofde:visibility "public" .
+
+autofde:MFWRepository a autofde:SemanticRepository ;
+    autofde:repositoryFullName "seanchatmangpt/mfw" ;
+    autofde:defaultRef "main" ;
+    autofde:federationRole autofde:WorkflowRole ;
+    autofde:visibility "private" .
+
+autofde:Wasm4PMRepository a autofde:SemanticRepository ;
+    autofde:repositoryFullName "seanchatmangpt/wasm4pm" ;
+    autofde:defaultRef "main" ;
+    autofde:federationRole autofde:ProcessEvidenceRole ;
+    autofde:visibility "public" .
+
+autofde:LSPMaxRepository a autofde:SemanticRepository ;
+    autofde:repositoryFullName "seanchatmangpt/lsp-max" ;
+    autofde:defaultRef "main" ;
+    autofde:federationRole autofde:ProtocolRole ;
+    autofde:visibility "public" .
+
+autofde:MFactRepository a autofde:SemanticRepository ;
+    autofde:repositoryFullName "seanchatmangpt/mfact" ;
+    autofde:defaultRef "main" ;
+    autofde:federationRole autofde:FormalEvidenceRole ;
+    autofde:visibility "public" .
+
+autofde:POWLRepository a autofde:SemanticRepository ;
+    autofde:repositoryFullName "seanchatmangpt/POWL" ;
+    autofde:defaultRef "main" ;
+    autofde:federationRole autofde:ProtocolRole ;
+    autofde:visibility "public" .
+
+autofde:Wasm4PMCompatRepository a autofde:SemanticRepository ;
+    autofde:repositoryFullName "seanchatmangpt/wasm4pm-compat" ;
+    autofde:defaultRef "main" ;
+    autofde:federationRole autofde:CompatibilityRole ;
+    autofde:visibility "public" .
+
+autofde:ChatmanEcosystemRepository a autofde:SemanticRepository ;
+    autofde:repositoryFullName "seanchatmangpt/chatman-ecosystem" ;
+    autofde:defaultRef "main" ;
+    autofde:federationRole autofde:ProvenanceRole ;
+    autofde:visibility "public" .
+
+autofde:ChatmanEcosystemCorpus
+    autofde:containsRepository autofde:AutoFDERepository,
+        autofde:AutoFDELabRepository,
+        autofde:GGenRepository,
+        autofde:MFWRepository,
+        autofde:Wasm4PMRepository,
+        autofde:LSPMaxRepository,
+        autofde:MFactRepository,
+        autofde:POWLRepository,
+        autofde:Wasm4PMCompatRepository,
+        autofde:ChatmanEcosystemRepository .
+
+autofde:CorpusERRCDecision a autofde:ERRCDecision ;
+    autofde:decisionSubject autofde:ChatmanEcosystemCorpus ;
+    autofde:errcAction autofde:Create ;
+    autofde:admissionRationale "Create one canonical provenance-preserving corpus and eliminate duplicate platform ontologies; reduce fixtures and generated projections to validation evidence; raise source identity, licensing, parseability, namespace, authority, receipt, and replay requirements." ;
+    prov:wasDerivedFrom autofde:OwnedRepositoryCensus .
+
+autofde:ImportedSourcePolicy a odrl:Policy ;
+    odrl:permission [
+        odrl:target autofde:SemanticAsset ;
+        odrl:action odrl:read
+    ] ;
+    odrl:prohibition [
+        odrl:target autofde:SemanticAsset ;
+        odrl:action <https://seanchatmangpt.github.io/autofde/ontology#Actuate>
+    ] ;
+    dcterms:description "Imported semantic assets may inform SELECT and CONSTRUCT. They never acquire ambient DO authority." .
