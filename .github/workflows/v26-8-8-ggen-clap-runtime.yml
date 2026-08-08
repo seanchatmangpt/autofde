@@ -105,7 +105,8 @@ jobs:
           grep -q '#\[verb("execute", "run")\]' src/clap_noun_verb_routes.rs
           grep -q '#\[verb("install", "bundle")\]' src/clap_noun_verb_routes.rs
           grep -q '#\[verb("match", "observation")\]' src/clap_noun_verb_routes.rs
-          grep -q 'REFUSE_AND_PACKET' src/clap_noun_verb_routes.rs
+          grep -q '#\[verb("inspect", "doctor")\]' src/clap_noun_verb_routes.rs
+          grep -q 'doctor_inspect_handler' src/clap_noun_verb_routes.rs
 
       - name: Refuse generated path escape
         shell: bash
