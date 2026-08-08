@@ -224,10 +224,9 @@ impl KnowledgeHookLedger {
             })
             .map_err(storage)?;
 
-        let mut expected_sequence = 1_u64;
         let mut prior: Option<String> = None;
         let mut count = 0_usize;
-        for row in rows {
+        for (expected_sequence, row) in (1_u64..).zip(rows) {
             let (sequence, digest, observed_prior, canonical, authority_class, do_authority) =
                 row.map_err(storage)?;
             if sequence != expected_sequence {
@@ -252,7 +251,6 @@ impl KnowledgeHookLedger {
                 ));
             }
             prior = Some(digest);
-            expected_sequence += 1;
             count += 1;
         }
         Ok(count)
@@ -297,7 +295,7 @@ fn canonicalize(delta: &RdfDelta) -> Result<String, HookRefusal> {
     .map_err(|error| HookRefusal::InvalidDelta(error.to_string()))
 }
 
-fn normalize<'a>(triples: &'a [Triple]) -> Result<BTreeSet<&'a Triple>, HookRefusal> {
+fn normalize(triples: &[Triple]) -> Result<BTreeSet<&Triple>, HookRefusal> {
     let mut normalized = BTreeSet::new();
     for triple in triples {
         if triple.subject.trim().is_empty()
