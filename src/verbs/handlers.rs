@@ -43,6 +43,18 @@ pub fn novelty_show_handler(id: String) -> Result<Value> {
     Ok(runtime::novelty_show(&id))
 }
 
+pub fn doctor_inspect_handler() -> Result<Value> {
+    Ok(json!({
+        "standing": "PARTIAL_ALIVE",
+        "runtime": "RUST",
+        "labRuntimeDependency": false,
+        "plannerRuntimeDependency": false,
+        "llmRuntimeDependency": false,
+        "noveltyBehavior": "REFUSE_AND_PACKET",
+        "uncertainDoBehavior": "RECONCILE_NO_AUTO_RETRY"
+    }))
+}
+
 // The single requested ggen pack is compatibility-oriented and contributes
 // three legacy specimen handlers. They are deliberately inert here: they
 // satisfy the pack's compile-time route proof without gaining AutoFDE product
