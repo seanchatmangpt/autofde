@@ -2,17 +2,22 @@ from __future__ import annotations
 
 import json
 import sys
-import tempfile
 import unittest
 from pathlib import Path
 
-from rdflib import Graph, Literal, Namespace, RDF, URIRef
+from rdflib import Graph, Literal, Namespace, RDF
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from render_reference import load_config, load_graph, render_all  # noqa: E402
-from verify_ontology import gate_has_violation, verify_coverage, verify_identity  # noqa: E402
+from render_reference import load_config, load_graph, render_legacy  # noqa: E402
+from verify_ontology import (  # noqa: E402
+    gate_has_violation,
+    generation_rules_from_graph,
+    law_gates,
+    verify_coverage,
+    verify_identity,
+)
 
 AUTOFDE = Namespace("https://seanchatmangpt.github.io/autofde/ontology#")
 
@@ -22,7 +27,7 @@ class AutoFDEOntologyTests(unittest.TestCase):
     def setUpClass(cls) -> None:
         cls.config = load_config()
         cls.graph = load_graph(cls.config)
-        cls.gates = {Path(path).stem: ROOT / path for path in cls.config["validation"]["gates"]}
+        cls.gates = {Path(path).stem: ROOT / path for path in law_gates(cls.config)}
 
     def clone_graph(self) -> Graph:
         clone = Graph()
@@ -38,6 +43,7 @@ class AutoFDEOntologyTests(unittest.TestCase):
         self.assertEqual(metrics["phases"], 9)
 
     def test_all_law_gates_are_closed(self) -> None:
+        self.assertEqual(len(self.gates), 7)
         for name, path in self.gates.items():
             with self.subTest(gate=name):
                 self.assertFalse(gate_has_violation(self.graph, path))
@@ -81,15 +87,39 @@ class AutoFDEOntologyTests(unittest.TestCase):
         self.assertTrue(gate_has_violation(graph, self.gates["every-generation-rule-is-closed"]))
 
     def test_reference_generation_is_byte_deterministic(self) -> None:
-        first = {item.output_file: item.content for item in render_all(self.graph, self.config)}
-        second = {item.output_file: item.content for item in render_all(self.graph, self.config)}
+        legacy_config = {
+            "generation": {"rules": generation_rules_from_graph(self.graph)}
+        }
+        first = {
+            item.output_file: item.content
+            for item in render_legacy(self.graph, legacy_config)
+        }
+        second = {
+            item.output_file: item.content
+            for item in render_legacy(self.graph, legacy_config)
+        }
         self.assertEqual(first, second)
-        self.assertEqual(set(first), {
-            "generated/ONTOLOGY_CATALOG.md",
-            "generated/autofde-modules.json",
-            "generated/autofde_standing.py",
-            "generated/autofde-phases.yaml",
-        })
+        self.assertEqual(
+            set(first),
+            {
+                "generated/ONTOLOGY_CATALOG.md",
+                "generated/autofde-modules.json",
+                "generated/autofde_standing.py",
+                "generated/autofde-phases.yaml",
+            },
+        )
+
+    def test_frontmatter_has_exactly_one_cli_pack_and_full_product_capsule(self) -> None:
+        self.assertEqual(list(self.config.get("packs", {})), ["clap-noun-verb-pack"])
+        pack = self.config["packs"]["clap-noun-verb-pack"]
+        admitted = {self.config["ontology"]["source"], *pack.get("extra_ontologies", [])}
+        source_bundle = {
+            line.strip()
+            for line in (ROOT / "ontology/source-bundle.txt").read_text().splitlines()
+            if line.strip()
+        }
+        self.assertLessEqual(source_bundle, admitted)
+        self.assertIn("ontology/cli.ttl", admitted)
 
     def test_module_projection_is_valid_json(self) -> None:
         data = json.loads((ROOT / "generated/autofde-modules.json").read_text())
