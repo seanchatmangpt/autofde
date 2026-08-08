@@ -110,7 +110,7 @@ jobs:
           fi
           echo 'AUTOFDE_GGEN_CONSEQUENCE_BOUNDARY_ALIVE files=4'
 
-      - name: Lock, normalize, and execute Rust runtime
+      - name: Lock, normalize authored Rust, and execute runtime
         shell: bash
         env:
           RUSTC_WRAPPER: ""
@@ -118,8 +118,16 @@ jobs:
         run: |
           set -euo pipefail
           cargo generate-lockfile
-          cargo fmt
-          cargo fmt --check
+          # The clap pack's independent proof intentionally compares its
+          # generated Rust byte-for-byte with its SPARQL projection. Never
+          # rustfmt those projections after ggen. Normalize only handwritten
+          # kernel files.
+          rustfmt +${RUST_TOOLCHAIN} --edition 2021 \
+            src/runtime.rs src/lib.rs src/main.rs \
+            src/verbs/handlers.rs src/verbs/mod.rs
+          rustfmt +${RUST_TOOLCHAIN} --edition 2021 --check \
+            src/runtime.rs src/lib.rs src/main.rs \
+            src/verbs/handlers.rs src/verbs/mod.rs
           cargo clippy --all-targets -- -D warnings
           cargo test --locked
           cargo run --locked -- status show
@@ -149,9 +157,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          # ggen owns the route/doc/proof/lock projections. rustfmt is admitted
-          # as the deterministic Rust normalization pass; on the first closure
-          # it may normalize the bounded handwritten Rust kernel as well.
           git add \
             src/clap_noun_verb_routes.rs \
             tests/clap_noun_verb_sparql_derived_proof.rs \
