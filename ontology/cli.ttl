@@ -120,5 +120,4 @@ autofde:DoctorInspect a cnv:Command ;
   cnv:noun "doctor" ; cnv:verb "inspect" ;
   cnv:handler "doctor_inspect_handler" ;
   cnv:doc "Inspect the v26.8.8 architecture boundary. This command is ontology-complete and non-actuating." ;
-  cnv:returnType "serde_json::Value" ; cnv:args "" ;
-  cnv:staticResponse "json!({ \"standing\": \"PARTIAL_ALIVE\", \"runtime\": \"RUST\", \"labRuntimeDependency\": false, \"plannerRuntimeDependency\": false, \"llmRuntimeDependency\": false, \"noveltyBehavior\": \"REFUSE_AND_PACKET\", \"uncertainDoBehavior\": \"RECONCILE_NO_AUTO_RETRY\" })" .
+  cnv:returnType "serde_json::Value" ; cnv:args "" .
