@@ -47,7 +47,9 @@ jobs:
               cfg = tomllib.load(fh)
           packs = cfg.get('packs', {})
           assert list(packs) == ['clap-noun-verb-pack'], packs
-          assert packs['clap-noun-verb-pack']['path'] == '../ggen/packs/clap-noun-verb-pack'
+          pack = packs['clap-noun-verb-pack']
+          assert pack['path'] == '../ggen/packs/clap-noun-verb-pack'
+          assert pack.get('extra_ontologies') == ['ontology/cli.ttl']
           print('AUTOFDE_CLI_PACK_ADMITTED clap-noun-verb-pack count=1')
           PY
 
@@ -89,6 +91,9 @@ jobs:
           set -euo pipefail
           /tmp/ggen sync run
           test -s src/clap_noun_verb_routes.rs
+          test -s tests/clap_noun_verb_sparql_derived_proof.rs
+          test -s docs/clap_noun_verb_routes.md
+          test -s ggen.lock
           grep -q '#\[verb("execute", "run")\]' src/clap_noun_verb_routes.rs
           grep -q '#\[verb("install", "bundle")\]' src/clap_noun_verb_routes.rs
           grep -q '#\[verb("match", "observation")\]' src/clap_noun_verb_routes.rs
@@ -98,11 +103,12 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          bad="$(git status --porcelain --untracked-files=all | awk '{print $2}' | grep -Ev '^(src/clap_noun_verb_routes.rs|generated/|\.ggen|\.ggen-v2)' || true)"
+          bad="$(git status --porcelain --untracked-files=all | awk '{print $2}' | grep -Ev '^(src/clap_noun_verb_routes\.rs|tests/clap_noun_verb_sparql_derived_proof\.rs|docs/clap_noun_verb_routes\.md|ggen\.lock|generated/|\.ggen|\.ggen-v2)' || true)"
           if [ -n "$bad" ]; then
             printf 'unexpected ggen consequence paths:\n%s\n' "$bad" >&2
             exit 1
           fi
+          echo 'AUTOFDE_GGEN_CONSEQUENCE_BOUNDARY_ALIVE files=4'
 
       - name: Lock and execute Rust runtime
         shell: bash
@@ -142,7 +148,12 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          git add src/clap_noun_verb_routes.rs Cargo.lock generated/
+          git add \
+            src/clap_noun_verb_routes.rs \
+            tests/clap_noun_verb_sparql_derived_proof.rs \
+            docs/clap_noun_verb_routes.md \
+            ggen.lock \
+            Cargo.lock
           if git diff --cached --quiet; then
             echo 'No generated consequence drift.'
             exit 0
