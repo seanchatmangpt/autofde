@@ -44,10 +44,10 @@ jobs:
           test "$(git -C .crown/ggen rev-parse HEAD)" = "b63492ef4e415f25d8fc990c003d79b7f261bfb2"
 
       - name: Run Lab admission falsifiers
-        run: python3 -m unittest -v .crown/autofde-lab/tests/fabric/test_autofde_requirement_admission.py
+        run: python3 .crown/autofde-lab/tests/fabric/test_autofde_requirement_admission.py -v
 
       - name: Run ggen manufacture falsifiers
-        run: python3 -m unittest -v .crown/ggen/scripts/test_autofde_manufacture_bundle.py
+        run: python3 .crown/ggen/scripts/test_autofde_manufacture_bundle.py -v
 
       - name: Compile production self-manufacturing boundary
         run: python3 -m py_compile src/autofde/runtime.py src/autofde/self_manufacture.py scripts/verify_self_manufacturing_crown.py
@@ -64,7 +64,7 @@ jobs:
             | tee self-manufacturing-crown.receipt.jsonl
 
       - name: Upload crown receipt
-        if: always()
+        if: ${{ always() && hashFiles('self-manufacturing-crown.receipt.jsonl') != '' }}
         uses: actions/upload-artifact@v4
         with:
           name: self-manufacturing-crown-receipt
