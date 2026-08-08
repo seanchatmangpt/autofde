@@ -2,7 +2,7 @@ name: Self-Manufacturing Crown
 
 on:
   pull_request:
-    branches: [main]
+    branches: [main, agent/azure-rdfdelta-knowledge-hook]
   workflow_dispatch:
 
 permissions:
