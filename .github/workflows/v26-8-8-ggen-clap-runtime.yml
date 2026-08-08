@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  GGEN_REVISION: c37b46015b8e5ab40be771d61aafe3d7c7af084c
+  GGEN_PACK_REVISION: 0a8f6cc1842ccb19d3705f55f68bb6747f193d69
   GGEN_RELEASE: v26.8.8
   GGEN_LINUX_SHA256: c651d873c2aeb6bd71c3d5356634f0b3f4adafd2454ee354c817a7079c2ea802
   RUST_TOOLCHAIN: nightly-2026-06-22
@@ -58,8 +58,8 @@ jobs:
         run: |
           set -euo pipefail
           git clone --filter=blob:none https://github.com/seanchatmangpt/ggen.git ../ggen
-          git -C ../ggen checkout --detach "${GGEN_REVISION}"
-          test "$(git -C ../ggen rev-parse HEAD)" = "${GGEN_REVISION}"
+          git -C ../ggen checkout --detach "${GGEN_PACK_REVISION}"
+          test "$(git -C ../ggen rev-parse HEAD)" = "${GGEN_PACK_REVISION}"
           test -f ../ggen/packs/clap-noun-verb-pack/pack.toml
 
       - name: Materialize digest-pinned ggen v26.8.8 executable
@@ -118,10 +118,6 @@ jobs:
         run: |
           set -euo pipefail
           cargo generate-lockfile
-          # The clap pack's independent proof intentionally compares its
-          # generated Rust byte-for-byte with its SPARQL projection. Never
-          # rustfmt those projections after ggen. Normalize only handwritten
-          # kernel files.
           rustfmt +${RUST_TOOLCHAIN} --edition 2021 \
             src/runtime.rs src/lib.rs src/main.rs \
             src/verbs/handlers.rs src/verbs/mod.rs
