@@ -385,7 +385,10 @@ mod tests {
 
         drop(ledger);
         let reopened = KnowledgeHookLedger::open(&path).unwrap();
-        assert_eq!(reopened.verify_stream("azure-sentinel/incidents").unwrap(), 2);
+        assert_eq!(
+            reopened.verify_stream("azure-sentinel/incidents").unwrap(),
+            2
+        );
     }
 
     #[test]
