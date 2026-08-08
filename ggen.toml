@@ -17,12 +17,31 @@ dcat = "http://www.w3.org/ns/dcat#"
 dcterms = "http://purl.org/dc/terms/"
 sh = "http://www.w3.org/ns/shacl#"
 
-# AutoFDE v26.8.8 consumes exactly one ggen pack for its CLI. The CLI
-# ontology is unioned into that pack's graph so the pack's own command
-# projection manufactures the Rust noun/verb routes. The sibling checkout is
-# a manufacture-time source only; the installed AutoFDE runtime never needs it.
+# AutoFDE v26.8.8 consumes exactly one ggen pack for its CLI. The product's
+# complete canonical ontology capsule is admitted into the same union graph as
+# extra ontologies; this does not add another pack or another generator.
 [packs]
-clap-noun-verb-pack = { path = "../ggen/packs/clap-noun-verb-pack", extra_ontologies = ["ontology/cli.ttl"] }
+clap-noun-verb-pack = { path = "../ggen/packs/clap-noun-verb-pack", extra_ontologies = [
+  "ontology/core.ttl",
+  "ontology/semantics.ttl",
+  "ontology/work.ttl",
+  "ontology/authority.ttl",
+  "ontology/evidence.ttl",
+  "ontology/generator.ttl",
+  "ontology/object-properties-foundation.ttl",
+  "ontology/object-properties-runtime.ttl",
+  "ontology/datatype-properties.ttl",
+  "ontology/vocabulary.ttl",
+  "ontology/product.ttl",
+  "ontology/phases.ttl",
+  "ontology/generation-rules.ttl",
+  "ontology/axioms.ttl",
+  "ontology/shapes.ttl",
+  "ontology/bootstrap-to-breach.ttl",
+  "ontology/bootstrap-project.ttl",
+  "ontology/bootstrap-runtime.ttl",
+  "ontology/cli.ttl",
+] }
 
 # No hand-written AutoFDE CLI templates live here. This directory exists only
 # to satisfy the frontmatter schema; all CLI route manufacture comes from the
