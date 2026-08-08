@@ -110,7 +110,7 @@ jobs:
           fi
           echo 'AUTOFDE_GGEN_CONSEQUENCE_BOUNDARY_ALIVE files=4'
 
-      - name: Lock and execute Rust runtime
+      - name: Lock, normalize, and execute Rust runtime
         shell: bash
         env:
           RUSTC_WRAPPER: ""
@@ -118,6 +118,7 @@ jobs:
         run: |
           set -euo pipefail
           cargo generate-lockfile
+          cargo fmt
           cargo fmt --check
           cargo clippy --all-targets -- -D warnings
           cargo test --locked
@@ -144,21 +145,34 @@ jobs:
           print('AUTOFDE_GGEN_CLAP_ROUTES_ALIVE commands=12')
           PY
 
-      - name: Persist ggen-owned consequences
+      - name: Persist deterministic manufacture consequences
         shell: bash
         run: |
           set -euo pipefail
+          # ggen owns the route/doc/proof/lock projections. rustfmt is admitted
+          # as the deterministic Rust normalization pass; on the first closure
+          # it may normalize the bounded handwritten Rust kernel as well.
           git add \
             src/clap_noun_verb_routes.rs \
             tests/clap_noun_verb_sparql_derived_proof.rs \
             docs/clap_noun_verb_routes.md \
             ggen.lock \
-            Cargo.lock
+            Cargo.lock \
+            src/runtime.rs \
+            src/lib.rs \
+            src/main.rs \
+            src/verbs/handlers.rs \
+            src/verbs/mod.rs
+          unexpected="$(git status --porcelain --untracked-files=all | awk '{print $2}' | grep -Ev '^(src/clap_noun_verb_routes\.rs|tests/clap_noun_verb_sparql_derived_proof\.rs|docs/clap_noun_verb_routes\.md|ggen\.lock|Cargo\.lock|src/runtime\.rs|src/lib\.rs|src/main\.rs|src/verbs/handlers\.rs|src/verbs/mod\.rs|generated/|\.ggen|\.ggen-v2)' || true)"
+          if [ -n "$unexpected" ]; then
+            printf 'unexpected post-manufacture paths:\n%s\n' "$unexpected" >&2
+            exit 1
+          fi
           if git diff --cached --quiet; then
-            echo 'No generated consequence drift.'
+            echo 'No deterministic manufacture drift.'
             exit 0
           fi
           git config user.name 'autofde-ggen-manufacturer'
           git config user.email '136349053+seanchatmangpt@users.noreply.github.com'
-          git commit -m 'generated(v26.8.8): manufacture clap noun-verb runtime surface'
+          git commit -m 'generated(v26.8.8): close deterministic Rust manufacture'
           git push origin "HEAD:${GITHUB_REF_NAME}"
