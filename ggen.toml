@@ -1,6 +1,6 @@
 [project]
 name = "autofde"
-version = "0.1.0"
+version = "26.8.8"
 description = "EXPLOIT-only Forward Deployment Operating System generated from the canonical AutoFDE ontology"
 authors = ["Sean Chatman <sean@chatmangpt.com>"]
 license = "MIT"
@@ -29,11 +29,12 @@ imports = [
   "ontology/bootstrap-to-breach.ttl",
   "ontology/bootstrap-project.ttl",
   "ontology/bootstrap-runtime.ttl",
+  "ontology/cli.ttl",
 ]
-
 
 [ontology.prefixes]
 autofde = "https://seanchatmangpt.github.io/autofde/ontology#"
+cnv = "http://seanchatmangpt.github.io/packs/clap-noun-verb#"
 rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 rdfs = "http://www.w3.org/2000/01/rdf-schema#"
 owl = "http://www.w3.org/2002/07/owl#"
@@ -43,6 +44,12 @@ prov = "http://www.w3.org/ns/prov#"
 dcat = "http://www.w3.org/ns/dcat#"
 dcterms = "http://purl.org/dc/terms/"
 sh = "http://www.w3.org/ns/shacl#"
+
+# v26.8.8 intentionally consumes one ggen CLI pack only. The manufacture
+# capsule materializes ggen at the exact revision recorded in the workflow as
+# a sibling checkout; AutoFDE has no runtime dependency on that checkout.
+[packs]
+clap-noun-verb-pack = { path = "../ggen/packs/clap-noun-verb-pack" }
 
 [validation]
 gates = [
