@@ -22,6 +22,11 @@ on:
 permissions:
   contents: read
 
+env:
+  GGEN_PACK_REVISION: 0a8f6cc1842ccb19d3705f55f68bb6747f193d69
+  GGEN_URL: https://github.com/seanchatmangpt/ggen/releases/download/v26.8.8/ggen-x86_64-unknown-linux-gnu.tar.gz
+  GGEN_SHA256: c651d873c2aeb6bd71c3d5356634f0b3f4adafd2454ee354c817a7079c2ea802
+
 jobs:
   ontology-crown:
     runs-on: ubuntu-latest
@@ -37,10 +42,15 @@ jobs:
           cache-dependency-path: requirements.txt
       - name: Install bounded verifier dependencies
         run: python -m pip install --disable-pip-version-check --requirement requirements.txt
-      - name: Install exact ggen v26.8.6
-        env:
-          GGEN_URL: https://github.com/seanchatmangpt/ggen/releases/download/v26.8.6/ggen-x86_64-unknown-linux-gnu.tar.gz
-          GGEN_SHA256: 4a8e957858423ae88e50278442c8c6bf5d44d24f8061774a911185cfe74ee469
+      - name: Materialize exact clap-noun-verb pack authority
+        shell: bash
+        run: |
+          set -euo pipefail
+          git clone --filter=blob:none https://github.com/seanchatmangpt/ggen.git ../ggen
+          git -C ../ggen checkout --detach "${GGEN_PACK_REVISION}"
+          test "$(git -C ../ggen rev-parse HEAD)" = "${GGEN_PACK_REVISION}"
+          test -f ../ggen/packs/clap-noun-verb-pack/pack.toml
+      - name: Install digest-pinned ggen v26.8.8
         run: |
           curl --fail --location --silent --show-error "$GGEN_URL" --output /tmp/ggen.tar.gz
           echo "$GGEN_SHA256  /tmp/ggen.tar.gz" | sha256sum --check --strict
@@ -67,7 +77,22 @@ jobs:
             echo "::error title=ggen sync failed::$diagnostic"
           fi
           exit "$status"
-      - name: Refuse generated drift
+      - name: Verify exact one-pack closure
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s src/clap_noun_verb_routes.rs
+          test -s tests/clap_noun_verb_sparql_derived_proof.rs
+          test -s docs/clap_noun_verb_routes.md
+          test -s ggen.lock
+          python3 - <<'PY'
+          import tomllib
+          with open('ggen.toml', 'rb') as fh:
+              packs = tomllib.load(fh).get('packs', {})
+          assert list(packs) == ['clap-noun-verb-pack'], packs
+          print('AUTOFDE_ONTOLOGY_ONE_PACK_CLOSURE_ALIVE')
+          PY
+      - name: Refuse legacy generated drift
         run: git diff --exit-code -- generated
       - name: Verify independent reference correspondence
         run: python scripts/render_reference.py --check
