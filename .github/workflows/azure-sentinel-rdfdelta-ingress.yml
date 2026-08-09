@@ -1,0 +1,64 @@
+name: Azure Sentinel RDFDelta ingress
+
+on:
+  pull_request:
+    paths:
+      - "src/sentinel_ingress.rs"
+      - "src/knowledge_hook.rs"
+      - "src/lib.rs"
+      - ".github/workflows/azure-sentinel-rdfdelta-ingress.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  qualify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout exact subject
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+
+      - name: Prove exact subject identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          admitted="${{ github.event.pull_request.head.sha || github.sha }}"
+          observed="$(git rev-parse HEAD)"
+          test "$observed" = "$admitted" || { echo "REFUSED:EXACT_HEAD_MISMATCH admitted=$admitted observed=$observed"; exit 1; }
+          echo "exact_head=$observed"
+
+      - name: Install pinned Rust toolchain
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: nightly-2026-06-22
+          components: rustfmt, clippy
+
+      - name: Format refusal
+        run: cargo +nightly-2026-06-22 fmt --all -- --check
+
+      - name: Compile production boundary
+        run: cargo +nightly-2026-06-22 check --locked --lib
+
+      - name: Clippy production boundary
+        run: cargo +nightly-2026-06-22 clippy --locked --lib -- -D warnings
+
+      - name: Execute Sentinel ingress falsifiers
+        run: cargo +nightly-2026-06-22 test --locked --lib sentinel_ingress::tests:: -- --nocapture
+
+      - name: Zero-DO static authority fence
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(grep -c 'pub fn admit_sentinel_incident' src/sentinel_ingress.rs)" -eq 1
+          if grep -nE 'Command::|TcpStream|UdpSocket|reqwest|hyper::|azure_sdk|terraform|tofu|az ' src/sentinel_ingress.rs; then
+            echo 'REFUSED:SENTINEL_INGRESS_ACQUIRED_ACTUATION_SURFACE'
+            exit 1
+          fi
+          grep -q 'authority_class, "CONSTRUCT"' src/sentinel_ingress.rs
+          grep -q '!first.intent.do_authority' src/sentinel_ingress.rs
+          echo 'AUTOFDE_SENTINEL_INGRESS_AUTHORITY_FENCE_ALIVE'
