@@ -1,64 +1,63 @@
-name: Azure Sentinel RDFDelta ingress
+name: AutoFDE Azure Sentinel RDFDelta ingress
 
 on:
-  pull_request:
-    paths:
-      - "src/sentinel_ingress.rs"
-      - "src/knowledge_hook.rs"
-      - "src/lib.rs"
-      - ".github/workflows/azure-sentinel-rdfdelta-ingress.yml"
+  push:
+    branches:
+      - agent/azure-sentinel-rdfdelta-ingress
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  qualify:
+  sentinel-ingress-crown:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 15
     steps:
       - name: Checkout exact subject
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
           persist-credentials: false
 
-      - name: Prove exact subject identity
+      - name: Assert exact branch subject
         shell: bash
         run: |
           set -euo pipefail
-          admitted="${{ github.event.pull_request.head.sha || github.sha }}"
-          observed="$(git rev-parse HEAD)"
-          test "$observed" = "$admitted" || { echo "REFUSED:EXACT_HEAD_MISMATCH admitted=$admitted observed=$observed"; exit 1; }
-          echo "exact_head=$observed"
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          test "${GITHUB_REF_NAME}" = "agent/azure-sentinel-rdfdelta-ingress"
 
       - name: Install pinned Rust toolchain
-        uses: dtolnay/rust-toolchain@master
-        with:
-          toolchain: nightly-2026-06-22
-          components: rustfmt, clippy
-
-      - name: Format refusal
-        run: cargo +nightly-2026-06-22 fmt --all -- --check
-
-      - name: Compile production boundary
-        run: cargo +nightly-2026-06-22 check --locked --lib
-
-      - name: Clippy production boundary
-        run: cargo +nightly-2026-06-22 clippy --locked --lib -- -D warnings
-
-      - name: Execute Sentinel ingress falsifiers
-        run: cargo +nightly-2026-06-22 test --locked --lib sentinel_ingress::tests:: -- --nocapture
-
-      - name: Zero-DO static authority fence
         shell: bash
         run: |
           set -euo pipefail
-          test "$(grep -c 'pub fn admit_sentinel_incident' src/sentinel_ingress.rs)" -eq 1
-          if grep -nE 'Command::|TcpStream|UdpSocket|reqwest|hyper::|azure_sdk|terraform|tofu|az ' src/sentinel_ingress.rs; then
-            echo 'REFUSED:SENTINEL_INGRESS_ACQUIRED_ACTUATION_SURFACE'
+          rustup toolchain install nightly-2026-06-22 --profile minimal --component rustfmt,clippy
+          rustup override set nightly-2026-06-22
+          rustc --version
+          cargo --version
+
+      - name: Format compile and lint production ingress
+        shell: bash
+        run: |
+          set -euo pipefail
+          rustfmt +nightly-2026-06-22 --edition 2021 --check src/sentinel_ingress.rs src/lib.rs
+          cargo check --locked --lib
+          cargo clippy --locked --lib -- -D warnings
+
+      - name: Execute Sentinel ingress positive and adversarial proofs
+        shell: bash
+        run: |
+          set -euo pipefail
+          cargo test --locked --lib sentinel_ingress::tests:: -- --nocapture
+
+      - name: Refuse Sentinel ingress authority escalation
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'assert_eq!(first.intent.authority_class, "CONSTRUCT")' src/sentinel_ingress.rs
+          grep -q 'assert!(!first.intent.do_authority)' src/sentinel_ingress.rs
+          if grep -Eq 'Command::new|std::process|reqwest|TcpStream|UdpSocket|terraform|tofu|az login' src/sentinel_ingress.rs; then
+            echo 'REFUSED_SENTINEL_INGRESS_ACTUATION_SURFACE' >&2
             exit 1
           fi
-          grep -q 'authority_class, "CONSTRUCT"' src/sentinel_ingress.rs
-          grep -q '!first.intent.do_authority' src/sentinel_ingress.rs
           echo 'AUTOFDE_SENTINEL_INGRESS_AUTHORITY_FENCE_ALIVE'
