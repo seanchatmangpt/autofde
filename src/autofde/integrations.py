@@ -10,13 +10,50 @@ class IntegrationManifest:
     coordinate: str
     identity: str
     authority: str
+    runtime_resident: bool
 
 
 _MANIFEST = (
-    IntegrationManifest("substrate", "project scaffold", "superlinear-ai/substrate", "ec640e3d6e0d18ddfc7123e67580ffdc7af80889", "CONSTRUCT"),
-    IntegrationManifest("fastmcp", "MCP transport", "PyPI:fastmcp", ">=2.12,<3", "ROUTE"),
-    IntegrationManifest("dspy", "bounded program optimization", "PyPI:dspy", ">=3,<4", "CONSTRUCT"),
-    IntegrationManifest("autofde-lab", "exploration and admission", "seanchatmangpt/autofde-lab", "8d8e8ae6c995abbe89f2ede4f8aaea1f02ae52f2", "SELECT"),
+    IntegrationManifest(
+        "substrate",
+        "project scaffold provenance",
+        "superlinear-ai/substrate",
+        "ec640e3d6e0d18ddfc7123e67580ffdc7af80889",
+        "CONSTRUCT",
+        False,
+    ),
+    IntegrationManifest(
+        "fastmcp",
+        "MCP transport",
+        "PyPI:fastmcp",
+        ">=3.4.1,<4",
+        "ROUTE",
+        True,
+    ),
+    IntegrationManifest(
+        "dspy",
+        "design-time bounded program optimization",
+        "PyPI:dspy",
+        ">=3,<4",
+        "CONSTRUCT",
+        False,
+    ),
+    IntegrationManifest(
+        "autofde-lab",
+        "external exploration and admission control plane",
+        "seanchatmangpt/autofde-lab",
+        "5882f8e853458c7197eba31ee60a8c6ef259150e",
+        "SELECT",
+        False,
+    ),
+    IntegrationManifest(
+        "gymact",
+        "governed consequence substrate",
+        "seanchatmangpt/gymact",
+        "24bd68a8c9e59ee42a4a2eeea9fc12d79fe75f5b",
+        "DO_BRCE_ONLY",
+        True,
+    ),
 )
 
 
@@ -25,4 +62,8 @@ def admitted_integrations() -> tuple[IntegrationManifest, ...]:
 
 
 def integration_receipt() -> dict[str, object]:
-    return {"standing": "PARTIAL_ALIVE", "integrations": [asdict(item) for item in _MANIFEST]}
+    return {
+        "standing": "PARTIAL_ALIVE",
+        "production_rule": "EXPLOIT_ONLY_COMPILED_PROFILE_TO_GYMACT_BRCE",
+        "integrations": [asdict(item) for item in _MANIFEST],
+    }
