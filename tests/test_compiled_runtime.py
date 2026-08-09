@@ -76,6 +76,13 @@ def test_compiled_profile_executes_only_through_real_gymact_brce_and_is_receipte
     assert outcome.receipt.receipt_id.startswith("sha256:")
     assert runtime.receipts() == (outcome.receipt,)
 
+    # Exact compiled profile identity is exactly-once. Re-entry returns the
+    # already-receipted outcome instead of rematerializing a torn-down episode.
+    replay = asyncio.run(runtime.execute("memory-counter"))
+    assert replay is outcome
+    assert runtime.receipts() == (outcome.receipt,)
+    assert runtime.outcomes() == (outcome,)
+
 
 def test_missing_grant_issuer_is_a_receipted_refusal_not_a_bypass() -> None:
     bundle = _admit()
