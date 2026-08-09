@@ -1,0 +1,104 @@
+name: AutoFDE ontology crown
+
+on:
+  pull_request:
+    paths:
+      - "ontology/**"
+      - "queries/**"
+      - "templates/**"
+      - "scripts/**"
+      - "tests/**"
+      - "src/**"
+      - "capabilities/**"
+      - "generated/**"
+      - "requirements.txt"
+      - "ggen.toml"
+      - "Makefile"
+      - ".github/workflows/ontology.yml"
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  GGEN_PACK_REVISION: 0a8f6cc1842ccb19d3705f55f68bb6747f193d69
+  GGEN_URL: https://github.com/seanchatmangpt/ggen/releases/download/v26.8.8/ggen-x86_64-unknown-linux-gnu.tar.gz
+  GGEN_SHA256: c651d873c2aeb6bd71c3d5356634f0b3f4adafd2454ee354c817a7079c2ea802
+
+jobs:
+  ontology-crown:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Check out exact subject
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Install Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - name: Install bounded verifier dependencies
+        run: python -m pip install --disable-pip-version-check --requirement requirements.txt
+      - name: Materialize exact clap-noun-verb pack authority
+        shell: bash
+        run: |
+          set -euo pipefail
+          git clone --filter=blob:none https://github.com/seanchatmangpt/ggen.git ../ggen
+          git -C ../ggen checkout --detach "${GGEN_PACK_REVISION}"
+          test "$(git -C ../ggen rev-parse HEAD)" = "${GGEN_PACK_REVISION}"
+          test -f ../ggen/packs/clap-noun-verb-pack/pack.toml
+      - name: Install digest-pinned ggen v26.8.8
+        run: |
+          curl --fail --location --silent --show-error "$GGEN_URL" --output /tmp/ggen.tar.gz
+          echo "$GGEN_SHA256  /tmp/ggen.tar.gz" | sha256sum --check --strict
+          mkdir -p /tmp/ggen-bin
+          tar -xzf /tmp/ggen.tar.gz -C /tmp/ggen-bin
+          GGEN_BIN="$(find /tmp/ggen-bin -type f -name ggen -perm -u+x | head -n 1)"
+          test -n "$GGEN_BIN"
+          echo "$(dirname "$GGEN_BIN")" >> "$GITHUB_PATH"
+          "$GGEN_BIN" --version
+      - name: Compile verifier surfaces
+        run: python -m compileall -q scripts tests generated src
+      - name: Execute exact ggen projection
+        shell: bash
+        run: |
+          set +e
+          ggen sync run 2>&1 | tee /tmp/ggen-sync.log
+          status=${PIPESTATUS[0]}
+          set -e
+          if [ "$status" -ne 0 ]; then
+            diagnostic="$(head -c 6000 /tmp/ggen-sync.log)"
+            diagnostic="${diagnostic//'%'/'%25'}"
+            diagnostic="${diagnostic//$'\r'/'%0D'}"
+            diagnostic="${diagnostic//$'\n'/'%0A'}"
+            echo "::error title=ggen sync failed::$diagnostic"
+          fi
+          exit "$status"
+      - name: Verify exact one-pack closure
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s src/clap_noun_verb_routes.rs
+          test -s tests/clap_noun_verb_sparql_derived_proof.rs
+          test -s docs/clap_noun_verb_routes.md
+          test -s ggen.lock
+          python3 - <<'PY'
+          import tomllib
+          with open('ggen.toml', 'rb') as fh:
+              packs = tomllib.load(fh).get('packs', {})
+          assert list(packs) == ['clap-noun-verb-pack'], packs
+          print('AUTOFDE_ONTOLOGY_ONE_PACK_CLOSURE_ALIVE')
+          PY
+      - name: Refuse legacy generated drift
+        run: git diff --exit-code -- generated
+      - name: Verify independent reference correspondence
+        run: python scripts/render_reference.py --check
+      - name: Execute ontology verifier
+        run: python scripts/verify_ontology.py
+      - name: Execute falsifier suite
+        env:
+          PYTHONPATH: src
+        run: python -m unittest discover -s tests -v

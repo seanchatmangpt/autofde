@@ -1,0 +1,73 @@
+@prefix autofde: <https://seanchatmangpt.github.io/autofde/ontology#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+#################################################################
+# Canonical case: Bootstrap to governed breach response
+#################################################################
+
+
+autofde:WorkSemanticFoundation a autofde:Issue ; rdfs:label "Compile semantic foundation" ; autofde:identifier "WORK-001" ; autofde:belongsToMilestone autofde:MilestoneOrganize .
+autofde:WorkProjectGraph a autofde:Issue ; rdfs:label "Manufacture delivery graph" ; autofde:identifier "WORK-002" ; autofde:belongsToMilestone autofde:MilestoneOrganize .
+autofde:WorkPOWLProjection a autofde:Issue ; rdfs:label "Project work into POWL" ; autofde:identifier "WORK-003" ; autofde:belongsToMilestone autofde:MilestoneOrganize .
+autofde:WorkGitHubPlan a autofde:Issue ; rdfs:label "Manufacture GitHub Terraform plan" ; autofde:identifier "WORK-004" ; autofde:belongsToMilestone autofde:MilestoneBuild .
+autofde:WorkCapabilityPack a autofde:Issue ; rdfs:label "Manufacture bounded capability pack" ; autofde:identifier "WORK-005" ; autofde:belongsToMilestone autofde:MilestoneBuild .
+autofde:WorkRuntime a autofde:Issue ; rdfs:label "Start governed runtime" ; autofde:identifier "WORK-006" ; autofde:belongsToMilestone autofde:MilestoneOperate .
+autofde:WorkBreachResponse a autofde:Issue ; rdfs:label "Execute governed breach response" ; autofde:identifier "WORK-007" ; autofde:belongsToMilestone autofde:MilestoneOperate .
+autofde:WorkDualRevision a autofde:Issue ; rdfs:label "Revise operation and delivery" ; autofde:identifier "WORK-008" ; autofde:belongsToMilestone autofde:MilestoneAdapt .
+
+autofde:MilestoneOrganize a autofde:Milestone ; rdfs:label "Organize" ; autofde:order 1 .
+autofde:MilestoneBuild a autofde:Milestone ; rdfs:label "Build" ; autofde:order 2 .
+autofde:MilestoneOperate a autofde:Milestone ; rdfs:label "Operate" ; autofde:order 3 .
+autofde:MilestoneAdapt a autofde:Milestone ; rdfs:label "Adapt" ; autofde:order 4 .
+
+autofde:WD001 a autofde:WorkDependency ; autofde:workPredecessor autofde:WorkSemanticFoundation ; autofde:workSuccessor autofde:WorkProjectGraph .
+autofde:WD002 a autofde:WorkDependency ; autofde:workPredecessor autofde:WorkProjectGraph ; autofde:workSuccessor autofde:WorkPOWLProjection .
+autofde:WD003 a autofde:WorkDependency ; autofde:workPredecessor autofde:WorkPOWLProjection ; autofde:workSuccessor autofde:WorkGitHubPlan .
+autofde:WD004 a autofde:WorkDependency ; autofde:workPredecessor autofde:WorkGitHubPlan ; autofde:workSuccessor autofde:WorkCapabilityPack .
+autofde:WD005 a autofde:WorkDependency ; autofde:workPredecessor autofde:WorkCapabilityPack ; autofde:workSuccessor autofde:WorkRuntime .
+autofde:WD006 a autofde:WorkDependency ; autofde:workPredecessor autofde:WorkRuntime ; autofde:workSuccessor autofde:WorkBreachResponse .
+autofde:WD007 a autofde:WorkDependency ; autofde:workPredecessor autofde:WorkBreachResponse ; autofde:workSuccessor autofde:WorkDualRevision .
+
+autofde:DeliveryConcurrency a autofde:ConcurrencyRelation ;
+    autofde:concurrentMember autofde:WorkSemanticFoundation, autofde:WorkRuntime .
+
+autofde:BootstrapPOWL a autofde:POWLProjection ;
+    rdfs:label "Bootstrap-to-Breach POWL work projection" ;
+    autofde:projectsGraph autofde:ProductPhaseGraph ;
+    autofde:containsWorkItem autofde:WorkSemanticFoundation, autofde:WorkProjectGraph,
+        autofde:WorkPOWLProjection, autofde:WorkGitHubPlan, autofde:WorkCapabilityPack,
+        autofde:WorkRuntime, autofde:WorkBreachResponse, autofde:WorkDualRevision .
+
+autofde:BootstrapGitHubProjection a autofde:GitHubProjection ;
+    rdfs:label "Bootstrap-to-Breach GitHub projection" ;
+    autofde:projectsGraph autofde:ProductPhaseGraph .
+
+#################################################################
+# Provisioning graph remains a separate partial order
+#################################################################
+
+autofde:RepositoryResource a autofde:Artifact ; rdfs:label "GitHub repository resource" ; autofde:projectionKind "github_repository" .
+autofde:MilestoneResources a autofde:Artifact ; rdfs:label "GitHub milestone resources" ; autofde:projectionKind "github_repository_milestone" .
+autofde:LabelResources a autofde:Artifact ; rdfs:label "GitHub label resources" ; autofde:projectionKind "github_issue_label" .
+autofde:IssueResources a autofde:Artifact ; rdfs:label "GitHub issue resources" ; autofde:projectionKind "github_issue" .
+
+autofde:PD001 a autofde:ProvisioningDependency ; autofde:provisioningPredecessor autofde:RepositoryResource ; autofde:provisioningSuccessor autofde:MilestoneResources .
+autofde:PD002 a autofde:ProvisioningDependency ; autofde:provisioningPredecessor autofde:RepositoryResource ; autofde:provisioningSuccessor autofde:LabelResources .
+autofde:PD003 a autofde:ProvisioningDependency ; autofde:provisioningPredecessor autofde:MilestoneResources ; autofde:provisioningSuccessor autofde:IssueResources .
+autofde:PD004 a autofde:ProvisioningDependency ; autofde:provisioningPredecessor autofde:LabelResources ; autofde:provisioningSuccessor autofde:IssueResources .
+
+autofde:BootstrapTerraformPlan a autofde:TerraformProjection ;
+    rdfs:label "Bootstrap-to-Breach GitHub Terraform plan" ;
+    autofde:projectsGraph autofde:ProductPhaseGraph .
+
+autofde:ProjectProjectionEquivalence a autofde:SemanticEquivalenceClaim ;
+    rdfs:label "Work and provisioning projection equivalence" ;
+    autofde:equivalentProjection autofde:BootstrapPOWL, autofde:BootstrapGitHubProjection, autofde:BootstrapTerraformPlan .
+
+#################################################################
+# Knowledge Hook, authority, BRCE, consequence, and replay
+#################################################################

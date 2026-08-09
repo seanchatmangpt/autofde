@@ -1,0 +1,15 @@
+PREFIX autofde: <https://seanchatmangpt.github.io/autofde/ontology#>
+ASK {
+  ?actuation a autofde:Actuation .
+  {
+    FILTER NOT EXISTS { ?actuation autofde:routedThroughBroker ?broker . ?broker a autofde:BRCEBroker }
+  }
+  UNION
+  {
+    FILTER NOT EXISTS { ?actuation autofde:hasPreActuationReceipt ?receipt . ?receipt a autofde:Receipt }
+  }
+  UNION
+  {
+    FILTER NOT EXISTS { ?authority a autofde:AuthorityIntersection ; autofde:authorizes ?actuation }
+  }
+}

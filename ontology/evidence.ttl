@@ -1,0 +1,30 @@
+@prefix autofde: <https://seanchatmangpt.github.io/autofde/ontology#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+
+# Evidence, identity, replay, and standing
+#################################################################
+
+autofde:ExactSubject a owl:Class ; rdfs:subClassOf autofde:Subject .
+autofde:ExactRevision a owl:Class ; rdfs:subClassOf autofde:ExactSubject .
+autofde:SourceCapsule a owl:Class ; rdfs:subClassOf autofde:Artifact .
+autofde:ValidationPack a owl:Class ; rdfs:subClassOf autofde:Artifact .
+autofde:ExecutionMode a owl:Class ; rdfs:subClassOf skos:Concept .
+autofde:ToolchainCapsule a owl:Class ; rdfs:subClassOf autofde:Artifact .
+autofde:CommandExecution a owl:Class ; rdfs:subClassOf autofde:Evidence .
+autofde:ReceiptDAG a owl:Class ; rdfs:subClassOf autofde:Receipt .
+autofde:ReplayResult a owl:Class ; rdfs:subClassOf autofde:Evidence .
+autofde:ArtifactDigest a owl:Class ; rdfs:subClassOf autofde:Evidence .
+autofde:StandingCode a owl:Class ; rdfs:subClassOf skos:Concept .
+autofde:RefusalCode a owl:Class ; rdfs:subClassOf skos:Concept .
+autofde:IdentityBinding a owl:Class ; rdfs:subClassOf autofde:Evidence .
+autofde:ConsequenceObservation a owl:Class ; rdfs:subClassOf autofde:Evidence .
+
+#################################################################

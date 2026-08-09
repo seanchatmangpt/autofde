@@ -1,0 +1,26 @@
+[workspace]
+
+[package]
+name = "autofde"
+version = "26.8.8"
+edition = "2021"
+publish = false
+description = "AutoFDE EXPLOIT-only compiled-cognition production runtime"
+license = "MIT"
+repository = "https://github.com/seanchatmangpt/autofde"
+
+[dependencies]
+blake3 = "1.8"
+clap-noun-verb = "=26.7.4"
+clap-noun-verb-macros = "=26.7.4"
+linkme = "0.3"
+rusqlite = { version = "0.32", features = ["bundled"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[dev-dependencies]
+tempfile = "3"
+
+[[bin]]
+name = "autofde"
+path = "src/main.rs"

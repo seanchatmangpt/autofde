@@ -1,0 +1,10 @@
+PREFIX autofde: <https://seanchatmangpt.github.io/autofde/ontology#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+SELECT ?code ?label ?order
+WHERE {
+  ?standing a autofde:StandingCode ;
+            autofde:standingCode ?code ;
+            skos:prefLabel ?label ;
+            autofde:order ?order .
+}
+ORDER BY ?order ?code

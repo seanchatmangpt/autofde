@@ -1,0 +1,32 @@
+@prefix autofde: <https://seanchatmangpt.github.io/autofde/ontology#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+
+# Foundational axioms
+#################################################################
+
+autofde:AXIOM_ZERO_UNRECEIPTED_ACTUATION a owl:NamedIndividual ;
+    autofde:axiomId "BRCE-001" ;
+    autofde:invariant "Every actuation is routed through BRCE and has a pre-actuation receipt." .
+autofde:AXIOM_HOOKS_NEVER_ACTUATE a owl:NamedIndividual ;
+    autofde:axiomId "HOOK-001" ;
+    autofde:invariant "Knowledge Hooks manufacture intents; they never actuate." .
+autofde:AXIOM_SELECT_CONSTRUCT_DO_SEPARATED a owl:NamedIndividual ;
+    autofde:axiomId "AUTH-001" ;
+    autofde:invariant "SELECT, CONSTRUCT, and DO are separate authority classes." .
+autofde:AXIOM_WORK_AND_PROVISIONING_GRAPHS_SEPARATED a owl:NamedIndividual ;
+    autofde:axiomId "GRAPH-001" ;
+    autofde:invariant "Work precedence and resource provisioning dependencies are different relations and may only be compared through an explicit semantic equivalence claim." .
+autofde:AXIOM_GENERATED_OUTPUT_IS_PROJECTION a owl:NamedIndividual ;
+    autofde:axiomId "GEN-001" ;
+    autofde:invariant "Generated artifacts are projections. The ontology and templates are the editing surfaces." .
+autofde:AXIOM_EXACT_SUBJECT_ALIVE a owl:NamedIndividual ;
+    autofde:axiomId "EVID-001" ;
+    autofde:invariant "ALIVE requires observed execution against the exact admitted subject and a receipt binding source, validator, toolchain, configuration, and environment identities." .

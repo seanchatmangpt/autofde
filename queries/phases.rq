@@ -1,0 +1,11 @@
+PREFIX autofde: <https://seanchatmangpt.github.io/autofde/ontology#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?phase ?identifier ?label ?order
+WHERE {
+  autofde:ProductPhaseGraph autofde:hasPhase ?phase .
+  ?phase a autofde:Phase ;
+         autofde:identifier ?identifier ;
+         rdfs:label ?label ;
+         autofde:order ?order .
+}
+ORDER BY ?order ?identifier

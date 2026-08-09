@@ -1,0 +1,15 @@
+PREFIX autofde: <https://seanchatmangpt.github.io/autofde/ontology#>
+ASK {
+  ?standing a autofde:StandingAssertion .
+  {
+    FILTER NOT EXISTS { ?standing autofde:assertsStanding ?code . ?code a autofde:StandingCode }
+  }
+  UNION
+  {
+    FILTER NOT EXISTS { ?standing autofde:bindsSubject ?subject . ?subject a autofde:ExactSubject }
+  }
+  UNION
+  {
+    FILTER NOT EXISTS { ?standing autofde:hasReceipt ?receipt . ?receipt a autofde:Receipt }
+  }
+}

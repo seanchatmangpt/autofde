@@ -1,0 +1,65 @@
+name: AutoFDE Azure RDFDelta knowledge hook
+
+on:
+  push:
+    branches:
+      - agent/azure-rdfdelta-knowledge-hook
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  knowledge-hook-crown:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout exact subject
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Assert exact branch subject
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          test "${GITHUB_REF_NAME}" = "agent/azure-rdfdelta-knowledge-hook"
+
+      - name: Install pinned Rust toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          rustup toolchain install nightly-2026-06-22 --profile minimal --component rustfmt,clippy
+          rustup override set nightly-2026-06-22
+          rustc --version
+          cargo --version
+
+      - name: Format and compile production module harness
+        shell: bash
+        run: |
+          set -euo pipefail
+          rustfmt +nightly-2026-06-22 --edition 2021 --check src/knowledge_hook.rs tests/knowledge-hook-harness/src/lib.rs
+          cargo check --manifest-path tests/knowledge-hook-harness/Cargo.toml --all-targets
+          cargo clippy --manifest-path tests/knowledge-hook-harness/Cargo.toml --all-targets -- -D warnings
+
+      - name: Execute RDFDelta positive and adversarial proofs
+        shell: bash
+        run: |
+          set -euo pipefail
+          cargo test --manifest-path tests/knowledge-hook-harness/Cargo.toml -- --nocapture
+
+      - name: Refuse hook authority escalation in source boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'authority_class: "CONSTRUCT"' src/knowledge_hook.rs
+          grep -q 'do_authority: false' src/knowledge_hook.rs
+          grep -q "CHECK(authority_class = 'CONSTRUCT')" src/knowledge_hook.rs
+          grep -q 'CHECK(do_authority = 0)' src/knowledge_hook.rs
+          if grep -Eq 'Command::new|std::process|reqwest|TcpStream|UdpSocket' src/knowledge_hook.rs; then
+            echo 'REFUSED_KNOWLEDGE_HOOK_ACTUATION_SURFACE' >&2
+            exit 1
+          fi
+          echo 'AUTOFDE_RDFDELTA_HOOK_AUTHORITY_FENCE_ALIVE'

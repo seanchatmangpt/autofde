@@ -1,0 +1,51 @@
+@prefix autofde: <https://seanchatmangpt.github.io/autofde/ontology#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+
+# Generator declarations
+#################################################################
+
+autofde:CatalogQuery a autofde:SPARQLQuery ; autofde:queryFile "queries/catalog.rq" .
+autofde:CatalogTemplate a autofde:TeraTemplate ; autofde:templateFile "templates/ontology-catalog.md.tera" .
+autofde:CatalogProjection a autofde:GeneratedProjection ;
+    autofde:outputFile "generated/ONTOLOGY_CATALOG.md" ; autofde:hasProjectionOwnership autofde:GeneratorOwned .
+autofde:CatalogRule a autofde:GenerationRule ;
+    autofde:identifier "autofde-ontology-catalog" ; autofde:hasQuery autofde:CatalogQuery ;
+    autofde:hasTemplate autofde:CatalogTemplate ; autofde:hasOutput autofde:CatalogProjection ;
+    autofde:generationMode "Overwrite" .
+
+autofde:ModulesQuery a autofde:SPARQLQuery ; autofde:queryFile "queries/modules.rq" .
+autofde:ModulesTemplate a autofde:TeraTemplate ; autofde:templateFile "templates/modules.json.tera" .
+autofde:ModulesProjection a autofde:GeneratedProjection ;
+    autofde:outputFile "generated/autofde-modules.json" ; autofde:hasProjectionOwnership autofde:GeneratorOwned .
+autofde:ModulesRule a autofde:GenerationRule ;
+    autofde:identifier "autofde-module-manifest" ; autofde:hasQuery autofde:ModulesQuery ;
+    autofde:hasTemplate autofde:ModulesTemplate ; autofde:hasOutput autofde:ModulesProjection ;
+    autofde:generationMode "Overwrite" .
+
+autofde:StandingQuery a autofde:SPARQLQuery ; autofde:queryFile "queries/standing.rq" .
+autofde:StandingTemplate a autofde:TeraTemplate ; autofde:templateFile "templates/standing.py.tera" .
+autofde:StandingProjection a autofde:GeneratedProjection ;
+    autofde:outputFile "generated/autofde_standing.py" ; autofde:hasProjectionOwnership autofde:GeneratorOwned .
+autofde:StandingRule a autofde:GenerationRule ;
+    autofde:identifier "autofde-standing-python" ; autofde:hasQuery autofde:StandingQuery ;
+    autofde:hasTemplate autofde:StandingTemplate ; autofde:hasOutput autofde:StandingProjection ;
+    autofde:generationMode "Overwrite" .
+
+autofde:PhasesQuery a autofde:SPARQLQuery ; autofde:queryFile "queries/phases.rq" .
+autofde:PhasesTemplate a autofde:TeraTemplate ; autofde:templateFile "templates/phases.yaml.tera" .
+autofde:PhasesProjection a autofde:GeneratedProjection ;
+    autofde:outputFile "generated/autofde-phases.yaml" ; autofde:hasProjectionOwnership autofde:GeneratorOwned .
+autofde:PhasesRule a autofde:GenerationRule ;
+    autofde:identifier "autofde-phase-manifest" ; autofde:hasQuery autofde:PhasesQuery ;
+    autofde:hasTemplate autofde:PhasesTemplate ; autofde:hasOutput autofde:PhasesProjection ;
+    autofde:generationMode "Overwrite" .
+
+#################################################################

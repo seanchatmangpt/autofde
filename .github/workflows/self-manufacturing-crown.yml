@@ -1,0 +1,72 @@
+name: Self-Manufacturing Crown
+
+on:
+  pull_request:
+    branches: [main, agent/azure-rdfdelta-knowledge-hook]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  crown:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact AutoFDE head
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout admitted AutoFDE Lab admission head
+        uses: actions/checkout@v4
+        with:
+          repository: seanchatmangpt/autofde-lab
+          ref: b6df9b72003210fdfdb2e54da7bb7f462d528a75
+          path: .crown/autofde-lab
+
+      - name: Checkout admitted ggen manufacturer head
+        uses: actions/checkout@v4
+        with:
+          repository: seanchatmangpt/ggen
+          ref: b63492ef4e415f25d8fc990c003d79b7f261bfb2
+          path: .crown/ggen
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Verify exact sibling identities
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C .crown/autofde-lab rev-parse HEAD)" = "b6df9b72003210fdfdb2e54da7bb7f462d528a75"
+          test "$(git -C .crown/ggen rev-parse HEAD)" = "b63492ef4e415f25d8fc990c003d79b7f261bfb2"
+
+      - name: Run Lab admission falsifiers
+        run: python3 .crown/autofde-lab/tests/fabric/test_autofde_requirement_admission.py -v
+
+      - name: Run ggen manufacture falsifiers
+        run: python3 .crown/ggen/scripts/test_autofde_manufacture_bundle.py -v
+
+      - name: Compile production self-manufacturing boundary
+        run: python3 -m py_compile src/autofde/runtime.py src/autofde/self_manufacture.py scripts/verify_self_manufacturing_crown.py
+
+      - name: Execute recursive crown
+        env:
+          PYTHONPATH: src
+        run: |
+          python3 scripts/verify_self_manufacturing_crown.py \
+            --lab-root .crown/autofde-lab \
+            --ggen-root .crown/ggen \
+            --lab-revision b6df9b72003210fdfdb2e54da7bb7f462d528a75 \
+            --ggen-revision b63492ef4e415f25d8fc990c003d79b7f261bfb2 \
+            | tee self-manufacturing-crown.receipt.jsonl
+
+      - name: Upload crown receipt
+        if: ${{ always() && hashFiles('self-manufacturing-crown.receipt.jsonl') != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: self-manufacturing-crown-receipt
+          path: self-manufacturing-crown.receipt.jsonl
+          if-no-files-found: error

@@ -1,0 +1,16 @@
+{
+  "schema": "autofde.cloud-toolchain-lock.v1",
+  "engines": {
+    "opentofu-linux-amd64": {
+      "version": "1.12.5",
+      "artifact": "tofu_1.12.5_linux_amd64.tar.gz",
+      "sha256": "a6894d45ae7a17ce83189cce8fe04b5a65f68cefceb62455b5a6a89fa53ab38f",
+      "source": "opentofu/opentofu release v1.12.5",
+      "standing": "OBSERVED_RELEASE_METADATA_NOT_EXECUTED"
+    },
+    "terraform": {
+      "standing": "UNKNOWN",
+      "note": "No exact Terraform binary identity is admitted by this lock. AutoFDE does not infer brand parity from OpenTofu."
+    }
+  }
+}

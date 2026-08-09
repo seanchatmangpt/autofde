@@ -1,0 +1,187 @@
+name: AutoFDE v26.8.8 ggen clap runtime
+
+on:
+  push:
+    branches:
+      - agent/v26-8-8-ggen-clap-runtime
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: autofde-v26-8-8-ggen-clap-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GGEN_PACK_REVISION: 0a8f6cc1842ccb19d3705f55f68bb6747f193d69
+  GGEN_RELEASE: v26.8.8
+  GGEN_LINUX_SHA256: c651d873c2aeb6bd71c3d5356634f0b3f4adafd2454ee354c817a7079c2ea802
+  RUST_TOOLCHAIN: nightly-2026-06-22
+
+jobs:
+  manufacture-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout exact AutoFDE head
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Assert exact subject
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          test "${GITHUB_REF_NAME}" = "agent/v26-8-8-ggen-clap-runtime"
+
+      - name: Admit one ggen pack and full product capsule
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import tomllib
+          from pathlib import Path
+          with open('ggen.toml', 'rb') as fh:
+              cfg = tomllib.load(fh)
+          packs = cfg.get('packs', {})
+          assert list(packs) == ['clap-noun-verb-pack'], packs
+          pack = packs['clap-noun-verb-pack']
+          assert pack['path'] == '../ggen/packs/clap-noun-verb-pack'
+          extra = set(pack.get('extra_ontologies', []))
+          source_bundle = {
+              line.strip() for line in Path('ontology/source-bundle.txt').read_text().splitlines()
+              if line.strip()
+          }
+          admitted = {cfg['ontology']['source'], *extra}
+          assert source_bundle <= admitted, sorted(source_bundle - admitted)
+          assert 'ontology/cli.ttl' in admitted
+          print('AUTOFDE_CLI_PACK_ADMITTED clap-noun-verb-pack count=1 full_product_capsule=true')
+          PY
+
+      - name: Materialize exact ggen pack authority
+        shell: bash
+        run: |
+          set -euo pipefail
+          git clone --filter=blob:none https://github.com/seanchatmangpt/ggen.git ../ggen
+          git -C ../ggen checkout --detach "${GGEN_PACK_REVISION}"
+          test "$(git -C ../ggen rev-parse HEAD)" = "${GGEN_PACK_REVISION}"
+          test -f ../ggen/packs/clap-noun-verb-pack/pack.toml
+
+      - name: Materialize digest-pinned ggen v26.8.8 executable
+        shell: bash
+        run: |
+          set -euo pipefail
+          url="https://github.com/seanchatmangpt/ggen/releases/download/${GGEN_RELEASE}/ggen-x86_64-unknown-linux-gnu.tar.gz"
+          curl --fail --location --retry 3 --output /tmp/ggen.tar.gz "$url"
+          echo "${GGEN_LINUX_SHA256}  /tmp/ggen.tar.gz" | sha256sum --check --strict
+          mkdir -p /tmp/ggen-release
+          tar -xzf /tmp/ggen.tar.gz -C /tmp/ggen-release
+          candidate="$(find /tmp/ggen-release -type f -name ggen -perm -u+x -print -quit)"
+          test -n "$candidate"
+          install -m 0755 "$candidate" /tmp/ggen
+          /tmp/ggen --version
+
+      - name: Install pinned Rust toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          rustup toolchain install "${RUST_TOOLCHAIN}" --profile minimal --component rustfmt,clippy
+          rustup override set "${RUST_TOOLCHAIN}"
+          rustc --version
+          cargo --version
+
+      - name: Manufacture CLI from RDF with clap-noun-verb-pack
+        shell: bash
+        run: |
+          set -euo pipefail
+          /tmp/ggen sync run
+          test -s src/clap_noun_verb_routes.rs
+          test -s tests/clap_noun_verb_sparql_derived_proof.rs
+          test -s docs/clap_noun_verb_routes.md
+          test -s ggen.lock
+          grep -q '#\[verb("execute", "run")\]' src/clap_noun_verb_routes.rs
+          grep -q '#\[verb("install", "bundle")\]' src/clap_noun_verb_routes.rs
+          grep -q '#\[verb("match", "observation")\]' src/clap_noun_verb_routes.rs
+          grep -q 'REFUSE_AND_PACKET' src/clap_noun_verb_routes.rs
+
+      - name: Refuse generated path escape
+        shell: bash
+        run: |
+          set -euo pipefail
+          bad="$(git status --porcelain --untracked-files=all | awk '{print $2}' | grep -Ev '^(src/clap_noun_verb_routes\.rs|tests/clap_noun_verb_sparql_derived_proof\.rs|docs/clap_noun_verb_routes\.md|ggen\.lock|generated/|\.ggen|\.ggen-v2)' || true)"
+          if [ -n "$bad" ]; then
+            printf 'unexpected ggen consequence paths:\n%s\n' "$bad" >&2
+            exit 1
+          fi
+          echo 'AUTOFDE_GGEN_CONSEQUENCE_BOUNDARY_ALIVE files=4'
+
+      - name: Lock, normalize authored Rust, and execute runtime
+        shell: bash
+        env:
+          RUSTC_WRAPPER: ""
+          SCCACHE_DISABLE: "1"
+        run: |
+          set -euo pipefail
+          cargo generate-lockfile
+          rustfmt +${RUST_TOOLCHAIN} --edition 2021 \
+            src/runtime.rs src/lib.rs src/main.rs \
+            src/verbs/handlers.rs src/verbs/mod.rs
+          rustfmt +${RUST_TOOLCHAIN} --edition 2021 --check \
+            src/runtime.rs src/lib.rs src/main.rs \
+            src/verbs/handlers.rs src/verbs/mod.rs
+          cargo clippy --all-targets -- -D warnings
+          cargo test --locked
+          cargo run --locked -- status show
+          cargo run --locked -- doctor inspect
+
+      - name: Verify zero handwritten CLI routes
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'GENERATED by `ggen sync`' src/clap_noun_verb_routes.rs
+          python3 - <<'PY'
+          from pathlib import Path
+          authored = Path('ontology/cli.ttl').read_text()
+          generated = Path('src/clap_noun_verb_routes.rs').read_text()
+          for noun, verb in [
+              ('status','show'), ('bundle','verify'), ('bundle','install'),
+              ('bundle','list'), ('observation','match'), ('run','execute'),
+              ('occurrence','show'), ('occurrence','reconcile'), ('replay','run'),
+              ('evidence','ocel'), ('novelty','show'), ('doctor','inspect')]:
+              assert f'cnv:noun "{noun}"' in authored
+              assert f'cnv:verb "{verb}"' in authored
+              assert f'#[verb("{verb}", "{noun}")]' in generated
+          print('AUTOFDE_GGEN_CLAP_ROUTES_ALIVE commands=12')
+          PY
+
+      - name: Persist deterministic manufacture consequences
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add \
+            src/clap_noun_verb_routes.rs \
+            tests/clap_noun_verb_sparql_derived_proof.rs \
+            docs/clap_noun_verb_routes.md \
+            ggen.lock \
+            Cargo.lock \
+            src/runtime.rs \
+            src/lib.rs \
+            src/main.rs \
+            src/verbs/handlers.rs \
+            src/verbs/mod.rs
+          unexpected="$(git status --porcelain --untracked-files=all | awk '{print $2}' | grep -Ev '^(src/clap_noun_verb_routes\.rs|tests/clap_noun_verb_sparql_derived_proof\.rs|docs/clap_noun_verb_routes\.md|ggen\.lock|Cargo\.lock|src/runtime\.rs|src/lib\.rs|src/main\.rs|src/verbs/handlers\.rs|src/verbs/mod\.rs|generated/|\.ggen|\.ggen-v2)' || true)"
+          if [ -n "$unexpected" ]; then
+            printf 'unexpected post-manufacture paths:\n%s\n' "$unexpected" >&2
+            exit 1
+          fi
+          if git diff --cached --quiet; then
+            echo 'No deterministic manufacture drift.'
+            exit 0
+          fi
+          git config user.name 'autofde-ggen-manufacturer'
+          git config user.email '136349053+seanchatmangpt@users.noreply.github.com'
+          git commit -m 'generated(v26.8.8): close deterministic Rust manufacture'
+          git push origin "HEAD:${GITHUB_REF_NAME}"

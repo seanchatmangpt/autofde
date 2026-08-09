@@ -1,0 +1,33 @@
+@prefix autofde: <https://seanchatmangpt.github.io/autofde/ontology#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+
+# Canonical phase constitution
+#################################################################
+
+autofde:ProductPhaseGraph a autofde:PhaseGraph ;
+    rdfs:label "AutoFDE canonical phase graph" ;
+    autofde:hasPhase autofde:Phase0Constitution, autofde:Phase1SemanticFoundation,
+        autofde:Phase2ProjectManufacture, autofde:Phase3GitHubPlan,
+        autofde:Phase4CapabilityManufacture, autofde:Phase5RuntimeKernel,
+        autofde:Phase6KnowledgeHooks, autofde:Phase7GovernedOperation,
+        autofde:Phase8DualRevision .
+
+autofde:Phase0Constitution a autofde:Phase ; autofde:identifier "constitution" ; autofde:order 0 ; rdfs:label "Constitution" .
+autofde:Phase1SemanticFoundation a autofde:Phase ; autofde:identifier "semantic-foundation" ; autofde:order 1 ; rdfs:label "Semantic foundation" .
+autofde:Phase2ProjectManufacture a autofde:Phase ; autofde:identifier "project-manufacture" ; autofde:order 2 ; rdfs:label "Project-management manufacture" .
+autofde:Phase3GitHubPlan a autofde:Phase ; autofde:identifier "github-plan" ; autofde:order 3 ; rdfs:label "GitHub Terraform plan" .
+autofde:Phase4CapabilityManufacture a autofde:Phase ; autofde:identifier "capability-manufacture" ; autofde:order 4 ; rdfs:label "Capability manufacture" .
+autofde:Phase5RuntimeKernel a autofde:Phase ; autofde:identifier "runtime-kernel" ; autofde:order 5 ; rdfs:label "Runtime kernel" .
+autofde:Phase6KnowledgeHooks a autofde:Phase ; autofde:identifier "knowledge-hooks" ; autofde:order 6 ; rdfs:label "Knowledge Hooks" .
+autofde:Phase7GovernedOperation a autofde:Phase ; autofde:identifier "governed-operation" ; autofde:order 7 ; rdfs:label "Governed operation" .
+autofde:Phase8DualRevision a autofde:Phase ; autofde:identifier "dual-revision" ; autofde:order 8 ; rdfs:label "Operational and delivery revision" .
+
+#################################################################

@@ -1,0 +1,67 @@
+@prefix autofde: <https://seanchatmangpt.github.io/autofde/ontology#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+
+
+
+# Object properties
+#################################################################
+
+autofde:executionMode a owl:ObjectProperty ; rdfs:domain autofde:ProductSystem ; rdfs:range autofde:ExecutionMode .
+autofde:hasModule a owl:ObjectProperty ; rdfs:domain autofde:AutoFDEProduct ; rdfs:range autofde:CapabilityModule .
+autofde:providesCapability a owl:ObjectProperty ; rdfs:domain autofde:CapabilityModule ; rdfs:range autofde:Capability .
+autofde:consumesCapability a owl:ObjectProperty ; rdfs:domain autofde:CapabilityModule ; rdfs:range autofde:Capability .
+autofde:promotedAs a owl:ObjectProperty ; rdfs:range autofde:PromotedCapabilityBundle .
+autofde:hasCompatibilityIdentity a owl:ObjectProperty ; rdfs:range autofde:CompatibilityIdentity .
+autofde:supersedesIdentity a owl:ObjectProperty ; rdfs:domain autofde:CompatibilityIdentity ; rdfs:range autofde:CompatibilityIdentity .
+autofde:hasMigrationReceipt a owl:ObjectProperty ; rdfs:range autofde:MigrationReceipt .
+
+autofde:observes a owl:ObjectProperty ; rdfs:domain autofde:Observation ; rdfs:range autofde:Subject .
+autofde:admittedFrom a owl:ObjectProperty ; rdfs:domain autofde:AdmittedObservation ; rdfs:range autofde:Observation .
+autofde:classifiedAs a owl:ObjectProperty ; rdfs:range autofde:Classification .
+autofde:routesTo a owl:ObjectProperty ; rdfs:range autofde:Intent .
+autofde:admitsIntent a owl:ObjectProperty ; rdfs:range autofde:AdmittedIntent .
+autofde:refusesIntent a owl:ObjectProperty ; rdfs:range autofde:RefusedIntent .
+autofde:constructs a owl:ObjectProperty ; rdfs:domain autofde:Construction ; rdfs:range autofde:Artifact .
+autofde:manufacturedFrom a owl:ObjectProperty ; rdfs:domain autofde:Artifact ; rdfs:range autofde:AdmittedObservation .
+autofde:authorizes a owl:ObjectProperty ; rdfs:domain autofde:AuthorityIntersection ; rdfs:range autofde:Actuation .
+autofde:actuates a owl:ObjectProperty ; rdfs:domain autofde:BRCEBroker ; rdfs:range autofde:Actuation .
+autofde:producesConsequence a owl:ObjectProperty ; rdfs:domain autofde:Actuation ; rdfs:range autofde:Consequence .
+autofde:hasReceipt a owl:ObjectProperty ; rdfs:range autofde:Receipt .
+autofde:replaysReceipt a owl:ObjectProperty ; rdfs:domain autofde:Replay ; rdfs:range autofde:Receipt .
+autofde:producesReplayResult a owl:ObjectProperty ; rdfs:domain autofde:Replay ; rdfs:range autofde:ReplayResult .
+autofde:assertsStanding a owl:ObjectProperty ; rdfs:domain autofde:StandingAssertion ; rdfs:range autofde:StandingCode .
+
+autofde:hasRequirement a owl:ObjectProperty ; rdfs:range autofde:SemanticRequirement .
+autofde:requiresConcept a owl:ObjectProperty ; rdfs:domain autofde:SemanticRequirement ; rdfs:range autofde:MandatoryConcept .
+autofde:hasCompetencyQuestion a owl:ObjectProperty ; rdfs:range autofde:CompetencyQuestion .
+autofde:answeredBy a owl:ObjectProperty ; rdfs:domain autofde:CompetencyQuestion ; rdfs:range autofde:CompetencyResult .
+autofde:usesRegistry a owl:ObjectProperty ; rdfs:domain autofde:SemanticCompilerRun ; rdfs:range autofde:SourceRegistry .
+autofde:considersSource a owl:ObjectProperty ; rdfs:domain autofde:SemanticCompilerRun ; rdfs:range autofde:SemanticSource .
+autofde:selectsSource a owl:ObjectProperty ; rdfs:domain autofde:SemanticPortfolio ; rdfs:range autofde:SemanticSource .
+autofde:rejectsSource a owl:ObjectProperty ; rdfs:domain autofde:SelectionDecision ; rdfs:range autofde:SemanticSource .
+autofde:hasSourceVersion a owl:ObjectProperty ; rdfs:domain autofde:SemanticSource ; rdfs:range autofde:SourceVersion .
+autofde:hasLicenseEvidence a owl:ObjectProperty ; rdfs:domain autofde:SemanticSource ; rdfs:range autofde:LicenseEvidence .
+autofde:hasDigest a owl:ObjectProperty ; rdfs:range autofde:ArtifactDigest .
+autofde:hasCoverageClaim a owl:ObjectProperty ; rdfs:domain autofde:SemanticSource ; rdfs:range autofde:CoverageClaim .
+autofde:hasSourceKind a owl:ObjectProperty ; rdfs:domain autofde:SemanticSource ; rdfs:range autofde:SourceKind .
+autofde:hasSourceAuthority a owl:ObjectProperty ; rdfs:domain autofde:SemanticSource ; rdfs:range autofde:SourceAuthority .
+autofde:publishedBy a owl:ObjectProperty ; rdfs:domain autofde:SemanticSource ; rdfs:range autofde:ProviderIdentity .
+autofde:answersQuestion a owl:ObjectProperty ; rdfs:domain autofde:SemanticPortfolio ; rdfs:range autofde:CompetencyQuestion .
+autofde:generatesProfile a owl:ObjectProperty ; rdfs:domain autofde:SemanticCompilerRun ; rdfs:range autofde:SemanticProfile .
+autofde:generatesMapping a owl:ObjectProperty ; rdfs:domain autofde:SemanticCompilerRun ; rdfs:range autofde:CrosswalkMapping .
+autofde:generatesShapeSet a owl:ObjectProperty ; rdfs:domain autofde:SemanticCompilerRun ; rdfs:range autofde:ShapeSet .
+autofde:generatesSDK a owl:ObjectProperty ; rdfs:domain autofde:SemanticCompilerRun ; rdfs:range autofde:GeneratedSDK .
+autofde:previousRevision a owl:ObjectProperty ; rdfs:domain autofde:PortfolioRevision ; rdfs:range autofde:SemanticPortfolio .
+autofde:preservesMapping a owl:ObjectProperty ; rdfs:domain autofde:PortfolioRevision ; rdfs:range autofde:CrosswalkMapping .
+
+autofde:hasPhase a owl:ObjectProperty ; rdfs:domain autofde:PhaseGraph ; rdfs:range autofde:Phase .
+autofde:containsWorkItem a owl:ObjectProperty ; rdfs:range autofde:WorkItem .
+autofde:workPredecessor a owl:ObjectProperty ; rdfs:domain autofde:WorkDependency ; rdfs:range autofde:WorkItem .

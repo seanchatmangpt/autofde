@@ -1,0 +1,84 @@
+@prefix autofde: <https://seanchatmangpt.github.io/autofde/ontology#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+#################################################################
+# Canonical case: Bootstrap to governed breach response
+#################################################################
+
+
+autofde:BreachCandidateIntent a autofde:Intent ; rdfs:label "Candidate breach-response intent" .
+autofde:BreachHook a autofde:KnowledgeHook ;
+    rdfs:label "Breach observation hook" ;
+    autofde:mayObserve autofde:BreachSignal ;
+    autofde:mayEnrich autofde:BreachSignal ;
+    autofde:mayRoute autofde:BreachCandidateIntent ;
+    autofde:manufacturesIntent autofde:BreachCandidateIntent ;
+    autofde:mayActuate false .
+
+autofde:BreachSignal a autofde:BreachObservation ; rdfs:label "Admitted breach signal" .
+autofde:OperationalAgent a autofde:Actor ; rdfs:label "AutoFDE operational agent" .
+autofde:AffectedIdentity a autofde:Subject ; rdfs:label "Affected cloud identity" .
+autofde:RevokeIdentity a autofde:Operation ; rdfs:label "Revoke cloud identity" .
+autofde:TestEnvironment a autofde:Environment ; rdfs:label "Bounded test environment" .
+autofde:BreachPolicy a autofde:Policy ; rdfs:label "Breach response policy" .
+autofde:HumanApproval a autofde:Approval ; rdfs:label "Human approval for bounded test actuation" .
+autofde:BreachAuthorityIntersection a autofde:AuthorityIntersection ;
+    autofde:hasActor autofde:OperationalAgent ;
+    autofde:hasSubject autofde:AffectedIdentity ;
+    autofde:hasOperation autofde:RevokeIdentity ;
+    autofde:hasEnvironment autofde:TestEnvironment ;
+    autofde:hasPolicy autofde:BreachPolicy ;
+    autofde:hasApproval autofde:HumanApproval ;
+    autofde:hasAuthorityClass autofde:DO ;
+    autofde:authorizes autofde:BoundedRevokeAction .
+
+autofde:Broker a autofde:BRCEBroker ; rdfs:label "AutoFDE BRCE broker" .
+autofde:BoundedRevokeSubject a autofde:ExactSubject ; autofde:identifier "test/revoke-identity/v1" .
+autofde:BoundedRevokeDigest a autofde:ArtifactDigest ;
+    autofde:digestAlgorithm "sha256" ;
+    autofde:digestValue "6e370b8d4f2cf1d82556d5f56ee2551a7f43ac88b978068a5dbb711e78c278e3"^^xsd:hexBinary .
+autofde:PreActuationReceipt a autofde:Receipt ;
+    autofde:receiptFor autofde:BoundedRevokeAction ;
+    autofde:bindsSubject autofde:BoundedRevokeSubject ;
+    autofde:hasDigest autofde:BoundedRevokeDigest .
+autofde:BoundedRevokeAction a autofde:BoundedAction ;
+    rdfs:label "Bounded test identity revocation" ;
+    autofde:routedThroughBroker autofde:Broker ;
+    autofde:hasPreActuationReceipt autofde:PreActuationReceipt ;
+    autofde:producesConsequence autofde:IdentityDisabledConsequence .
+autofde:IdentityDisabledConsequence a autofde:Consequence ; rdfs:label "Test identity disabled" .
+
+autofde:ConsequenceReceipt a autofde:Receipt ;
+    autofde:receiptFor autofde:IdentityDisabledConsequence ;
+    autofde:bindsSubject autofde:BoundedRevokeSubject ;
+    autofde:hasDigest autofde:BoundedRevokeDigest ;
+    autofde:predecessorReceipt autofde:PreActuationReceipt .
+
+autofde:OperationalReplay a autofde:Replay ;
+    autofde:replaysReceipt autofde:PreActuationReceipt, autofde:ConsequenceReceipt ;
+    autofde:producesReplayResult autofde:OperationalReplayResult .
+autofde:OperationalReplayResult a autofde:ReplayResult ; rdfs:label "Operational replay reproduced the bounded consequence" .
+
+autofde:CaseStanding a autofde:StandingAssertion ;
+    autofde:assertsStanding autofde:PARTIAL_ALIVE ;
+    autofde:bindsSubject autofde:BoundedRevokeSubject ;
+    autofde:hasReceipt autofde:ConsequenceReceipt ;
+    rdfs:comment "The ontology case is structurally admitted; production cloud actuation is not claimed." .
+
+#################################################################
+# Dual revision and capability-gap manufacture
+#################################################################
+
+autofde:PopulationBObservation a autofde:BreachObservation ; rdfs:label "Newly affected population B" ;
+    autofde:createsOperationalRevision autofde:SupplementalResponseCommitment .
+autofde:SupplementalResponseCommitment a autofde:OperationalRevision ;
+    rdfs:label "Supplemental response commitment" .
+autofde:JurisdictionCapabilityGap a autofde:CapabilityGap ;
+    rdfs:label "Missing jurisdiction-specific notification capability" ;
+    autofde:createsDeliveryRevision autofde:JurisdictionDeliveryRevision .
+autofde:JurisdictionDeliveryRevision a autofde:DeliveryRevision ;
+    rdfs:label "Delivery revision for jurisdiction vocabulary, mapping, test, and deployment artifact" .

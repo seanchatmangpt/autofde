@@ -1,0 +1,7 @@
+# Managed template provenance; update with `uvx copier update --exclude ontology/ --exclude generated/`.
+_subdirectory: template
+_src_path: gh:superlinear-ai/substrate
+_commit: ec640e3d6e0d18ddfc7123e67580ffdc7af80889
+project_name: AutoFDE
+package_name: autofde
+python_version: "3.12"

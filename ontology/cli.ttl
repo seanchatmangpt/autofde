@@ -1,0 +1,123 @@
+@prefix cnv: <http://seanchatmangpt.github.io/packs/clap-noun-verb#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix autofde: <https://seanchatmangpt.github.io/autofde/ontology#> .
+
+# AutoFDE v26.8.8 CLI authority. This file declares commands only; executable
+# routing is manufactured by ggen's clap-noun-verb-pack.
+
+autofde:StatusNoun a cnv:Noun ;
+  rdfs:label "status" ;
+  rdfs:comment "Inspect the immutable AutoFDE v26.8.8 production mode and command-surface identity." ;
+  cnv:hasCommand autofde:StatusShow .
+
+autofde:BundleNoun a cnv:Noun ;
+  rdfs:label "bundle" ;
+  rdfs:comment "Verify, install, and enumerate digest-pinned compiled capability bundles." ;
+  cnv:hasCommand autofde:BundleVerify, autofde:BundleInstall, autofde:BundleList .
+
+autofde:ObservationNoun a cnv:Noun ;
+  rdfs:label "observation" ;
+  rdfs:comment "Admit a bounded runtime observation and determine whether installed compiled cognition closes over it." ;
+  cnv:hasCommand autofde:ObservationMatch .
+
+autofde:RunNoun a cnv:Noun ;
+  rdfs:label "run" ;
+  rdfs:comment "Execute an already-compiled matching capability under an exact authority envelope." ;
+  cnv:hasCommand autofde:RunExecute .
+
+autofde:OccurrenceNoun a cnv:Noun ;
+  rdfs:label "occurrence" ;
+  rdfs:comment "Inspect and reconcile durable production occurrences without implicit re-actuation." ;
+  cnv:hasCommand autofde:OccurrenceShow, autofde:OccurrenceReconcile .
+
+autofde:ReplayNoun a cnv:Noun ;
+  rdfs:label "replay" ;
+  rdfs:comment "Verify receipt-bound deterministic replay without bypassing the runtime evidence path." ;
+  cnv:hasCommand autofde:ReplayRun .
+
+autofde:EvidenceNoun a cnv:Noun ;
+  rdfs:label "evidence" ;
+  rdfs:comment "Project durable occurrence evidence as object-centric event data." ;
+  cnv:hasCommand autofde:EvidenceOcel .
+
+autofde:NoveltyNoun a cnv:Noun ;
+  rdfs:label "novelty" ;
+  rdfs:comment "Inspect fail-closed NoveltyPackets emitted when no installed compiled capability matches." ;
+  cnv:hasCommand autofde:NoveltyShow .
+
+autofde:DoctorNoun a cnv:Noun ;
+  rdfs:label "doctor" ;
+  rdfs:comment "Inspect the non-actuating v26.8.8 runtime architecture contract." ;
+  cnv:hasCommand autofde:DoctorInspect .
+
+autofde:StatusShow a cnv:Command ;
+  cnv:noun "status" ; cnv:verb "show" ;
+  cnv:handler "status_show_handler" ;
+  cnv:doc "Show the v26.8.8 EXPLOIT-only runtime identity. This command has no handler and no side effects." ;
+  cnv:returnType "serde_json::Value" ; cnv:args "" ;
+  cnv:staticResponse "json!({ \"product\": \"autofde\", \"version\": \"26.8.8\", \"mode\": \"EXPLOIT_ONLY\", \"cliAuthority\": \"ggen:clap-noun-verb-pack\", \"productionCognition\": \"COMPILED_ONLY\", \"doPath\": \"BRCE_ONLY\" })" .
+
+autofde:BundleVerify a cnv:Command ;
+  cnv:noun "bundle" ; cnv:verb "verify" ; cnv:handler "bundle_verify_handler" ;
+  cnv:doc "Verify one immutable capability bundle before installation or execution." ;
+  cnv:returnType "serde_json::Value" ;
+  cnv:args "path|String|true|Path to the capability bundle JSON file." .
+
+autofde:BundleInstall a cnv:Command ;
+  cnv:noun "bundle" ; cnv:verb "install" ; cnv:handler "bundle_install_handler" ;
+  cnv:doc "Install one verified capability bundle into the local digest-addressed registry." ;
+  cnv:returnType "serde_json::Value" ;
+  cnv:args "path|String|true|Path to the capability bundle JSON file." .
+
+autofde:BundleList a cnv:Command ;
+  cnv:noun "bundle" ; cnv:verb "list" ; cnv:handler "bundle_list_handler" ;
+  cnv:doc "List installed exact bundle digests without loading AutoFDE Lab." ;
+  cnv:returnType "serde_json::Value" ; cnv:args "" .
+
+autofde:ObservationMatch a cnv:Command ;
+  cnv:noun "observation" ; cnv:verb "match" ; cnv:handler "observation_match_handler" ;
+  cnv:doc "Match an admitted observation against installed bundles; no match emits a NoveltyPacket and never actuates." ;
+  cnv:returnType "serde_json::Value" ;
+  cnv:args "path|String|true|Path to an ObservationEnvelope JSON file." .
+
+autofde:RunExecute a cnv:Command ;
+  cnv:noun "run" ; cnv:verb "execute" ; cnv:handler "run_execute_handler" ;
+  cnv:doc "Execute only an already-compiled matching capability under an exact authority envelope through BRCE." ;
+  cnv:returnType "serde_json::Value" ;
+  cnv:args "observation|String|true|Path to an ObservationEnvelope JSON file.@@authority|String|true|Path to an AuthorityEnvelope JSON file." .
+
+autofde:OccurrenceShow a cnv:Command ;
+  cnv:noun "occurrence" ; cnv:verb "show" ; cnv:handler "occurrence_show_handler" ;
+  cnv:doc "Show one durable execution occurrence and its current standing." ;
+  cnv:returnType "serde_json::Value" ;
+  cnv:args "id|String|true|Occurrence identity." .
+
+autofde:OccurrenceReconcile a cnv:Command ;
+  cnv:noun "occurrence" ; cnv:verb "reconcile" ; cnv:handler "occurrence_reconcile_handler" ;
+  cnv:doc "Re-observe an uncertain occurrence and close it without automatically repeating DO." ;
+  cnv:returnType "serde_json::Value" ;
+  cnv:args "id|String|true|Occurrence identity." .
+
+autofde:ReplayRun a cnv:Command ;
+  cnv:noun "replay" ; cnv:verb "run" ; cnv:handler "replay_run_handler" ;
+  cnv:doc "Recompute and verify the persisted receipt identity for one occurrence without direct actuator replay." ;
+  cnv:returnType "serde_json::Value" ;
+  cnv:args "id|String|true|Occurrence identity." .
+
+autofde:EvidenceOcel a cnv:Command ;
+  cnv:noun "evidence" ; cnv:verb "ocel" ; cnv:handler "evidence_ocel_handler" ;
+  cnv:doc "Project one occurrence as bounded OCEL 2.0-shaped event/object evidence." ;
+  cnv:returnType "serde_json::Value" ;
+  cnv:args "id|String|true|Occurrence identity." .
+
+autofde:NoveltyShow a cnv:Command ;
+  cnv:noun "novelty" ; cnv:verb "show" ; cnv:handler "novelty_show_handler" ;
+  cnv:doc "Show a persisted NoveltyPacket; novelty evidence never grants execution authority." ;
+  cnv:returnType "serde_json::Value" ;
+  cnv:args "id|String|true|NoveltyPacket identity." .
+
+autofde:DoctorInspect a cnv:Command ;
+  cnv:noun "doctor" ; cnv:verb "inspect" ;
+  cnv:handler "doctor_inspect_handler" ;
+  cnv:doc "Inspect the v26.8.8 architecture boundary. This command is ontology-complete and non-actuating." ;
+  cnv:returnType "serde_json::Value" ; cnv:args "" .

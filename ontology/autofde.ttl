@@ -1,0 +1,20 @@
+@prefix autofde: <https://seanchatmangpt.github.io/autofde/ontology#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://seanchatmangpt.github.io/autofde/ontology>
+    a owl:Ontology ;
+    owl:versionIRI <https://seanchatmangpt.github.io/autofde/ontology/0.1.0> ;
+    owl:versionInfo "0.1.0" ;
+    dcterms:title "AutoFDE Canonical Product Ontology" ;
+    dcterms:creator "Sean Chatman" ;
+    dcterms:license <https://opensource.org/license/mit> ;
+    dcterms:description "EXPLOIT-only ontology for the Forward Deployment Operating System. It binds admitted observations, deterministic construction, bounded actuation, receipts, replay, standing, semantic manufacture, delivery projections, and operational adaptation." ;
+    autofde:executionMode autofde:ExploitOnly .
+

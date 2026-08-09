@@ -1,0 +1,63 @@
+name: AutoFDE Azure Sentinel RDFDelta ingress
+
+on:
+  push:
+    branches:
+      - agent/azure-sentinel-rdfdelta-ingress
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sentinel-ingress-crown:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout exact subject
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Assert exact branch subject
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          test "${GITHUB_REF_NAME}" = "agent/azure-sentinel-rdfdelta-ingress"
+
+      - name: Install pinned Rust toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          rustup toolchain install nightly-2026-06-22 --profile minimal --component rustfmt,clippy
+          rustup override set nightly-2026-06-22
+          rustc --version
+          cargo --version
+
+      - name: Format and compile dependency-closed ingress harness
+        shell: bash
+        run: |
+          set -euo pipefail
+          rustfmt +nightly-2026-06-22 --edition 2021 --check src/sentinel_ingress.rs tests/sentinel-ingress-harness/src/lib.rs
+          cargo check --manifest-path tests/sentinel-ingress-harness/Cargo.toml --all-targets
+          cargo clippy --manifest-path tests/sentinel-ingress-harness/Cargo.toml --all-targets -- -D warnings
+
+      - name: Execute Sentinel ingress positive and adversarial proofs
+        shell: bash
+        run: |
+          set -euo pipefail
+          cargo test --manifest-path tests/sentinel-ingress-harness/Cargo.toml -- --nocapture
+
+      - name: Refuse Sentinel ingress authority escalation
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'assert_eq!(first.intent.authority_class, "CONSTRUCT")' src/sentinel_ingress.rs
+          grep -q 'assert!(!first.intent.do_authority)' src/sentinel_ingress.rs
+          if grep -Eq 'Command::new|std::process|reqwest|TcpStream|UdpSocket|terraform|tofu|az login' src/sentinel_ingress.rs; then
+            echo 'REFUSED_SENTINEL_INGRESS_ACTUATION_SURFACE' >&2
+            exit 1
+          fi
+          echo 'AUTOFDE_SENTINEL_INGRESS_AUTHORITY_FENCE_ALIVE'

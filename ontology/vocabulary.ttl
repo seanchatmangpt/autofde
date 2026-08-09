@@ -1,0 +1,59 @@
+@prefix autofde: <https://seanchatmangpt.github.io/autofde/ontology#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+
+# Controlled vocabulary
+#################################################################
+
+autofde:ExploitOnly a autofde:ExecutionMode, skos:Concept ;
+    skos:prefLabel "EXPLOIT only" ;
+    skos:definition "Deterministic manufacture from admitted, bounded, exact inputs. No ambient search or unbounded option generation is part of the product runtime." .
+
+autofde:SELECT a autofde:AuthorityClass ; skos:prefLabel "SELECT" .
+autofde:CONSTRUCT a autofde:AuthorityClass ; skos:prefLabel "CONSTRUCT" .
+autofde:DO a autofde:AuthorityClass ; skos:prefLabel "DO" .
+
+autofde:OntologySource a autofde:SourceKind ; skos:prefLabel "ontology" .
+autofde:SchemaSource a autofde:SourceKind ; skos:prefLabel "schema" .
+autofde:KnowledgeBaseSource a autofde:SourceKind ; skos:prefLabel "knowledge base" .
+autofde:ControlCatalogSource a autofde:SourceKind ; skos:prefLabel "control catalog" .
+autofde:ProtocolSource a autofde:SourceKind ; skos:prefLabel "protocol" .
+autofde:GeneratedProjectionSource a autofde:SourceKind ; skos:prefLabel "generated projection" .
+
+autofde:AuthoritativeProvider a autofde:SourceAuthority ; skos:prefLabel "authoritative provider" .
+autofde:StandardsBody a autofde:SourceAuthority ; skos:prefLabel "standards body" .
+autofde:DerivedMappingAuthority a autofde:SourceAuthority ; skos:prefLabel "derived mapping" .
+
+autofde:GeneratorOwned a autofde:ProjectionOwnership ; skos:prefLabel "generator owned" .
+autofde:HandwrittenKernel a autofde:ProjectionOwnership ; skos:prefLabel "handwritten kernel" .
+
+# Standing codes are mutually exclusive descriptions of one exact subject at one checkpoint.
+autofde:UNKNOWN a autofde:StandingCode ; autofde:standingCode "UNKNOWN" ; skos:prefLabel "UNKNOWN" ; autofde:order 0 .
+autofde:PARTIAL_ALIVE a autofde:StandingCode ; autofde:standingCode "PARTIAL_ALIVE" ; skos:prefLabel "PARTIAL_ALIVE" ; autofde:order 1 .
+autofde:ALIVE a autofde:StandingCode ; autofde:standingCode "ALIVE" ; skos:prefLabel "ALIVE" ; autofde:order 2 .
+autofde:BLOCKED a autofde:StandingCode ; autofde:standingCode "BLOCKED" ; skos:prefLabel "BLOCKED" ; autofde:order 3 .
+autofde:BUILD_BROKEN a autofde:StandingCode ; autofde:standingCode "BUILD_BROKEN" ; skos:prefLabel "BUILD_BROKEN" ; autofde:order 4 .
+autofde:UNSUPPORTED a autofde:StandingCode ; autofde:standingCode "UNSUPPORTED" ; skos:prefLabel "UNSUPPORTED" ; autofde:order 5 .
+autofde:REFUSED a autofde:StandingCode ; autofde:standingCode "REFUSED" ; skos:prefLabel "REFUSED" ; autofde:order 6 .
+
+# Typed refusal vocabulary.
+autofde:INSUFFICIENT_AUTHORITY_SEMANTICS a autofde:RefusalCode ; autofde:refusalCode "INSUFFICIENT_AUTHORITY_SEMANTICS" .
+autofde:SOURCE_SCOPE_MISMATCH a autofde:RefusalCode ; autofde:refusalCode "SOURCE_SCOPE_MISMATCH" .
+autofde:LICENSE_NOT_ADMITTED a autofde:RefusalCode ; autofde:refusalCode "LICENSE_NOT_ADMITTED" .
+autofde:UNPINNED_SEMANTIC_SOURCE a autofde:RefusalCode ; autofde:refusalCode "UNPINNED_SEMANTIC_SOURCE" .
+autofde:UNRESOLVED_SEMANTIC_COLLISION a autofde:RefusalCode ; autofde:refusalCode "UNRESOLVED_SEMANTIC_COLLISION" .
+autofde:AUTHORITY_COMPETENCY_UNSATISFIED a autofde:RefusalCode ; autofde:refusalCode "AUTHORITY_COMPETENCY_UNSATISFIED" .
+autofde:ACTUATION_NOT_ADMITTED a autofde:RefusalCode ; autofde:refusalCode "ACTUATION_NOT_ADMITTED" .
+autofde:IDENTITY_DRIFT a autofde:RefusalCode ; autofde:refusalCode "IDENTITY_DRIFT" .
+autofde:GENERATED_DRIFT a autofde:RefusalCode ; autofde:refusalCode "GENERATED_DRIFT" .
+autofde:AMBIENT_AUTHORITY a autofde:RefusalCode ; autofde:refusalCode "AMBIENT_AUTHORITY" .
+autofde:HOOK_ACTUATION_FORBIDDEN a autofde:RefusalCode ; autofde:refusalCode "HOOK_ACTUATION_FORBIDDEN" .
+
+#################################################################

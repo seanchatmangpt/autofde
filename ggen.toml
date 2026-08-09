@@ -1,0 +1,63 @@
+[project]
+name = "autofde"
+
+[ontology]
+source = "ontology/autofde.ttl"
+
+[ontology.prefixes]
+autofde = "https://seanchatmangpt.github.io/autofde/ontology#"
+cnv = "http://seanchatmangpt.github.io/packs/clap-noun-verb#"
+rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+rdfs = "http://www.w3.org/2000/01/rdf-schema#"
+owl = "http://www.w3.org/2002/07/owl#"
+xsd = "http://www.w3.org/2001/XMLSchema#"
+skos = "http://www.w3.org/2004/02/skos/core#"
+prov = "http://www.w3.org/ns/prov#"
+dcat = "http://www.w3.org/ns/dcat#"
+dcterms = "http://purl.org/dc/terms/"
+sh = "http://www.w3.org/ns/shacl#"
+
+# AutoFDE v26.8.8 consumes exactly one ggen pack for its CLI. The product's
+# complete canonical ontology capsule is admitted into the same union graph as
+# extra ontologies; this does not add another pack or another generator.
+[packs]
+clap-noun-verb-pack = { path = "../ggen/packs/clap-noun-verb-pack", extra_ontologies = [
+  "ontology/core.ttl",
+  "ontology/semantics.ttl",
+  "ontology/work.ttl",
+  "ontology/authority.ttl",
+  "ontology/evidence.ttl",
+  "ontology/generator.ttl",
+  "ontology/object-properties-foundation.ttl",
+  "ontology/object-properties-runtime.ttl",
+  "ontology/datatype-properties.ttl",
+  "ontology/vocabulary.ttl",
+  "ontology/product.ttl",
+  "ontology/phases.ttl",
+  "ontology/generation-rules.ttl",
+  "ontology/axioms.ttl",
+  "ontology/shapes.ttl",
+  "ontology/bootstrap-to-breach.ttl",
+  "ontology/bootstrap-project.ttl",
+  "ontology/bootstrap-runtime.ttl",
+  "ontology/cli.ttl",
+] }
+
+# No hand-written AutoFDE CLI templates live here. This directory exists only
+# to satisfy the frontmatter schema; all CLI route manufacture comes from the
+# single pack above.
+[templates]
+dir = "templates/runtime"
+
+# Preserve AutoFDE's product-law gates under the frontmatter schema. These are
+# evaluated against the post-materialization union graph before rendering.
+[law]
+gates = [
+  "queries/gates/no-non-exploit-mode.rq",
+  "queries/gates/actuation-through-brce.rq",
+  "queries/gates/hooks-never-actuate.rq",
+  "queries/gates/work-provisioning-separated.rq",
+  "queries/gates/every-source-is-pinned.rq",
+  "queries/gates/every-standing-is-receipted.rq",
+  "queries/gates/every-generation-rule-is-closed.rq",
+]

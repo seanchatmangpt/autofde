@@ -1,0 +1,40 @@
+@prefix autofde: <https://seanchatmangpt.github.io/autofde/ontology#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+
+# Work, process, and projection semantics
+#################################################################
+
+autofde:PhaseGraph a owl:Class ; rdfs:subClassOf autofde:Artifact .
+autofde:Phase a owl:Class ; rdfs:subClassOf autofde:AutoFDEEntity .
+autofde:WorkItem a owl:Class ; rdfs:subClassOf autofde:AutoFDEEntity .
+autofde:WorkDependency a owl:Class ; rdfs:subClassOf autofde:AutoFDEEntity .
+autofde:ConcurrencyRelation a owl:Class ; rdfs:subClassOf autofde:AutoFDEEntity .
+autofde:ExclusiveChoiceRelation a owl:Class ; rdfs:subClassOf autofde:AutoFDEEntity .
+autofde:SupersessionRelation a owl:Class ; rdfs:subClassOf autofde:AutoFDEEntity .
+autofde:PreservationRelation a owl:Class ; rdfs:subClassOf autofde:AutoFDEEntity .
+autofde:ProcessCommitment a owl:Class ; rdfs:subClassOf autofde:Artifact .
+autofde:POWLProjection a owl:Class ; rdfs:subClassOf autofde:ProcessCommitment .
+autofde:ProjectGraphProjection a owl:Class ; rdfs:subClassOf autofde:Artifact .
+autofde:GitHubProjection a owl:Class ; rdfs:subClassOf autofde:ProjectGraphProjection .
+autofde:ProvisioningGraph a owl:Class ; rdfs:subClassOf autofde:Artifact .
+autofde:ProvisioningDependency a owl:Class ; rdfs:subClassOf autofde:AutoFDEEntity .
+autofde:TerraformProjection a owl:Class ; rdfs:subClassOf autofde:ProvisioningGraph .
+autofde:SemanticEquivalenceClaim a owl:Class ; rdfs:subClassOf autofde:Evidence .
+autofde:Repository a owl:Class ; rdfs:subClassOf autofde:AutoFDEEntity .
+autofde:Milestone a owl:Class ; rdfs:subClassOf autofde:AutoFDEEntity .
+autofde:Issue a owl:Class ; rdfs:subClassOf autofde:WorkItem .
+autofde:Label a owl:Class ; rdfs:subClassOf autofde:AutoFDEEntity .
+autofde:PullRequest a owl:Class ; rdfs:subClassOf autofde:WorkItem .
+autofde:Release a owl:Class ; rdfs:subClassOf autofde:Artifact .
+
+autofde:WorkDependency owl:disjointWith autofde:ProvisioningDependency .
+
+#################################################################

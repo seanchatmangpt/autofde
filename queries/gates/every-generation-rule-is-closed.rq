@@ -1,0 +1,24 @@
+PREFIX autofde: <https://seanchatmangpt.github.io/autofde/ontology#>
+ASK {
+  ?rule a autofde:GenerationRule .
+  {
+    FILTER NOT EXISTS { ?rule autofde:identifier ?id }
+  }
+  UNION
+  {
+    FILTER NOT EXISTS { ?rule autofde:hasQuery ?query . ?query autofde:queryFile ?queryFile }
+  }
+  UNION
+  {
+    FILTER NOT EXISTS { ?rule autofde:hasTemplate ?template . ?template autofde:templateFile ?templateFile }
+  }
+  UNION
+  {
+    FILTER NOT EXISTS { ?rule autofde:hasOutput ?output . ?output autofde:outputFile ?outputFile ; autofde:hasProjectionOwnership autofde:GeneratorOwned }
+  }
+  UNION
+  {
+    ?rule autofde:generationMode ?mode .
+    FILTER (?mode != "Overwrite")
+  }
+}

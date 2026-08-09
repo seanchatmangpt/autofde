@@ -1,0 +1,60 @@
+{
+  "schema": "autofde.module-manifest.v1",
+  "execution_mode": "EXPLOIT",
+  "modules": [
+{
+      "id": "core",
+      "name": "AutoFDE Core",
+      "compatibility_coordinate": "seanchatmangpt/scikit-decide",
+      "responsibility": "Admission, orchestration, authority, BRCE, receipts, replay, standing, and promotion."
+    },
+{
+      "id": "forge",
+      "name": "AutoFDE Forge",
+      "compatibility_coordinate": "seanchatmangpt/ggen",
+      "responsibility": "Ontology-to-artifact manufacture and deterministic projections."
+    },
+{
+      "id": "workflow",
+      "name": "AutoFDE Workflow",
+      "compatibility_coordinate": "seanchatmangpt/mfw",
+      "responsibility": "Proof-carrying workflow, candidate plans, execution evidence, and replay."
+    },
+{
+      "id": "process",
+      "name": "AutoFDE Process",
+      "compatibility_coordinate": "seanchatmangpt/wasm4pm",
+      "responsibility": "Process mining, OCEL, conformance, portable runtime bindings, and execution analysis."
+    },
+{
+      "id": "process-language",
+      "name": "AutoFDE Process Language",
+      "compatibility_coordinate": "seanchatmangpt/POWL",
+      "responsibility": "POWL concurrency, choice, partial order, supersession, preservation, and revision semantics."
+    },
+{
+      "id": "code-intelligence",
+      "name": "AutoFDE Code Intelligence",
+      "compatibility_coordinate": "seanchatmangpt/lsp-max",
+      "responsibility": "Protocol-aware code observation, diagnostics, bounded repair, and consumer verification."
+    },
+{
+      "id": "models",
+      "name": "AutoFDE Models",
+      "compatibility_coordinate": "seanchatmangpt/mmdio",
+      "responsibility": "Visual and semantic model projections."
+    },
+{
+      "id": "foundation-graph",
+      "name": "AutoFDE Foundation Graph",
+      "compatibility_coordinate": "seanchatmangpt/FGN",
+      "responsibility": "Admitted graph and package substrate."
+    },
+{
+      "id": "manufacture",
+      "name": "AutoFDE Manufacture",
+      "compatibility_coordinate": "MU",
+      "responsibility": "The lawful manufacturing operator μ in A = μ(O*)."
+    }
+]
+}
