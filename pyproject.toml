@@ -5,9 +5,8 @@ description = "AutoFDE Forward Deployment Operating System runtime"
 readme = "README.md"
 requires-python = ">=3.12,<3.14"
 dependencies = [
-  "dspy>=3,<4",
-  "fastmcp>=2.12,<3",
-  "scikit-decide @ git+https://github.com/seanchatmangpt/autofde-lab.git@8d8e8ae6c995abbe89f2ede4f8aaea1f02ae52f2",
+  "fastmcp>=3.4.1,<4",
+  "gymact @ git+https://github.com/seanchatmangpt/gymact.git@24bd68a8c9e59ee42a4a2eeea9fc12d79fe75f5b",
 ]
 
 [project.scripts]
