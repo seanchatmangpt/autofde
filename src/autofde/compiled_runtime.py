@@ -26,12 +26,12 @@ _PROFILE_KEYS = {
     "provider",
     "benchmark_revision",
     "scenario",
-    "config",
+    "config_json",
     "capability_ref",
     "capability_binding",
-    "payload",
-    "expected",
-    "input_schema",
+    "payload_json",
+    "expected_json",
+    "input_schema_json",
     "authority_ref",
     "action_ref",
 }
@@ -66,18 +66,6 @@ def _object_without_duplicate_keys(pairs: list[tuple[str, Any]]) -> dict[str, An
     return value
 
 
-def _reject_authority_tokens(value: Any) -> None:
-    if isinstance(value, dict):
-        forbidden = _FORBIDDEN_AUTHORITY_KEYS.intersection(value)
-        if forbidden:
-            raise AdmissionRefused(f"AUTHORITY_TOKEN_FIELD_REFUSED:{sorted(forbidden)[0]}")
-        for child in value.values():
-            _reject_authority_tokens(child)
-    elif isinstance(value, list):
-        for child in value:
-            _reject_authority_tokens(child)
-
-
 def _required_string(profile: dict[str, Any], key: str) -> str:
     value = profile.get(key)
     if not isinstance(value, str) or not value.strip():
@@ -94,8 +82,18 @@ def _nullable_string(profile: dict[str, Any], key: str) -> str | None:
     return value or None
 
 
-def _required_object(profile: dict[str, Any], key: str, *, nonempty: bool = False) -> dict[str, Any]:
-    value = profile.get(key)
+def _json_object(
+    profile: dict[str, Any], key: str, *, nonempty: bool = False
+) -> dict[str, Any]:
+    lexical = profile.get(key)
+    if not isinstance(lexical, str):
+        raise AdmissionRefused(f"PROFILE_JSON_REQUIRED:{key}")
+    try:
+        value = json.loads(lexical, object_pairs_hook=_object_without_duplicate_keys)
+    except AdmissionRefused:
+        raise
+    except json.JSONDecodeError as exc:
+        raise AdmissionRefused(f"PROFILE_JSON_INVALID:{key}") from exc
     if not isinstance(value, dict) or (nonempty and not value):
         raise AdmissionRefused(f"PROFILE_OBJECT_REQUIRED:{key}")
     return value
@@ -153,7 +151,6 @@ def admit_execution_bundle(raw: bytes, *, expected_sha256: str) -> AdmittedExecu
     if not isinstance(document, dict):
         raise AdmissionRefused("EXECUTION_BUNDLE_OBJECT_REQUIRED")
 
-    _reject_authority_tokens(document)
     if set(document) != _TOP_KEYS:
         raise AdmissionRefused("EXECUTION_BUNDLE_TOP_LEVEL_SHAPE_REFUSED")
     if document.get("schema") != _SCHEMA:
@@ -169,7 +166,12 @@ def admit_execution_bundle(raw: bytes, *, expected_sha256: str) -> AdmittedExecu
     profiles: list[CompiledExecutionProfile] = []
     seen: set[str] = set()
     for row in rows:
-        if not isinstance(row, dict) or set(row) != _PROFILE_KEYS:
+        if not isinstance(row, dict):
+            raise AdmissionRefused("EXECUTION_PROFILE_SHAPE_REFUSED")
+        forbidden = _FORBIDDEN_AUTHORITY_KEYS.intersection(row)
+        if forbidden:
+            raise AdmissionRefused(f"AUTHORITY_TOKEN_FIELD_REFUSED:{sorted(forbidden)[0]}")
+        if set(row) != _PROFILE_KEYS:
             raise AdmissionRefused("EXECUTION_PROFILE_SHAPE_REFUSED")
         profile_id = _required_string(row, "profile_id")
         if profile_id in seen:
@@ -194,12 +196,12 @@ def admit_execution_bundle(raw: bytes, *, expected_sha256: str) -> AdmittedExecu
                 provider=_required_string(row, "provider"),
                 benchmark_revision=_required_string(row, "benchmark_revision"),
                 scenario=_nullable_string(row, "scenario"),
-                config=_required_object(row, "config"),
+                config=_json_object(row, "config_json"),
                 capability_ref=capability_ref,
                 capability_binding=capability_binding,
-                payload=_required_object(row, "payload"),
-                expected=_required_object(row, "expected", nonempty=True),
-                input_schema=_required_object(row, "input_schema", nonempty=True),
+                payload=_json_object(row, "payload_json"),
+                expected=_json_object(row, "expected_json", nonempty=True),
+                input_schema=_json_object(row, "input_schema_json", nonempty=True),
                 authority_ref=authority_ref,
                 action_ref=action_ref,
             )
@@ -247,6 +249,7 @@ class CompiledProfileExploitRuntime:
 
     async def execute(self, profile_id: str) -> ExploitOutcome:
         from gymact.autonomic import AutonomicPhase, ConsequenceRequest
+        from gymact.evidence import digest as evidence_digest
 
         cached = self._outcomes.get(profile_id)
         if cached is not None:
@@ -298,9 +301,7 @@ class CompiledProfileExploitRuntime:
             "verified": bool(result.verified),
             "downstream_receipt_ids": evidence,
         }
-        receipt_id = "sha256:" + sha256_hex(
-            json.dumps(receipt_payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
-        )
+        receipt_id = "blake3:" + evidence_digest(receipt_payload)
         receipt = ExploitReceipt(
             receipt_id=receipt_id,
             bundle_sha256=self.bundle.sha256,
