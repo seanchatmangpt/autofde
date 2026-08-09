@@ -1,0 +1,22 @@
+{
+  "schema": "urn:autofde:dependency-pin:v1",
+  "capability": "compiled-profile-exploit-runtime",
+  "dependency": {
+    "repository": "seanchatmangpt/gymact",
+    "commit": "24bd68a8c9e59ee42a4a2eeea9fc12d79fe75f5b",
+    "package": "gymact",
+    "version": "26.8.8"
+  },
+  "authority": {
+    "runtime_mode": "external-only",
+    "brce_required": true
+  },
+  "materialization": {
+    "default_actions_token": "FAILED_PRIVATE_CLONE",
+    "release": "ABSENT",
+    "retained_artifact": "ABSENT",
+    "dependency_side_artifact_manufacture": "RUNNER_NOT_STARTED_BILLING",
+    "source_archive_connector": "OBSERVED_NOT_LOCALLY_MATERIALIZED"
+  },
+  "standing": "NEXT_ROUTE_IDENTIFIED"
+}
