@@ -70,9 +70,7 @@ def _reject_authority_tokens(value: Any) -> None:
     if isinstance(value, dict):
         forbidden = _FORBIDDEN_AUTHORITY_KEYS.intersection(value)
         if forbidden:
-            raise AdmissionRefused(
-                f"AUTHORITY_TOKEN_FIELD_REFUSED:{sorted(forbidden)[0]}"
-            )
+            raise AdmissionRefused(f"AUTHORITY_TOKEN_FIELD_REFUSED:{sorted(forbidden)[0]}")
         for child in value.values():
             _reject_authority_tokens(child)
     elif isinstance(value, list):
@@ -239,12 +237,20 @@ class CompiledProfileExploitRuntime:
         self._controller = controller
         self.bundle = bundle
         self._receipts: list[ExploitReceipt] = []
+        self._outcomes: dict[str, ExploitOutcome] = {}
 
     def receipts(self) -> tuple[ExploitReceipt, ...]:
         return tuple(self._receipts)
 
+    def outcomes(self) -> tuple[ExploitOutcome, ...]:
+        return tuple(self._outcomes[key] for key in sorted(self._outcomes))
+
     async def execute(self, profile_id: str) -> ExploitOutcome:
         from gymact.autonomic import AutonomicPhase, ConsequenceRequest
+
+        cached = self._outcomes.get(profile_id)
+        if cached is not None:
+            return cached
 
         profile = self.bundle.profile(profile_id)
         request_id = f"urn:autofde:execution:{self.bundle.sha256}:{profile.profile_id}"
@@ -304,10 +310,12 @@ class CompiledProfileExploitRuntime:
             verified=bool(result.verified),
             downstream_receipt_ids=tuple(evidence),
         )
-        self._receipts.append(receipt)
-        return ExploitOutcome(
+        outcome = ExploitOutcome(
             standing=standing,
             verified=bool(result.verified),
             reason=str(result.reason),
             receipt=receipt,
         )
+        self._receipts.append(receipt)
+        self._outcomes[profile.profile_id] = outcome
+        return outcome
