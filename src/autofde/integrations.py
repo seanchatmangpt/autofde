@@ -40,10 +40,18 @@ _MANIFEST = (
     ),
     IntegrationManifest(
         "autofde-lab",
-        "external exploration and admission control plane",
+        "external exploration, experiment selection, and learning control plane",
         "seanchatmangpt/autofde-lab",
-        "5882f8e853458c7197eba31ee60a8c6ef259150e",
-        "SELECT",
+        "582277151fd07ea831f6217e43ddf764f61b723f",
+        "SELECT_LEARN",
+        False,
+    ),
+    IntegrationManifest(
+        "ggen",
+        "ontology-driven execution-profile manufacture",
+        "seanchatmangpt/ggen",
+        "37daece2a026efc6168c6ea715a1747bb934a898",
+        "CONSTRUCT",
         False,
     ),
     IntegrationManifest(
