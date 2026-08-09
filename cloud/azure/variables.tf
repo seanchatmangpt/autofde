@@ -26,3 +26,25 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "log_analytics_workspace_name" {
+  description = "Exact Sentinel Log Analytics workspace admitted for the closed vertical."
+  type        = string
+  default     = "autofde-sentinel-test"
+
+  validation {
+    condition     = length(trimspace(var.log_analytics_workspace_name)) > 0
+    error_message = "log_analytics_workspace_name must be explicit"
+  }
+}
+
+variable "logic_app_name" {
+  description = "Logic App receiving admitted Sentinel incident payloads."
+  type        = string
+  default     = "autofde-sentinel-ingress"
+
+  validation {
+    condition     = length(trimspace(var.logic_app_name)) > 0
+    error_message = "logic_app_name must be explicit"
+  }
+}
