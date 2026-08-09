@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import json
 
 import pytest
@@ -54,21 +55,18 @@ def _admit(document: dict[str, object] | None = None):
 
 
 def _controller(*, grant: bool = True) -> AutonomicController:
-    runtime = ProductionGymAct(
-        authority_resolver=AllowListAuthorityResolver({AUTHORITY})
-    )
+    runtime = ProductionGymAct(authority_resolver=AllowListAuthorityResolver({AUTHORITY}))
     runtime.register_provider(MemoryProvider())
     issuer = BoundedGrantIssuer({AUTHORITY}) if grant else None
     return AutonomicController(runtime, grant_issuer=issuer)
 
 
-@pytest.mark.asyncio
-async def test_compiled_profile_executes_only_through_real_gymact_brce_and_is_receipted() -> None:
+def test_compiled_profile_executes_only_through_real_gymact_brce_and_is_receipted() -> None:
     bundle = _admit()
     runtime = CompiledProfileExploitRuntime(_controller(), bundle)
 
     assert not hasattr(runtime, "act")
-    outcome = await runtime.execute("memory-counter")
+    outcome = asyncio.run(runtime.execute("memory-counter"))
 
     assert outcome.standing == "ALIVE"
     assert outcome.verified is True
@@ -79,12 +77,11 @@ async def test_compiled_profile_executes_only_through_real_gymact_brce_and_is_re
     assert runtime.receipts() == (outcome.receipt,)
 
 
-@pytest.mark.asyncio
-async def test_missing_grant_issuer_is_a_receipted_refusal_not_a_bypass() -> None:
+def test_missing_grant_issuer_is_a_receipted_refusal_not_a_bypass() -> None:
     bundle = _admit()
     runtime = CompiledProfileExploitRuntime(_controller(grant=False), bundle)
 
-    outcome = await runtime.execute("memory-counter")
+    outcome = asyncio.run(runtime.execute("memory-counter"))
 
     assert outcome.standing == "REFUSED"
     assert "GRANT" in outcome.reason
