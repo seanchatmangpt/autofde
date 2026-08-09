@@ -78,9 +78,8 @@ pub fn parse_sentinel_incident(
     validate_policy(policy)?;
     let root: Value = serde_json::from_slice(raw_body)
         .map_err(|error| SentinelIngressRefusal::InvalidJson(error.to_string()))?;
-    let incident = locate_incident(&root).ok_or_else(|| {
-        SentinelIngressRefusal::InvalidShape("incident object not found".into())
-    })?;
+    let incident = locate_incident(&root)
+        .ok_or_else(|| SentinelIngressRefusal::InvalidShape("incident object not found".into()))?;
 
     let arm_id = required_string(incident, "id")?;
     let name = required_string(incident, "name")?;
@@ -96,13 +95,19 @@ pub fn parse_sentinel_incident(
         .and_then(Value::as_str)
         .map(str::to_owned);
 
-    let expected_subscription = format!("/subscriptions/{}/", policy.subscription_id.to_ascii_lowercase());
+    let expected_subscription = format!(
+        "/subscriptions/{}/",
+        policy.subscription_id.to_ascii_lowercase()
+    );
     let normalized_arm = arm_id.to_ascii_lowercase();
     if !normalized_arm.starts_with(&expected_subscription) {
         return Err(SentinelIngressRefusal::SubscriptionMismatch);
     }
 
-    let workspace = policy.workspace_resource_id.trim_end_matches('/').to_ascii_lowercase();
+    let workspace = policy
+        .workspace_resource_id
+        .trim_end_matches('/')
+        .to_ascii_lowercase();
     let expected_prefix = format!("{workspace}/providers/microsoft.securityinsights/incidents/");
     if !normalized_arm.starts_with(&expected_prefix) {
         return Err(SentinelIngressRefusal::WorkspaceMismatch);
@@ -121,7 +126,11 @@ pub fn parse_sentinel_incident(
 pub fn to_rdf_delta(incident: &SentinelIncident) -> RdfDelta {
     let subject = incident.arm_id.clone();
     let mut additions = vec![
-        triple(&subject, "urn:autofde:sourceSchema", SENTINEL_INCIDENT_SCHEMA),
+        triple(
+            &subject,
+            "urn:autofde:sourceSchema",
+            SENTINEL_INCIDENT_SCHEMA,
+        ),
         triple(&subject, "urn:autofde:incidentName", &incident.name),
         triple(&subject, "urn:autofde:incidentStatus", &incident.status),
         triple(&subject, "urn:autofde:incidentTitle", &incident.title),
@@ -132,11 +141,7 @@ pub fn to_rdf_delta(incident: &SentinelIncident) -> RdfDelta {
         ),
     ];
     if let Some(severity) = &incident.severity {
-        additions.push(triple(
-            &subject,
-            "urn:autofde:incidentSeverity",
-            severity,
-        ));
+        additions.push(triple(&subject, "urn:autofde:incidentSeverity", severity));
     }
 
     let event_identity = blake3::hash(
@@ -155,7 +160,11 @@ pub fn to_rdf_delta(incident: &SentinelIncident) -> RdfDelta {
 }
 
 fn locate_incident(root: &Value) -> Option<&serde_json::Map<String, Value>> {
-    for candidate in [root.get("incident"), root.get("body").and_then(|v| v.get("incident")), Some(root)] {
+    for candidate in [
+        root.get("incident"),
+        root.get("body").and_then(|v| v.get("incident")),
+        Some(root),
+    ] {
         if let Some(object) = candidate.and_then(Value::as_object) {
             if object.contains_key("id") && object.contains_key("properties") {
                 return Some(object);
@@ -172,7 +181,10 @@ fn validate_policy(policy: &SentinelIngressPolicy) -> Result<(), SentinelIngress
         ));
     }
     let workspace = policy.workspace_resource_id.to_ascii_lowercase();
-    let expected = format!("/subscriptions/{}/", policy.subscription_id.to_ascii_lowercase());
+    let expected = format!(
+        "/subscriptions/{}/",
+        policy.subscription_id.to_ascii_lowercase()
+    );
     if !workspace.starts_with(&expected)
         || !workspace.contains("/providers/microsoft.operationalinsights/workspaces/")
     {
@@ -183,7 +195,10 @@ fn validate_policy(policy: &SentinelIngressPolicy) -> Result<(), SentinelIngress
     Ok(())
 }
 
-fn required_string(object: &serde_json::Map<String, Value>, key: &str) -> Result<String, SentinelIngressRefusal> {
+fn required_string(
+    object: &serde_json::Map<String, Value>,
+    key: &str,
+) -> Result<String, SentinelIngressRefusal> {
     required_object_string(object, key)
 }
 
@@ -263,8 +278,11 @@ mod tests {
 
     #[test]
     fn incident_update_gets_distinct_event_identity_without_mutating_prior_event() {
-        let first = parse_sentinel_incident(&policy(), &incident("Active", "2026-08-09T15:00:00Z")).unwrap();
-        let second = parse_sentinel_incident(&policy(), &incident("Closed", "2026-08-09T15:05:00Z")).unwrap();
+        let first = parse_sentinel_incident(&policy(), &incident("Active", "2026-08-09T15:00:00Z"))
+            .unwrap();
+        let second =
+            parse_sentinel_incident(&policy(), &incident("Closed", "2026-08-09T15:05:00Z"))
+                .unwrap();
         let first_delta = to_rdf_delta(&first);
         let second_delta = to_rdf_delta(&second);
         assert_ne!(first_delta.stream_id, second_delta.stream_id);
@@ -280,7 +298,9 @@ mod tests {
             workspace_resource_id: "/subscriptions/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee/resourceGroups/sec-rg/providers/Microsoft.OperationalInsights/workspaces/sec-law".into(),
         };
         assert_eq!(
-            parse_sentinel_incident(&wrong_subscription, &body).unwrap_err().code(),
+            parse_sentinel_incident(&wrong_subscription, &body)
+                .unwrap_err()
+                .code(),
             "REFUSED_SENTINEL_SUBSCRIPTION"
         );
 
@@ -289,7 +309,9 @@ mod tests {
             workspace_resource_id: "/subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/sec-rg/providers/Microsoft.OperationalInsights/workspaces/other-law".into(),
         };
         assert_eq!(
-            parse_sentinel_incident(&wrong_workspace, &body).unwrap_err().code(),
+            parse_sentinel_incident(&wrong_workspace, &body)
+                .unwrap_err()
+                .code(),
             "REFUSED_SENTINEL_WORKSPACE"
         );
     }
