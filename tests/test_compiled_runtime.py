@@ -32,12 +32,17 @@ def _document() -> dict[str, object]:
                 "provider": "memory",
                 "benchmark_revision": "0123456789abcdef0123456789abcdef01234567",
                 "scenario": None,
-                "config": {"initial": {"counter": 0}, "requires_authority": True},
+                "config_json": json.dumps(
+                    {"initial": {"counter": 0}, "requires_authority": True},
+                    sort_keys=True,
+                ),
                 "capability_ref": None,
                 "capability_binding": "increment",
-                "payload": {"key": "counter", "amount": 1},
-                "expected": {"counter": 1},
-                "input_schema": {"type": "object"},
+                "payload_json": json.dumps(
+                    {"key": "counter", "amount": 1}, sort_keys=True
+                ),
+                "expected_json": json.dumps({"counter": 1}, sort_keys=True),
+                "input_schema_json": json.dumps({"type": "object"}, sort_keys=True),
                 "authority_ref": AUTHORITY,
                 "action_ref": "urn:test:action:memory-counter-increment",
             }
@@ -73,7 +78,7 @@ def test_compiled_profile_executes_only_through_real_gymact_brce_and_is_receipte
     assert outcome.receipt.bundle_sha256 == bundle.sha256
     assert outcome.receipt.profile_id == "memory-counter"
     assert outcome.receipt.downstream_receipt_ids
-    assert outcome.receipt.receipt_id.startswith("sha256:")
+    assert outcome.receipt.receipt_id.startswith("blake3:")
     assert runtime.receipts() == (outcome.receipt,)
 
     # Exact compiled profile identity is exactly-once. Re-entry returns the
@@ -94,6 +99,7 @@ def test_missing_grant_issuer_is_a_receipted_refusal_not_a_bypass() -> None:
     assert "GRANT" in outcome.reason
     assert outcome.verified is False
     assert outcome.receipt.downstream_receipt_ids
+    assert outcome.receipt.receipt_id.startswith("blake3:")
 
 
 def test_digest_mismatch_refuses_before_runtime_construction() -> None:
@@ -111,7 +117,7 @@ def test_embedded_authority_token_is_refused_even_with_valid_digest() -> None:
         admit_execution_bundle(raw, expected_sha256=sha256_hex(raw))
 
 
-def test_production_requires_external_authority_reference_and_non_vacuous_oracle() -> None:
+def test_production_requires_authority_oracle_and_valid_inner_json() -> None:
     no_authority = _document()
     no_authority["profiles"][0]["authority_ref"] = None  # type: ignore[index]
     raw = _bundle_bytes(no_authority)
@@ -119,7 +125,22 @@ def test_production_requires_external_authority_reference_and_non_vacuous_oracle
         admit_execution_bundle(raw, expected_sha256=sha256_hex(raw))
 
     vacuous = _document()
-    vacuous["profiles"][0]["expected"] = {}  # type: ignore[index]
+    vacuous["profiles"][0]["expected_json"] = "{}"  # type: ignore[index]
     raw = _bundle_bytes(vacuous)
-    with pytest.raises(AdmissionRefused, match="PROFILE_OBJECT_REQUIRED:expected"):
+    with pytest.raises(AdmissionRefused, match="PROFILE_OBJECT_REQUIRED:expected_json"):
         admit_execution_bundle(raw, expected_sha256=sha256_hex(raw))
+
+    malformed = _document()
+    malformed["profiles"][0]["config_json"] = "{not-json}"  # type: ignore[index]
+    raw = _bundle_bytes(malformed)
+    with pytest.raises(AdmissionRefused, match="PROFILE_JSON_INVALID:config_json"):
+        admit_execution_bundle(raw, expected_sha256=sha256_hex(raw))
+
+
+def test_provider_payload_may_contain_nonce_without_becoming_an_execution_grant() -> None:
+    document = _document()
+    document["profiles"][0]["payload_json"] = json.dumps(  # type: ignore[index]
+        {"key": "counter", "amount": 1, "nonce": "provider-data"}, sort_keys=True
+    )
+    bundle = _admit(document)
+    assert bundle.profile("memory-counter").payload["nonce"] == "provider-data"
