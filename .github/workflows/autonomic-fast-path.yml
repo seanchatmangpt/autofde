@@ -1,0 +1,82 @@
+name: AutoFDE autonomic fast path
+
+on:
+  pull_request:
+    paths:
+      - "src/autofde/autonomic.py"
+      - "src/autofde/runtime.py"
+      - "tests/test_autonomic.py"
+      - "tests/test_runtime.py"
+      - ".github/workflows/autonomic-fast-path.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  exact-head-court:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout exact admitted subject
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+
+      - name: Prove exact head identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected="${{ github.event.pull_request.head.sha || github.sha }}"
+          actual="$(git rev-parse HEAD)"
+          test "$actual" = "$expected" || {
+            echo "REFUSED:EXACT_HEAD_MISMATCH expected=$expected actual=$actual" >&2
+            exit 1
+          }
+          echo "AUTOFDE_AUTONOMIC_EXACT_HEAD=$actual"
+
+      - name: Install Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: Compile production boundary
+        run: |
+          python -m py_compile \
+            src/autofde/runtime.py \
+            src/autofde/autonomic.py \
+            tests/test_runtime.py \
+            tests/test_autonomic.py
+
+      - name: Execute runtime and adversarial courts
+        env:
+          PYTHONPATH: src
+        run: python -m unittest -v tests/test_runtime.py tests/test_autonomic.py
+
+      - name: Refuse alternate DO surfaces
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          source = Path("src/autofde/autonomic.py").read_text()
+          forbidden = (
+              "subprocess.",
+              "os.system(",
+              "requests.",
+              "httpx.",
+              "azure.identity",
+              "azure.mgmt",
+              "socket.",
+              "urllib.request",
+              ".actuate(",
+          )
+          hits = [token for token in forbidden if token in source]
+          if hits:
+              raise SystemExit(f"REFUSED:AUTONOMIC_ALTERNATE_DO_SURFACE {hits}")
+          if "self.broker.do(" not in source:
+              raise SystemExit("REFUSED:BRCE_DELEGATION_MISSING")
+          print("AUTOFDE_AUTONOMIC_BRCE_ONLY_ALIVE")
+          PY
