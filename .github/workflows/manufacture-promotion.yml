@@ -1,0 +1,76 @@
+name: AutoFDE manufacturing promotion
+
+on:
+  pull_request:
+    paths:
+      - "src/autofde/manufacturing.py"
+      - "src/autofde/observations.py"
+      - "src/autofde/runtime.py"
+      - "tests/test_manufacturing.py"
+      - "tests/test_observations.py"
+      - ".github/workflows/manufacture-promotion.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  manufacture-promotion:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact admitted head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Refuse subject drift
+        shell: bash
+        run: |
+          set -euo pipefail
+          admitted="${{ github.event.pull_request.head.sha || github.sha }}"
+          observed="$(git rev-parse HEAD)"
+          test "$observed" = "$admitted" || {
+            echo "REFUSED:EXACT_HEAD_MISMATCH admitted=$admitted observed=$observed" >&2
+            exit 1
+          }
+          echo "AUTOFDE_MANUFACTURE_EXACT_HEAD=$observed"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Compile production bridge
+        run: |
+          python -m py_compile \
+            src/autofde/runtime.py \
+            src/autofde/observations.py \
+            src/autofde/manufacturing.py \
+            tests/test_manufacturing.py
+
+      - name: Refuse ambient DO or local-worktree dependency
+        shell: bash
+        run: |
+          set -euo pipefail
+          file=src/autofde/manufacturing.py
+          if grep -En 'subprocess|os\.system|requests\.|urllib\.|\.actuate\(|broker\.do\(|terraform|az[[:space:]]' "$file"; then
+            echo "REFUSED:MANUFACTURE_BOUNDARY_GAINED_ACTUATION" >&2
+            exit 1
+          fi
+          if grep -En '/Users/|/home/|/tmp/|\.\./(autofde-lab|ggen)|path dependency' "$file"; then
+            echo "REFUSED:SIBLING_WORKTREE_DEPENDENCY" >&2
+            exit 1
+          fi
+
+      - name: Execute manufacturing adversarial court
+        env:
+          PYTHONPATH: src
+        run: python -m unittest -v tests/test_manufacturing.py
+
+      - name: Re-execute deterministic observation admission court
+        env:
+          PYTHONPATH: src
+        run: python -m unittest -v tests/test_observations.py
+
+      - name: Emit court standing
+        run: echo "AUTOFDE_MANUFACTURE_PROMOTION_COURT=ALIVE"
