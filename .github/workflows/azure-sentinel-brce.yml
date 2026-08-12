@@ -8,6 +8,7 @@ on:
       - "src/autofde/runtime.py"
       - "tests/test_sentinel.py"
       - "tests/test_runtime.py"
+      - "requirements.txt"
       - ".github/workflows/azure-sentinel-brce.yml"
   workflow_dispatch:
 
@@ -41,6 +42,11 @@ jobs:
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
         with:
           python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install repository verifier dependencies
+        run: python -m pip install --disable-pip-version-check --requirement requirements.txt
 
       - name: Compile Sentinel production boundary
         run: |
