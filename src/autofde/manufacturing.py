@@ -11,6 +11,18 @@ from .observations import AdmittedClaim, ObservationLedger
 from .runtime import CapabilityBundle, RuntimeStore
 
 
+MANUFACTURE_RECEIPT_SCHEMA = "autofde.manufacture-receipt/2"
+MANUFACTURE_VALIDATOR = "ggen:autofde-capability-bundle/2"
+REQUIRED_MANUFACTURE_COURTS = (
+    "artifact_set_integrity",
+    "authority_non_escalation",
+    "manifest_binding",
+    "provenance_binding",
+    "receipt_self_integrity",
+    "request_binding",
+)
+
+
 class ManufactureRefusalCode(StrEnum):
     INVALID_REQUEST = "REFUSED:INVALID_MANUFACTURE_REQUEST"
     SOURCE_IDENTITY = "REFUSED:SOURCE_IDENTITY"
@@ -20,6 +32,7 @@ class ManufactureRefusalCode(StrEnum):
     BUNDLE_TAMPER = "REFUSED:BUNDLE_TAMPER"
     LOCAL_PATH_DEPENDENCY = "REFUSED:LOCAL_PATH_DEPENDENCY"
     INCOMPLETE_BUNDLE = "REFUSED:INCOMPLETE_BUNDLE"
+    MANUFACTURER_RECEIPT = "REFUSED:MANUFACTURER_RECEIPT"
 
 
 class ManufactureRefusal(ValueError):
@@ -35,6 +48,10 @@ def _canonical_json(value: Any) -> bytes:
 
 def _sha256(value: bytes) -> str:
     return hashlib.sha256(value).hexdigest()
+
+
+def _sha256_json(value: Any) -> str:
+    return "sha256:" + _sha256(_canonical_json(value))
 
 
 def _require_sha(value: str, label: str) -> None:
@@ -67,6 +84,17 @@ def _portable_artifact_path(value: str) -> str:
             value,
         )
     return path.as_posix()
+
+
+def _artifact_set_digest(rows: Sequence[Mapping[str, str]]) -> str:
+    material = [{"path": row["path"], "sha256": row["sha256"]} for row in rows]
+    return _sha256_json(sorted(material, key=lambda row: row["path"]))
+
+
+def _receipt_digest(payload: Mapping[str, Any]) -> str:
+    unsigned = dict(payload)
+    unsigned.pop("receipt_digest", None)
+    return _sha256_json(unsigned)
 
 
 @dataclass(frozen=True, slots=True)
@@ -132,26 +160,17 @@ class ManufactureRequest:
         _require_sha(self.ggen_revision, "GGEN_REVISION")
         _require_text(self.claim_id, "CLAIM_ID")
         if self.schema != "autofde.manufacture-request/1":
-            raise ManufactureRefusal(
-                ManufactureRefusalCode.INVALID_REQUEST,
-                "REQUEST_SCHEMA",
-            )
+            raise ManufactureRefusal(ManufactureRefusalCode.INVALID_REQUEST, "REQUEST_SCHEMA")
         if self.authority_mode != "external-only" or self.do_authority:
             raise ManufactureRefusal(
                 ManufactureRefusalCode.AUTHORITY_SMUGGLING,
                 "MANUFACTURE_REQUEST_MUST_BE_CONSTRUCT_ONLY",
             )
         if self.rdfdelta.get("schema") != "autofde.rdfdelta/1":
-            raise ManufactureRefusal(
-                ManufactureRefusalCode.INVALID_REQUEST,
-                "RDFDELTA_SCHEMA",
-            )
+            raise ManufactureRefusal(ManufactureRefusalCode.INVALID_REQUEST, "RDFDELTA_SCHEMA")
         if self.rdfdelta.get("claim_id") != self.claim_id:
-            raise ManufactureRefusal(
-                ManufactureRefusalCode.REQUEST_MISMATCH,
-                "RDFDELTA_CLAIM_ID",
-            )
-        if self.rdfdelta.get("removes") not in ([], ()):  # manufacturing never rewrites raw O
+            raise ManufactureRefusal(ManufactureRefusalCode.REQUEST_MISMATCH, "RDFDELTA_CLAIM_ID")
+        if self.rdfdelta.get("removes") not in ([], ()):
             raise ManufactureRefusal(
                 ManufactureRefusalCode.INVALID_REQUEST,
                 "RDFDELTA_REMOVALS_FORBIDDEN",
@@ -179,6 +198,10 @@ class ManufactureRequest:
     def request_id(self) -> str:
         return _sha256(_canonical_json(self.canonical_payload()))
 
+    @property
+    def request_digest(self) -> str:
+        return _sha256_json(self.canonical_payload())
+
     def to_bytes(self) -> bytes:
         payload = dict(self.canonical_payload())
         payload["request_id"] = self.request_id
@@ -204,16 +227,15 @@ class ManufacturedArtifact:
 
 @dataclass(frozen=True, slots=True)
 class ManufacturedBundleManifest:
+    """Candidate artifact inventory. It deliberately carries no standing or authority."""
+
     name: str
     request_id: str
     lab_revision: str
     ggen_revision: str
     consequence: str
     artifacts: tuple[ManufacturedArtifact, ...]
-    standing: str = "ALIVE"
-    authority_mode: str = "external-only"
-    do_authority: bool = False
-    schema: str = "autofde.capability-bundle/1"
+    schema: str = "autofde.capability-bundle-manifest/2"
 
     def canonical_payload(self) -> Mapping[str, Any]:
         _require_text(self.name, "BUNDLE_NAME")
@@ -221,27 +243,11 @@ class ManufacturedBundleManifest:
         _require_text(self.consequence, "CONSEQUENCE")
         _require_sha(self.lab_revision, "LAB_REVISION")
         _require_sha(self.ggen_revision, "GGEN_REVISION")
-        if self.schema != "autofde.capability-bundle/1":
-            raise ManufactureRefusal(
-                ManufactureRefusalCode.INCOMPLETE_BUNDLE,
-                "BUNDLE_SCHEMA",
-            )
-        if self.standing != "ALIVE":
-            raise ManufactureRefusal(
-                ManufactureRefusalCode.INCOMPLETE_BUNDLE,
-                f"MANUFACTURER_STANDING:{self.standing}",
-            )
-        if self.authority_mode != "external-only" or self.do_authority:
-            raise ManufactureRefusal(
-                ManufactureRefusalCode.AUTHORITY_SMUGGLING,
-                "MANUFACTURED_BUNDLE_MUST_NOT_CARRY_DO_AUTHORITY",
-            )
+        if self.schema != "autofde.capability-bundle-manifest/2":
+            raise ManufactureRefusal(ManufactureRefusalCode.INCOMPLETE_BUNDLE, "BUNDLE_SCHEMA")
         rows = [artifact.canonical_payload() for artifact in self.artifacts]
         if not rows:
-            raise ManufactureRefusal(
-                ManufactureRefusalCode.INCOMPLETE_BUNDLE,
-                "NO_ARTIFACTS",
-            )
+            raise ManufactureRefusal(ManufactureRefusalCode.INCOMPLETE_BUNDLE, "NO_ARTIFACTS")
         paths = [row["path"] for row in rows]
         if len(paths) != len(set(paths)):
             raise ManufactureRefusal(
@@ -255,18 +261,112 @@ class ManufacturedBundleManifest:
             "lab_revision": self.lab_revision,
             "ggen_revision": self.ggen_revision,
             "consequence": self.consequence,
-            "standing": self.standing,
-            "authority": {
-                "mode": self.authority_mode,
-                "do_authority": self.do_authority,
-            },
             "artifacts": sorted(rows, key=lambda row: row["path"]),
         }
+
+    @property
+    def manifest_digest(self) -> str:
+        return _sha256_json(self.canonical_payload())
+
+    @property
+    def artifact_set_digest(self) -> str:
+        return _artifact_set_digest(self.canonical_payload()["artifacts"])
+
+
+@dataclass(frozen=True, slots=True)
+class ManufacturerReceipt:
+    request_id: str
+    request_digest: str
+    manifest_digest: str
+    artifact_set_digest: str
+    lab_revision: str
+    ggen_revision: str
+    receipt_digest: str
+    courts: tuple[str, ...]
+    standing: str = "ALIVE"
+    authority_class: str = "CONSTRUCT"
+    do_authority: bool = False
+    validator: str = MANUFACTURE_VALIDATOR
+    schema: str = MANUFACTURE_RECEIPT_SCHEMA
+
+    @classmethod
+    def from_payload(cls, payload: Mapping[str, Any]) -> "ManufacturerReceipt":
+        try:
+            return cls(
+                request_id=str(payload["request_id"]),
+                request_digest=str(payload["request_digest"]),
+                manifest_digest=str(payload["manifest_digest"]),
+                artifact_set_digest=str(payload["artifact_set_digest"]),
+                lab_revision=str(payload["lab_revision"]),
+                ggen_revision=str(payload["ggen_revision"]),
+                receipt_digest=str(payload["receipt_digest"]),
+                courts=tuple(str(value) for value in payload["courts"]),
+                standing=str(payload.get("standing", "")),
+                authority_class=str(payload.get("authority_class", "")),
+                do_authority=bool(payload.get("do_authority", True)),
+                validator=str(payload.get("validator", "")),
+                schema=str(payload.get("schema", "")),
+            )
+        except (KeyError, TypeError) as exc:
+            raise ManufactureRefusal(
+                ManufactureRefusalCode.MANUFACTURER_RECEIPT,
+                "RECEIPT_FIELDS_MISSING",
+            ) from exc
+
+    def canonical_payload(self, *, include_digest: bool = True) -> Mapping[str, Any]:
+        payload: dict[str, Any] = {
+            "schema": self.schema,
+            "standing": self.standing,
+            "authority_class": self.authority_class,
+            "do_authority": self.do_authority,
+            "validator": self.validator,
+            "request_id": self.request_id,
+            "request_digest": self.request_digest,
+            "manifest_digest": self.manifest_digest,
+            "artifact_set_digest": self.artifact_set_digest,
+            "lab_revision": self.lab_revision,
+            "ggen_revision": self.ggen_revision,
+            "courts": list(self.courts),
+        }
+        if include_digest:
+            payload["receipt_digest"] = self.receipt_digest
+        return payload
+
+    def verify(self, request: ManufactureRequest, manifest: ManufacturedBundleManifest) -> None:
+        if self.schema != MANUFACTURE_RECEIPT_SCHEMA:
+            raise ManufactureRefusal(ManufactureRefusalCode.MANUFACTURER_RECEIPT, "RECEIPT_SCHEMA")
+        if self.standing != "ALIVE":
+            raise ManufactureRefusal(ManufactureRefusalCode.MANUFACTURER_RECEIPT, "MANUFACTURER_NOT_ALIVE")
+        if self.authority_class != "CONSTRUCT" or self.do_authority:
+            raise ManufactureRefusal(
+                ManufactureRefusalCode.AUTHORITY_SMUGGLING,
+                "MANUFACTURER_RECEIPT_MUST_BE_CONSTRUCT_ONLY",
+            )
+        if self.validator != MANUFACTURE_VALIDATOR:
+            raise ManufactureRefusal(ManufactureRefusalCode.MANUFACTURER_RECEIPT, "VALIDATOR_IDENTITY")
+        _require_sha(self.lab_revision, "RECEIPT_LAB_REVISION")
+        _require_sha(self.ggen_revision, "RECEIPT_GGEN_REVISION")
+        if self.request_id != request.request_id or self.request_digest != request.request_digest:
+            raise ManufactureRefusal(ManufactureRefusalCode.REQUEST_MISMATCH, "RECEIPT_REQUEST_BINDING")
+        if self.lab_revision != request.lab_revision or self.lab_revision != manifest.lab_revision:
+            raise ManufactureRefusal(ManufactureRefusalCode.SOURCE_IDENTITY, "RECEIPT_LAB_REVISION_DRIFT")
+        if self.ggen_revision != request.ggen_revision or self.ggen_revision != manifest.ggen_revision:
+            raise ManufactureRefusal(ManufactureRefusalCode.GENERATOR_DRIFT, "RECEIPT_GGEN_REVISION_DRIFT")
+        if self.manifest_digest != manifest.manifest_digest:
+            raise ManufactureRefusal(ManufactureRefusalCode.BUNDLE_TAMPER, "RECEIPT_MANIFEST_DIGEST")
+        if self.artifact_set_digest != manifest.artifact_set_digest:
+            raise ManufactureRefusal(ManufactureRefusalCode.BUNDLE_TAMPER, "RECEIPT_ARTIFACT_SET_DIGEST")
+        if tuple(sorted(self.courts)) != tuple(sorted(REQUIRED_MANUFACTURE_COURTS)):
+            raise ManufactureRefusal(ManufactureRefusalCode.MANUFACTURER_RECEIPT, "COURTS_INCOMPLETE")
+        expected_digest = _receipt_digest(self.canonical_payload(include_digest=False))
+        if self.receipt_digest != expected_digest:
+            raise ManufactureRefusal(ManufactureRefusalCode.MANUFACTURER_RECEIPT, "RECEIPT_DIGEST_MISMATCH")
 
 
 def admit_manufactured_bundle(
     request: ManufactureRequest,
     manifest: ManufacturedBundleManifest,
+    manufacturer_receipt: ManufacturerReceipt | Mapping[str, Any],
     *,
     artifact_payloads: Mapping[str, bytes],
     store: RuntimeStore,
@@ -275,25 +375,13 @@ def admit_manufactured_bundle(
     manifest_payload = manifest.canonical_payload()
 
     if manifest.request_id != request.request_id:
-        raise ManufactureRefusal(
-            ManufactureRefusalCode.REQUEST_MISMATCH,
-            "BUNDLE_REQUEST_ID",
-        )
+        raise ManufactureRefusal(ManufactureRefusalCode.REQUEST_MISMATCH, "BUNDLE_REQUEST_ID")
     if manifest.lab_revision != request.lab_revision:
-        raise ManufactureRefusal(
-            ManufactureRefusalCode.SOURCE_IDENTITY,
-            "LAB_REVISION_DRIFT",
-        )
+        raise ManufactureRefusal(ManufactureRefusalCode.SOURCE_IDENTITY, "LAB_REVISION_DRIFT")
     if manifest.ggen_revision != request.ggen_revision:
-        raise ManufactureRefusal(
-            ManufactureRefusalCode.GENERATOR_DRIFT,
-            "GGEN_REVISION_DRIFT",
-        )
+        raise ManufactureRefusal(ManufactureRefusalCode.GENERATOR_DRIFT, "GGEN_REVISION_DRIFT")
     if manifest.name != request.requirement.name or manifest.consequence != request.requirement.consequence:
-        raise ManufactureRefusal(
-            ManufactureRefusalCode.REQUEST_MISMATCH,
-            "BUNDLE_REQUIREMENT_DRIFT",
-        )
+        raise ManufactureRefusal(ManufactureRefusalCode.REQUEST_MISMATCH, "BUNDLE_REQUIREMENT_DRIFT")
 
     expected = {row["path"]: row["sha256"] for row in manifest_payload["artifacts"]}
     observed = {_portable_artifact_path(path): payload for path, payload in artifact_payloads.items()}
@@ -306,15 +394,20 @@ def admit_manufactured_bundle(
         )
     for path, digest in expected.items():
         if _sha256(observed[path]) != digest:
-            raise ManufactureRefusal(
-                ManufactureRefusalCode.BUNDLE_TAMPER,
-                path,
-            )
+            raise ManufactureRefusal(ManufactureRefusalCode.BUNDLE_TAMPER, path)
+
+    receipt = (
+        manufacturer_receipt
+        if isinstance(manufacturer_receipt, ManufacturerReceipt)
+        else ManufacturerReceipt.from_payload(manufacturer_receipt)
+    )
+    receipt.verify(request, manifest)
 
     bundle_identity = {
         "request": request_payload,
         "manifest": manifest_payload,
         "artifact_digests": expected,
+        "manufacturer_receipt_digest": receipt.receipt_digest,
     }
     bundle_digest = _sha256(_canonical_json(bundle_identity))
     bundle = CapabilityBundle(
@@ -334,7 +427,7 @@ def manifest_for_payloads(
     *,
     artifacts: Sequence[tuple[str, str, bytes]],
 ) -> ManufacturedBundleManifest:
-    """Small deterministic adapter for ggen outputs: (path, media type, bytes)."""
+    """Build a powerless candidate manifest. This function never confers ALIVE standing."""
     material = tuple(
         ManufacturedArtifact(path=path, media_type=media_type, sha256=_sha256(payload))
         for path, media_type, payload in artifacts
