@@ -1,0 +1,101 @@
+name: AutoFDE ecosystem vacuity census
+
+on:
+  pull_request:
+    paths:
+      - "scripts/audit_vacuity.py"
+      - ".github/workflows/ecosystem-vacuity-audit.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ecosystem-census:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout exact AutoFDE audit source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+
+      - name: Census every branch and executable source file in the core ecosystem
+        shell: bash
+        run: |
+          set -euo pipefail
+          audit="$PWD/scripts/audit_vacuity.py"
+          mkdir -p "$RUNNER_TEMP/autofde-vacuity-census"
+          cd "$RUNNER_TEMP/autofde-vacuity-census"
+
+          repos=(
+            autofde-lab
+            wasm4pm
+            wasm4pm-compat
+            gymact
+            ggen
+            ggen-marketplace
+            sregym
+            dspygen
+          )
+
+          : > summary.tsv
+          for repo in "${repos[@]}"; do
+            echo "=== CENSUS seanchatmangpt/$repo ==="
+            git clone --quiet "https://github.com/seanchatmangpt/$repo.git" "$repo"
+            cd "$repo"
+            git fetch --quiet --no-tags origin '+refs/heads/*:refs/remotes/origin/*'
+            head_sha="$(git rev-parse HEAD)"
+            head_ref="$(git symbolic-ref --short HEAD)"
+
+            python "$audit" --ref HEAD --json > ../"$repo-head.json"
+            python "$audit" --all-refs --json > ../"$repo-all-refs.json"
+
+            python - "$repo" "$head_ref" "$head_sha" ../"$repo-head.json" ../"$repo-all-refs.json" <<'PY'
+          import json
+          import sys
+
+          repo, head_ref, head_sha, head_path, all_path = sys.argv[1:]
+          head = json.load(open(head_path, encoding="utf-8"))
+          all_refs = json.load(open(all_path, encoding="utf-8"))
+          head_findings = head["total_findings"]
+          refs = len(all_refs["refs"])
+          files = sum(entry["files_scanned"] for entry in all_refs["refs"])
+          print(
+              f"CENSUS repo={repo} head={head_ref}@{head_sha} "
+              f"head_findings={head_findings} refs={refs} ref_file_visits={files} "
+              f"all_ref_findings={all_refs['total_findings']}"
+          )
+          with open("../summary.tsv", "a", encoding="utf-8") as handle:
+              handle.write(
+                  f"{repo}\t{head_ref}\t{head_sha}\t{head_findings}\t{refs}\t{files}\t{all_refs['total_findings']}\n"
+              )
+          for entry in head["refs"]:
+              for finding in entry["findings"]:
+                  print(
+                      "HEAD_FINDING "
+                      f"{repo} {finding['path']}:{finding['line']} "
+                      f"{finding['kind']} {finding['symbol']} — {finding['detail']}"
+                  )
+          PY
+            cd ..
+          done
+
+          echo '=== ECOSYSTEM CENSUS SUMMARY ==='
+          cat summary.tsv
+
+      - name: Refuse census that silently skipped a core repository
+        shell: bash
+        run: |
+          set -euo pipefail
+          summary="$RUNNER_TEMP/autofde-vacuity-census/summary.tsv"
+          test -s "$summary"
+          test "$(wc -l < "$summary")" -eq 8
+          echo 'AUTOFDE_CORE_ECOSYSTEM_BRANCH_FILE_CENSUS=OBSERVED'
