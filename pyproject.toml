@@ -7,7 +7,6 @@ requires-python = ">=3.12,<3.14"
 dependencies = [
   "dspy>=3,<4",
   "fastmcp>=2.12,<3",
-  "scikit-decide @ git+https://github.com/seanchatmangpt/autofde-lab.git@8d8e8ae6c995abbe89f2ede4f8aaea1f02ae52f2",
 ]
 
 [project.scripts]
