@@ -225,10 +225,13 @@ class AzureARMClient:
         """Enumerate every ARM page before claiming resource-group coverage is complete."""
         sub = urllib.parse.quote(self.authority.subscription_id, safe="")
         rg = urllib.parse.quote(resource_group, safe="")
-        status, body = self.get(f"/subscriptions/{sub}/resourceGroups/{rg}/resources")
+        collection_path = f"/subscriptions/{sub}/resourceGroups/{rg}/resources"
+        first_url = self._url(collection_path, ARM_RESOURCE_API)
+        status, body = self._get_url(first_url)
         resources: list[Mapping[str, Any]] = []
-        visited: set[str] = set()
+        visited: set[str] = {first_url}
         pages = 0
+        expected_path = collection_path.rstrip("/").lower()
         while True:
             pages += 1
             if pages > _MAX_ARM_PAGES:
@@ -247,6 +250,9 @@ class AzureARMClient:
                 return tuple(resources)
             if not isinstance(next_link, str):
                 raise AzureObservationError("RESOURCE_GROUP_NEXTLINK_INVALID")
+            target = urllib.parse.urlsplit(next_link)
+            if target.path.rstrip("/").lower() != expected_path:
+                raise AzureObservationError("RESOURCE_GROUP_NEXTLINK_SCOPE_DRIFT")
             if next_link in visited:
                 raise AzureObservationError("RESOURCE_GROUP_NEXTLINK_CYCLE")
             visited.add(next_link)
