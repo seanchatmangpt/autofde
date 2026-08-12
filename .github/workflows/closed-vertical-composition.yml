@@ -1,0 +1,89 @@
+name: AutoFDE closed vertical composition
+
+on:
+  pull_request:
+    paths:
+      - "src/autofde/runtime.py"
+      - "src/autofde/observations.py"
+      - "src/autofde/manufacturing.py"
+      - "src/autofde/reflex.py"
+      - "tests/test_runtime.py"
+      - "tests/test_observations.py"
+      - "tests/test_manufacturing.py"
+      - "tests/test_closed_vertical_composition.py"
+      - ".github/workflows/closed-vertical-composition.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  exact-head-composition:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+
+      - name: Refuse subject drift
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected="${{ github.event.pull_request.head.sha || github.sha }}"
+          observed="$(git rev-parse HEAD)"
+          test "$observed" = "$expected" || {
+            echo "REFUSED:EXACT_HEAD_MISMATCH expected=$expected observed=$observed" >&2
+            exit 1
+          }
+          echo "AUTOFDE_CLOSED_VERTICAL_EXACT_HEAD=$observed"
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+
+      - name: Compile composed production boundary
+        run: |
+          python -m py_compile \
+            src/autofde/runtime.py \
+            src/autofde/observations.py \
+            src/autofde/manufacturing.py \
+            src/autofde/reflex.py \
+            tests/test_closed_vertical_composition.py
+
+      - name: Execute dependency-closed composition court
+        env:
+          PYTHONPATH: src
+        run: |
+          python -m unittest -v \
+            tests/test_runtime.py \
+            tests/test_observations.py \
+            tests/test_manufacturing.py \
+            tests/test_closed_vertical_composition.py
+
+      - name: Refuse a second DO or ambient authority path
+        shell: bash
+        run: |
+          set -euo pipefail
+          file=src/autofde/reflex.py
+          if grep -En 'subprocess|os\.system|requests\.|httpx\.|azure\.identity|azure\.mgmt|socket\.|urllib\.request|terraform|kubectl|gcloud|aws[[:space:]]|az[[:space:]]' "$file"; then
+            echo 'REFUSED:REFLEX_GAINED_EXTERNAL_EFFECT_TRANSPORT' >&2
+            exit 1
+          fi
+          if grep -En '\.actuate\(' "$file"; then
+            echo 'REFUSED:REFLEX_DIRECT_ACTUATION' >&2
+            exit 1
+          fi
+          grep -q 'self.broker.do(' "$file" || {
+            echo 'REFUSED:BRCE_DELEGATION_MISSING' >&2
+            exit 1
+          }
+          echo 'AUTOFDE_CLOSED_VERTICAL_BRCE_ONLY=ALIVE'
+
+      - name: Emit bounded standing
+        run: |
+          echo 'AUTOFDE_O_TO_O_STAR_TO_MANUFACTURE_PIN_TO_BRCE_VERIFY_REPLAY=ALIVE'
+          echo 'AUTOFDE_LIVE_AZURE_EXECUTION=BLOCKED:LIVE_AZURE_AUTHORITY'
