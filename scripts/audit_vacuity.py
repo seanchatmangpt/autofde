@@ -18,7 +18,10 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Iterable
 
-CODE_SUFFIXES = {".py", ".rs", ".js", ".jsx", ".ts", ".tsx"}
+CODE_SUFFIXES = {
+    ".py", ".rs", ".js", ".jsx", ".ts", ".tsx", ".go", ".java", ".kt",
+    ".cc", ".cpp", ".cxx", ".h", ".hpp", ".lean",
+}
 IGNORED_PARTS = {".git", ".venv", "node_modules", "target", "vendor"}
 STANDING_VALUES = {"ALIVE", "PARTIAL_ALIVE"}
 
@@ -89,17 +92,25 @@ class PythonVacuityVisitor(ast.NodeVisitor):
                 and statement.value.value is Ellipsis
             ):
                 self._finding(statement, "PY_ELLIPSIS_BODY", node.name, "concrete function contains only ellipsis")
-            elif (
-                isinstance(statement, ast.Raise)
-                and isinstance(statement.exc, ast.Call)
-                and self._name(statement.exc.func) == "NotImplementedError"
-            ):
-                self._finding(statement, "PY_NOT_IMPLEMENTED", node.name, "concrete function raises NotImplementedError")
+            elif isinstance(statement, ast.Raise) and isinstance(statement.exc, ast.Call):
+                exc_name = self._name(statement.exc.func)
+                message = ""
+                if statement.exc.args and isinstance(statement.exc.args[0], ast.Constant):
+                    message = str(statement.exc.args[0].value).lower()
+                if exc_name == "NotImplementedError" or (
+                    exc_name.endswith(("Error", "Exception"))
+                    and any(marker in message for marker in ("not implemented", "todo", "stub"))
+                ):
+                    self._finding(statement, "PY_NOT_IMPLEMENTED", node.name, "concrete function raises a not-implemented exception")
             elif isinstance(statement, ast.Return):
                 value = statement.value
                 verifier_like = any(token in node.name.lower() for token in ("verify", "check", "admit", "validate"))
                 if verifier_like and isinstance(value, ast.Constant) and value.value in {True, False}:
                     self._finding(statement, "PY_VACUOUS_VERIFIER", node.name, "verifier-like function returns a constant")
+                if isinstance(value, ast.Name) and value.id == "NotImplemented":
+                    self._finding(statement, "PY_NOT_IMPLEMENTED", node.name, "concrete function returns NotImplemented")
+                if isinstance(value, ast.Constant) and value.value is Ellipsis:
+                    self._finding(statement, "PY_ELLIPSIS_BODY", node.name, "concrete function returns ellipsis")
                 if isinstance(value, ast.Dict):
                     literals: dict[str, object] = {}
                     for key, item in zip(value.keys, value.values):
@@ -117,7 +128,9 @@ class PythonVacuityVisitor(ast.NodeVisitor):
 
     def visit_Assert(self, node: ast.Assert) -> None:
         test = node.test
-        if isinstance(test, ast.Compare) and len(test.ops) == 1 and isinstance(test.ops[0], ast.Eq):
+        if isinstance(test, ast.Constant) and test.value is True:
+            self._finding(node, "PY_CONSTANT_ASSERT", "assert", "assert True cannot falsify behavior")
+        elif isinstance(test, ast.Compare) and len(test.ops) == 1 and isinstance(test.ops[0], ast.Eq):
             left = ast.dump(test.left, include_attributes=False)
             right = ast.dump(test.comparators[0], include_attributes=False)
             if left == right:
@@ -131,6 +144,10 @@ class PythonVacuityVisitor(ast.NodeVisitor):
             right = ast.dump(node.args[1], include_attributes=False)
             if left == right:
                 self._finding(node, "PY_SELF_EQUALITY_ASSERT", name, "test assertion compares an expression with itself")
+        elif name == "assertTrue" and node.args and isinstance(node.args[0], ast.Constant) and node.args[0].value is True:
+            self._finding(node, "PY_CONSTANT_ASSERT", name, "assertTrue(True) cannot falsify behavior")
+        elif name == "assertFalse" and node.args and isinstance(node.args[0], ast.Constant) and node.args[0].value is False:
+            self._finding(node, "PY_CONSTANT_ASSERT", name, "assertFalse(False) cannot falsify behavior")
         self.generic_visit(node)
 
 
@@ -152,7 +169,13 @@ def scan_text(ref: str, path: str, text: str) -> list[Finding]:
     patterns = (
         (r"\btodo!\s*\(", "RS_TODO", "todo! macro in executable source"),
         (r"\bunimplemented!\s*\(", "RS_UNIMPLEMENTED", "unimplemented! macro in executable source"),
-        (r"throw\s+new\s+Error\s*\(\s*['\"](?:not implemented|todo)", "JS_NOT_IMPLEMENTED", "explicit not-implemented exception"),
+        (r"\bpanic!\s*\(\s*['\"][^'\"]*(?:not implemented|todo|stub)", "RS_NOT_IMPLEMENTED_PANIC", "not-implemented panic in Rust source"),
+        (r"throw\s+new\s+\w*(?:Error|Exception)\s*\(\s*['\"][^'\"]*(?:not implemented|todo|stub)", "JS_NOT_IMPLEMENTED", "explicit not-implemented exception"),
+        (r"\bpanic\s*\(\s*['\"][^'\"]*(?:not implemented|todo|stub)", "GO_NOT_IMPLEMENTED", "explicit not-implemented panic"),
+        (r"throw\s+(?:std::)?(?:logic_error|runtime_error)\s*\(\s*['\"][^'\"]*(?:not implemented|todo|stub)", "CPP_NOT_IMPLEMENTED", "explicit not-implemented exception"),
+        (r"throw\s+new\s+UnsupportedOperationException\s*\(\s*['\"][^'\"]*(?:not implemented|todo|stub)", "JVM_NOT_IMPLEMENTED", "explicit unsupported placeholder"),
+        (r"^\s*(?:by\s+)?sorry\b", "LEAN_SORRY", "Lean proof contains sorry"),
+        (r"^\s*(?:by\s+)?admit\b", "LEAN_ADMIT", "Lean proof contains admit"),
     )
     for lineno, line in enumerate(text.splitlines(), 1):
         for pattern, kind, detail in patterns:
@@ -189,11 +212,7 @@ def scan_ref(ref: str) -> list[Finding]:
 
 
 def all_refs() -> tuple[str, ...]:
-    """Return every local and fetched origin branch ref, including SHA aliases.
-
-    Branch identity is part of the requested census. Two branches pointing to the
-    same commit are therefore two observed refs, not one deduplicated subject.
-    """
+    """Return every local and fetched origin branch ref, including SHA aliases."""
     raw = _git(
         "for-each-ref",
         "--format=%(refname)",
