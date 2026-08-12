@@ -186,8 +186,9 @@ class AzureARMClient:
         target = urllib.parse.urlsplit(url)
         if (target.scheme, target.netloc) != (endpoint.scheme, endpoint.netloc):
             raise AzureObservationError("ARM_PAGINATION_ENDPOINT_DRIFT")
-        subscription_prefix = f"/subscriptions/{self.authority.subscription_id}/".lower()
-        if not target.path.lower().startswith(subscription_prefix):
+        subscription_root = f"/subscriptions/{self.authority.subscription_id}".lower()
+        target_path = target.path.rstrip("/").lower()
+        if target_path != subscription_root and not target_path.startswith(subscription_root + "/"):
             raise AzureObservationError("ARM_PAGINATION_SCOPE_DRIFT")
         request = urllib.request.Request(
             url,
