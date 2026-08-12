@@ -3,8 +3,8 @@
 
 The scanner distinguishes interface declarations from executable bodies. Protocol/
 ABC/abstract methods may use ``...`` or ``pass``; concrete executable functions may
-not. It can also enumerate every fetched Git ref so historical/stale branches are
-visible without pretending that they are part of the current admitted subject.
+not. It can enumerate every fetched branch and every tracked executable source file.
+Identical blobs shared by branches are scanned once and re-bound to each branch ref.
 """
 
 from __future__ import annotations
@@ -69,7 +69,6 @@ class PythonVacuityVisitor(ast.NodeVisitor):
 
     def visit_ClassDef(self, node: ast.ClassDef) -> None:
         interface = any(self._name(base) in {"Protocol", "ABC"} for base in node.bases)
-        # Empty exception subclasses are types, not executable stubs.
         exception_type = any(self._name(base).endswith(("Error", "Exception")) for base in node.bases)
         self.class_stack.append((node.name, interface or exception_type))
         self.generic_visit(node)
@@ -191,52 +190,89 @@ def _git(*args: str) -> str:
     return proc.stdout
 
 
-def tracked_paths(ref: str) -> tuple[str, ...]:
-    paths = []
-    for path in _git("ls-tree", "-r", "--name-only", ref).splitlines():
+def tracked_entries(ref: str) -> tuple[tuple[str, str], ...]:
+    entries: list[tuple[str, str]] = []
+    for line in _git("ls-tree", "-r", ref).splitlines():
+        if "\t" not in line:
+            continue
+        metadata, path = line.split("\t", 1)
+        fields = metadata.split()
+        if len(fields) < 3 or fields[1] != "blob":
+            continue
         candidate = Path(path)
         if candidate.suffix.lower() not in CODE_SUFFIXES:
             continue
         if any(part in IGNORED_PARTS for part in candidate.parts):
             continue
-        paths.append(path)
-    return tuple(paths)
+        entries.append((fields[2], path))
+    return tuple(entries)
+
+
+def tracked_paths(ref: str) -> tuple[str, ...]:
+    return tuple(path for _, path in tracked_entries(ref))
+
+
+def _scan_blob(ref: str, blob_sha: str, path: str) -> list[Finding]:
+    return scan_text(ref, path, _git("cat-file", "blob", blob_sha))
 
 
 def scan_ref(ref: str) -> list[Finding]:
     findings: list[Finding] = []
-    for path in tracked_paths(ref):
-        text = _git("show", f"{ref}:{path}")
-        findings.extend(scan_text(ref, path, text))
+    for blob_sha, path in tracked_entries(ref):
+        findings.extend(_scan_blob(ref, blob_sha, path))
     return sorted(findings, key=lambda f: (f.path, f.line, f.kind))
 
 
 def all_refs() -> tuple[str, ...]:
-    """Return every local and fetched origin branch ref, including SHA aliases."""
-    raw = _git(
-        "for-each-ref",
-        "--format=%(refname)",
-        "refs/heads",
-        "refs/remotes/origin",
+    """Return every fetched origin branch exactly once, falling back to local heads."""
+    remote = tuple(
+        sorted(
+            ref
+            for ref in _git("for-each-ref", "--format=%(refname)", "refs/remotes/origin").splitlines()
+            if ref and not ref.endswith("/HEAD")
+        )
     )
-    return tuple(sorted(ref for ref in raw.splitlines() if ref and not ref.endswith("/HEAD")))
+    if remote:
+        return remote
+    return tuple(
+        sorted(
+            ref
+            for ref in _git("for-each-ref", "--format=%(refname)", "refs/heads").splitlines()
+            if ref
+        )
+    )
 
 
 def report(refs: Iterable[str]) -> dict[str, object]:
     entries = []
+    cache: dict[tuple[str, str], tuple[Finding, ...]] = {}
+    unique_blobs: set[str] = set()
     for ref in refs:
-        paths = tracked_paths(ref)
-        findings = scan_ref(ref)
+        tracked = tracked_entries(ref)
+        findings: list[Finding] = []
+        for blob_sha, path in tracked:
+            unique_blobs.add(blob_sha)
+            key = (blob_sha, path)
+            cached = cache.get(key)
+            if cached is None:
+                cached = tuple(_scan_blob("<blob>", blob_sha, path))
+                cache[key] = cached
+            findings.extend(
+                Finding(ref, item.path, item.line, item.kind, item.symbol, item.detail)
+                for item in cached
+            )
+        findings.sort(key=lambda f: (f.path, f.line, f.kind))
         entries.append(
             {
                 "ref": ref,
-                "files_scanned": len(paths),
+                "files_scanned": len(tracked),
                 "findings": [asdict(finding) for finding in findings],
             }
         )
     return {
         "schema": "autofde.vacuity-audit/1",
         "refs": entries,
+        "unique_blobs_scanned": len(unique_blobs),
         "total_findings": sum(len(entry["findings"]) for entry in entries),
     }
 
@@ -261,6 +297,7 @@ def main() -> int:
                     f"  {finding['path']}:{finding['line']} {finding['kind']} "
                     f"{finding['symbol']} — {finding['detail']}"
                 )
+        print(f"UNIQUE_BLOBS_SCANNED={result['unique_blobs_scanned']}")
         print(f"TOTAL_FINDINGS={result['total_findings']}")
     return 1 if args.fail_on_findings and result["total_findings"] else 0
 
