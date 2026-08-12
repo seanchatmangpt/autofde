@@ -28,6 +28,9 @@ def b():
 
 def c():
     raise NotImplementedError()
+
+def d():
+    raise RuntimeError("stub not implemented")
 """
         self.assertEqual(
             self.kinds(source),
@@ -57,14 +60,21 @@ def receipt():
             {"PY_VACUOUS_VERIFIER", "PY_SELF_ASSERTED_STANDING"},
         )
 
-    def test_self_equality_assertion_is_refused(self) -> None:
+    def test_self_equality_and_constant_assertions_are_refused(self) -> None:
         self.assertIn("PY_SELF_EQUALITY_ASSERT", self.kinds("value = 1\nassert value == value\n"))
+        self.assertEqual(self.kinds("assert True\n"), {"PY_CONSTANT_ASSERT"})
+        self.assertEqual(self.kinds("import unittest\nunittest.TestCase().assertTrue(True)\n"), {"PY_CONSTANT_ASSERT"})
 
-    def test_rust_and_typescript_not_implemented_markers_are_found(self) -> None:
+    def test_multilanguage_not_implemented_and_formal_holes_are_found(self) -> None:
         self.assertEqual(self.kinds("fn x() { todo!() }", "sample.rs"), {"RS_TODO"})
         self.assertEqual(
             self.kinds("function x(){ throw new Error('not implemented') }", "sample.ts"),
             {"JS_NOT_IMPLEMENTED"},
+        )
+        self.assertEqual(self.kinds("theorem x : True := by\n  sorry\n", "sample.lean"), {"LEAN_SORRY"})
+        self.assertEqual(
+            self.kinds('void x(){ throw std::logic_error("not implemented"); }', "sample.cpp"),
+            {"CPP_NOT_IMPLEMENTED"},
         )
 
 
