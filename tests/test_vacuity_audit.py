@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import sys
 import unittest
 from pathlib import Path
 
@@ -8,6 +9,7 @@ SCRIPT = Path(__file__).parents[1] / "scripts" / "audit_vacuity.py"
 spec = importlib.util.spec_from_file_location("audit_vacuity", SCRIPT)
 assert spec is not None and spec.loader is not None
 audit_vacuity = importlib.util.module_from_spec(spec)
+sys.modules[spec.name] = audit_vacuity
 spec.loader.exec_module(audit_vacuity)
 scan_text = audit_vacuity.scan_text
 
