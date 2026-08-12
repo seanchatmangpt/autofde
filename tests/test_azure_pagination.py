@@ -64,6 +64,10 @@ class PaginationHandler(BaseHTTPRequestHandler):
             self._send(401, {"error": "unauthorized"})
             return
         parsed = urlsplit(self.path)
+        subscription_root = f"/subscriptions/{SUBSCRIPTION}"
+        if parsed.path == subscription_root:
+            self._send(200, {"subscriptionId": SUBSCRIPTION})
+            return
         expected = f"/subscriptions/{SUBSCRIPTION}/resourceGroups/{RESOURCE_GROUP}/resources"
         if parsed.path != expected:
             self._send(404, {"error": "not-found"})
@@ -121,6 +125,10 @@ class AzurePaginationCourt(unittest.TestCase):
         self.server.server_close()
         self.thread.join(timeout=2)
         self.tmp.cleanup()
+
+    def test_subscription_root_is_admitted_without_widening_beyond_subscription(self) -> None:
+        self.assertTrue(self.client.verify_subscription())
+        self.assertEqual(len(self.state.requests), 1)
 
     def test_resource_group_enumeration_follows_all_pages(self) -> None:
         resources = self.client.resource_group_resources(RESOURCE_GROUP)
