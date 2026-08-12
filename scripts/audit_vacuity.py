@@ -189,29 +189,29 @@ def scan_ref(ref: str) -> list[Finding]:
 
 
 def all_refs() -> tuple[str, ...]:
+    """Return every local and fetched origin branch ref, including SHA aliases.
+
+    Branch identity is part of the requested census. Two branches pointing to the
+    same commit are therefore two observed refs, not one deduplicated subject.
+    """
     raw = _git(
         "for-each-ref",
-        "--format=%(refname) %(objectname)",
+        "--format=%(refname)",
         "refs/heads",
         "refs/remotes/origin",
     )
-    by_sha: dict[str, str] = {}
-    for line in raw.splitlines():
-        ref, sha = line.split(" ", 1)
-        if ref.endswith("/HEAD"):
-            continue
-        by_sha.setdefault(sha, ref)
-    return tuple(sorted(by_sha.values()))
+    return tuple(sorted(ref for ref in raw.splitlines() if ref and not ref.endswith("/HEAD")))
 
 
 def report(refs: Iterable[str]) -> dict[str, object]:
     entries = []
     for ref in refs:
+        paths = tracked_paths(ref)
         findings = scan_ref(ref)
         entries.append(
             {
                 "ref": ref,
-                "files_scanned": len(tracked_paths(ref)),
+                "files_scanned": len(paths),
                 "findings": [asdict(finding) for finding in findings],
             }
         )
