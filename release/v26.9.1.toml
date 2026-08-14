@@ -1,0 +1,48 @@
+schema = "autofde.release-crown/1"
+release = "26.9.1"
+claim_ceiling = "RELEASE_CANDIDATE_COMPOSITION_ONLY_NO_TRANSITIVE_AUTHORITY"
+
+[[components]]
+role = "planning_control"
+repository = "seanchatmangpt/autofde-lab"
+revision = "2cb59841c9842efe21d386b184bd1e8bace58411"
+standing = "ALIVE"
+required = true
+execution_receipt = "github-actions:31676713680"
+authority = "SELECT_CONSTRUCT_ONLY"
+
+[[components]]
+role = "cmca"
+repository = "seanchatmangpt/bcinr"
+revision = "2551aca57c25c9b15c8425fa0e4ddb2fdfd4872d"
+standing = "ALIVE"
+required = true
+execution_receipt = "github-actions:31678111261"
+authority = "BOUNDED_ALLOCATION_ONLY"
+
+[[components]]
+role = "orchestration"
+repository = "seanchatmangpt/mfw"
+revision = "2ecde02f9d7eaea50cfb4ea7876340c6463ac3a1"
+standing = "BLOCKED"
+required = true
+blocker = "GITHUB_ACTIONS_BILLING_OR_SPENDING_LIMIT"
+authority = "ORCHESTRATION_ONLY"
+
+[[components]]
+role = "world_execution"
+repository = "seanchatmangpt/gymact"
+revision = "04a0d16c923516daf2858a7aa04563300652f773"
+standing = "PARTIAL_ALIVE"
+required = true
+blocker = "EXACT_HEAD_WORLD_EXECUTION_NOT_OBSERVED"
+authority = "BRCE_GATED_DO"
+
+[[components]]
+role = "standing_federation"
+repository = "seanchatmangpt/affidavit"
+revision = "5dc78f113e60ba95a4b4594a6da3511334e86024"
+standing = "ALIVE"
+required = true
+execution_receipt = "github-actions:affidavit-core-20"
+authority = "EVIDENCE_ONLY"
