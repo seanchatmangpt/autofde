@@ -32,12 +32,40 @@ class ReleaseCrownTests(unittest.TestCase):
             'standing = "ALIVE"\nrequired = true',
             1,
         )
-        with self.assertRaisesRegex(ValueError, "ALIVE_WITHOUT_EXECUTION"):
+        with self.assertRaisesRegex(ValueError, "ALIVE_WITHOUT_VALID_EXECUTION_RECEIPT"):
+            verify(self._write(text))
+
+    def test_malformed_execution_receipt_is_refused(self) -> None:
+        text = self.source.read_text().replace(
+            'execution_receipt = "github-actions:31676713680"',
+            'execution_receipt = "trust-me"',
+            1,
+        )
+        with self.assertRaisesRegex(ValueError, "ALIVE_WITHOUT_VALID_EXECUTION_RECEIPT"):
+            verify(self._write(text))
+
+    def test_blocked_component_cannot_carry_execution_receipt(self) -> None:
+        text = self.source.read_text().replace(
+            'blocker = "GITHUB_ACTIONS_BILLING_OR_SPENDING_LIMIT"',
+            'blocker = "GITHUB_ACTIONS_BILLING_OR_SPENDING_LIMIT"\nexecution_receipt = "github-actions:zero-step"',
+            1,
+        )
+        with self.assertRaisesRegex(ValueError, "BLOCKED_WITH_EXECUTION_RECEIPT"):
+            verify(self._write(text))
+
+    def test_mandatory_role_cannot_opt_out_of_required_closure(self) -> None:
+        text = self.source.read_text().replace('required = true', 'required = false', 1)
+        with self.assertRaisesRegex(ValueError, "MANDATORY_ROLE_NOT_REQUIRED"):
+            verify(self._write(text))
+
+    def test_role_authority_drift_is_refused(self) -> None:
+        text = self.source.read_text().replace('authority = "ORCHESTRATION_ONLY"', 'authority = "EVIDENCE_ONLY"')
+        with self.assertRaisesRegex(ValueError, "ROLE_AUTHORITY_DRIFT"):
             verify(self._write(text))
 
     def test_ambient_do_is_refused(self) -> None:
         text = self.source.read_text().replace('authority = "ORCHESTRATION_ONLY"', 'authority = "AMBIENT_DO"')
-        with self.assertRaisesRegex(ValueError, "AMBIENT_DO"):
+        with self.assertRaisesRegex(ValueError, "ROLE_AUTHORITY_DRIFT"):
             verify(self._write(text))
 
     def test_invalid_revision_is_refused(self) -> None:
