@@ -1,0 +1,39 @@
+name: AutoFDE v26.9.1 release crown
+
+on:
+  pull_request:
+    paths:
+      - "release/**"
+      - "scripts/verify_release_crown.py"
+      - "tests/test_release_crown.py"
+      - ".github/workflows/v26-9-1-release-crown.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  release-crown:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out exact subject
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Assert exact subject
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected="${{ github.event.pull_request.head.sha || github.sha }}"
+          test "$(git rev-parse HEAD)" = "$expected"
+      - name: Install Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+      - name: Compile release verifier
+        run: python -m compileall -q scripts/verify_release_crown.py tests/test_release_crown.py
+      - name: Execute release falsifiers
+        run: python -m unittest -v tests/test_release_crown.py
+      - name: Emit release crown receipt
+        run: python scripts/verify_release_crown.py release/v26.9.1.toml
