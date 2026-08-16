@@ -32,10 +32,10 @@ authority = "ORCHESTRATION_ONLY"
 [[components]]
 role = "world_execution"
 repository = "seanchatmangpt/gymact"
-revision = "cf9a36fcc5b0738269809b83e3ffcad7dae0a5c4"
-standing = "BLOCKED"
+revision = "8bf5c15766705b5ebc1dacf3492d57d8a46af5e4"
+standing = "ALIVE"
 required = true
-blocker = "GITHUB_ACTIONS_BILLING_OR_SPENDING_LIMIT"
+execution_receipt = "github-actions:31954771109"
 authority = "BRCE_GATED_DO"
 
 [[components]]
