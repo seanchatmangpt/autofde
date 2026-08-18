@@ -1,0 +1,71 @@
+name: AutoFDE Azure epistemic sensing
+
+on:
+  pull_request:
+    paths:
+      - "src/autofde/observations.py"
+      - "src/autofde/azure_sensing.py"
+      - "tests/test_observations.py"
+      - "tests/test_azure_sensing.py"
+      - ".github/workflows/azure-epistemic-sensing.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  epistemic-sensing-court:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout exact pull-request head
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+
+      - name: Assert exact subject identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected="${{ github.event.pull_request.head.sha || github.sha }}"
+          actual="$(git rev-parse HEAD)"
+          test "$actual" = "$expected"
+          echo "AUTOFDE_EPISTEMIC_EXACT_HEAD=$actual"
+
+      - name: Install Python 3.12
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+
+      - name: Compile production sensing boundary
+        run: >-
+          python -m py_compile
+          src/autofde/observations.py
+          src/autofde/azure_sensing.py
+          tests/test_observations.py
+          tests/test_azure_sensing.py
+
+      - name: Execute focused positive and adversarial court
+        env:
+          PYTHONPATH: src
+        run: python -m unittest -v tests.test_observations tests.test_azure_sensing
+
+      - name: Refuse ambient actuation authority
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -En 'subprocess|os\.system|Popen|\.actuate\(|BRCEBroker|TerraformCLIActuator|Command::new|TcpStream|UdpSocket' \
+              src/autofde/observations.py src/autofde/azure_sensing.py; then
+            echo 'REFUSED:EPISTEMIC_SENSOR_HAS_ACTUATION_SURFACE' >&2
+            exit 1
+          fi
+          grep -q 'ARM_POINT_404_REQUIRES_COMPLETE_ENUMERATION' src/autofde/azure_sensing.py
+          grep -q 'FRESH_SENSORS_DISAGREE' src/autofde/observations.py
+          grep -q 'CURRENT_ADMISSION_DELTA_MUST_NOT_WITHDRAW_RAW_O' src/autofde/observations.py
+          echo 'AUTOFDE_EPISTEMIC_SENSING_FENCE_ALIVE'
+
+      - name: Execute repository Python falsifier suite
+        env:
+          PYTHONPATH: src
+        run: python -m unittest discover -s tests -v
