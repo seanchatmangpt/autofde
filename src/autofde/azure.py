@@ -15,6 +15,7 @@ ARM_ENDPOINT = "https://management.azure.com"
 ARM_RESOURCE_API = "2021-04-01"
 ARM_SUBSCRIPTION_API = "2020-01-01"
 AZURE_SCOPE = "https://management.azure.com/.default"
+_MAX_ARM_PAGES = 10_000
 
 
 class AzureAuthorityError(RuntimeError):
@@ -79,12 +80,17 @@ class AzurePreflight:
     credential_source: str | None
 
     @property
+    def ready_for_live_court(self) -> bool:
+        return bool(self.subscription_id and self.credential_source and self.engine)
+
+    @property
     def standing(self) -> str:
+        """Report only observed standing; readiness alone never manufactures PARTIAL_ALIVE."""
         if not self.subscription_id or not self.credential_source:
             return "BLOCKED:LIVE_CLOUD_AUTHORITY"
         if self.engine is None:
             return "BLOCKED:CLOUD_ENGINE_UNAVAILABLE"
-        return "PARTIAL_ALIVE"
+        return "UNKNOWN"
 
 
 def resolve_iac_engine() -> tuple[str | None, str | None]:
@@ -175,21 +181,35 @@ class AzureARMClient:
         separator = "&" if "?" in normalized else "?"
         return f"{endpoint}{normalized}{separator}api-version={urllib.parse.quote(api_version)}"
 
-    def get(self, path: str, *, api_version: str = ARM_RESOURCE_API) -> tuple[int, Mapping[str, Any] | None]:
+    def _get_url(self, url: str) -> tuple[int, Mapping[str, Any] | None]:
+        endpoint = urllib.parse.urlsplit(self.authority.arm_endpoint.rstrip("/"))
+        target = urllib.parse.urlsplit(url)
+        if (target.scheme, target.netloc) != (endpoint.scheme, endpoint.netloc):
+            raise AzureObservationError("ARM_PAGINATION_ENDPOINT_DRIFT")
+        subscription_root = f"/subscriptions/{self.authority.subscription_id}".lower()
+        target_path = target.path.rstrip("/").lower()
+        if target_path != subscription_root and not target_path.startswith(subscription_root + "/"):
+            raise AzureObservationError("ARM_PAGINATION_SCOPE_DRIFT")
         request = urllib.request.Request(
-            self._url(path, api_version),
+            url,
             headers={"Authorization": f"Bearer {self.token()}", "Accept": "application/json"},
             method="GET",
         )
         try:
             response = self.opener(request, self.timeout)
             raw = response.read()
-            return response.status, None if not raw else json.loads(raw)
+            payload = None if not raw else json.loads(raw)
+            if payload is not None and not isinstance(payload, Mapping):
+                raise AzureObservationError("ARM_RESPONSE_NOT_OBJECT")
+            return response.status, payload
         except urllib.error.HTTPError as exc:
             if exc.code == 404:
                 return 404, None
             detail = exc.read().decode(errors="replace")[-1000:]
             raise AzureObservationError(f"ARM_HTTP_{exc.code}:{detail}") from exc
+
+    def get(self, path: str, *, api_version: str = ARM_RESOURCE_API) -> tuple[int, Mapping[str, Any] | None]:
+        return self._get_url(self._url(path, api_version))
 
     def verify_subscription(self) -> bool:
         status, body = self.get(
@@ -202,15 +222,41 @@ class AzureARMClient:
         return self.get(resource_id)
 
     def resource_group_resources(self, resource_group: str) -> tuple[Mapping[str, Any], ...]:
+        """Enumerate every ARM page before claiming resource-group coverage is complete."""
         sub = urllib.parse.quote(self.authority.subscription_id, safe="")
         rg = urllib.parse.quote(resource_group, safe="")
-        status, body = self.get(f"/subscriptions/{sub}/resourceGroups/{rg}/resources")
-        if status != 200 or body is None:
-            raise AzureObservationError(f"RESOURCE_GROUP_ENUMERATION_FAILED:{status}")
-        values = body.get("value", [])
-        if not isinstance(values, list):
-            raise AzureObservationError("RESOURCE_GROUP_ENUMERATION_INVALID")
-        return tuple(item for item in values if isinstance(item, Mapping))
+        collection_path = f"/subscriptions/{sub}/resourceGroups/{rg}/resources"
+        first_url = self._url(collection_path, ARM_RESOURCE_API)
+        status, body = self._get_url(first_url)
+        resources: list[Mapping[str, Any]] = []
+        visited: set[str] = {first_url}
+        pages = 0
+        expected_path = collection_path.rstrip("/").lower()
+        while True:
+            pages += 1
+            if pages > _MAX_ARM_PAGES:
+                raise AzureObservationError("RESOURCE_GROUP_ENUMERATION_PAGE_LIMIT")
+            if status != 200 or body is None:
+                raise AzureObservationError(f"RESOURCE_GROUP_ENUMERATION_FAILED:{status}")
+            values = body.get("value", [])
+            if not isinstance(values, list):
+                raise AzureObservationError("RESOURCE_GROUP_ENUMERATION_INVALID")
+            if any(not isinstance(item, Mapping) for item in values):
+                raise AzureObservationError("RESOURCE_GROUP_ENUMERATION_MEMBER_INVALID")
+            resources.extend(values)
+
+            next_link = body.get("nextLink")
+            if next_link in (None, ""):
+                return tuple(resources)
+            if not isinstance(next_link, str):
+                raise AzureObservationError("RESOURCE_GROUP_NEXTLINK_INVALID")
+            target = urllib.parse.urlsplit(next_link)
+            if target.path.rstrip("/").lower() != expected_path:
+                raise AzureObservationError("RESOURCE_GROUP_NEXTLINK_SCOPE_DRIFT")
+            if next_link in visited:
+                raise AzureObservationError("RESOURCE_GROUP_NEXTLINK_CYCLE")
+            visited.add(next_link)
+            status, body = self._get_url(next_link)
 
 
 class TerraformToolchain:
@@ -354,9 +400,9 @@ class AzureCLIOrphanVerifier:
         authority = AzureAuthority.from_env()
         if authority is None or authority.credential_source is None:
             return False
-        parts = resource_id.strip('/').split('/')
+        parts = resource_id.strip("/").split("/")
         try:
-            rg_index = next(i for i, part in enumerate(parts) if part.lower() == 'resourcegroups')
+            rg_index = next(i for i, part in enumerate(parts) if part.lower() == "resourcegroups")
             resource_group = parts[rg_index + 1]
         except (StopIteration, IndexError):
             return False

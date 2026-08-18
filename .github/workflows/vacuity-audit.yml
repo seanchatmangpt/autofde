@@ -1,0 +1,105 @@
+name: AutoFDE vacuity and branch audit
+
+on:
+  pull_request:
+    paths:
+      - "src/**"
+      - "scripts/audit_vacuity.py"
+      - "tests/**"
+      - "pyproject.toml"
+      - ".github/workflows/vacuity-audit.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  exact-head-vacuity-court:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact candidate with history
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Refuse subject drift
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected="${{ github.event.pull_request.head.sha || github.sha }}"
+          observed="$(git rev-parse HEAD)"
+          test "$observed" = "$expected" || {
+            echo "REFUSED:EXACT_HEAD_MISMATCH expected=$expected observed=$observed" >&2
+            exit 1
+          }
+          echo "AUTOFDE_VACUITY_EXACT_HEAD=$observed"
+
+      - name: Fetch every branch ref for audit visibility
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin '+refs/heads/*:refs/remotes/origin/*'
+          git for-each-ref --format='%(refname) %(objectname)' refs/remotes/origin | sort
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+
+      - name: Compile audit and hardened surfaces
+        run: |
+          python -m py_compile \
+            scripts/audit_vacuity.py \
+            src/autofde/integrations.py \
+            src/autofde/azure.py \
+            tests/test_vacuity_audit.py \
+            tests/test_integrations.py \
+            tests/test_azure_pagination.py
+
+      - name: Refuse stubs and vacuous implementations on exact head
+        run: python scripts/audit_vacuity.py --ref HEAD --fail-on-findings
+
+      - name: Inventory every fetched branch and file
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/audit_vacuity.py --all-refs --json > vacuity-all-refs.json
+          python - <<'PY'
+          import json
+          report = json.load(open('vacuity-all-refs.json'))
+          print(f"AUTOFDE_BRANCH_AUDIT_REFS={len(report['refs'])}")
+          print(f"AUTOFDE_BRANCH_AUDIT_FINDINGS={report['total_findings']}")
+          for entry in report['refs']:
+              if entry['findings']:
+                  print(f"REF_FINDINGS {entry['ref']} {len(entry['findings'])}")
+                  for finding in entry['findings']:
+                      print(
+                          f"  {finding['path']}:{finding['line']} "
+                          f"{finding['kind']} {finding['symbol']}"
+                      )
+          PY
+
+      - name: Execute adversarial hardened courts
+        env:
+          PYTHONPATH: src
+        run: |
+          python -m unittest -v \
+            tests/test_vacuity_audit.py \
+            tests/test_integrations.py \
+            tests/test_azure_pagination.py
+
+      - name: Install repository verifier dependencies
+        run: python -m pip install --disable-pip-version-check --requirement requirements.txt
+
+      - name: Execute complete Python falsifier suite
+        env:
+          PYTHONPATH: src
+        run: python -m unittest discover -s tests -v
+
+      - name: Emit bounded standing
+        run: |
+          echo 'AUTOFDE_EXACT_HEAD_VACUITY_AUDIT=ALIVE'
+          echo 'AUTOFDE_ALL_BRANCH_AUDIT=OBSERVED_NOT_PROMOTED'
