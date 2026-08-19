@@ -2,6 +2,7 @@ use clap_noun_verb::Result;
 
 mod clap_noun_verb_routes;
 pub mod knowledge_hook;
+pub mod portable_protocol;
 pub mod runtime;
 pub mod sentinel_ingress;
 pub mod verbs;
