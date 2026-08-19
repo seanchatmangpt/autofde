@@ -1,0 +1,55 @@
+{
+  "grammarVersion": "dd-ui/2",
+  "avatar": "CEO",
+  "context": "normal",
+  "authority": [],
+  "asOf": "2026-08-18T22:06:00-07:00",
+  "events": [
+    {
+      "id": "autofde-e1",
+      "at": "2026-08-18T22:06:00-07:00",
+      "type": "claim.observed",
+      "claim": {
+        "id": "forward-deployment-os",
+        "title": "Forward Deployment Operating System",
+        "domain": "PAAS",
+        "standing": "OBSERVED",
+        "systemStanding": "UNKNOWN",
+        "kind": "TechnologyStanding",
+        "materiality": 100,
+        "owner": "AutoFDE",
+        "businessImpact": "AutoFDE contributes admitted enterprise intent, governed delivery, bounded operation, evidence, and replay to the executive world without making the UI an execution authority.",
+        "evidence": [
+          "repo:seanchatmangpt/autofde@6c21cda73f7cc8873ea429f79f49c5b4b615c1fe",
+          "path:README.md"
+        ],
+        "metrics": [],
+        "actions": [
+          {"id": "inspect-delivery", "label": "Inspect delivery evidence", "consequence": "SELECT"}
+        ]
+      }
+    },
+    {
+      "id": "autofde-e2",
+      "at": "2026-08-18T22:06:01-07:00",
+      "type": "claim.observed",
+      "claim": {
+        "id": "exploit-only-boundary",
+        "title": "EXPLOIT-only authority boundary",
+        "domain": "GOVERNANCE",
+        "standing": "OBSERVED",
+        "systemStanding": "UNKNOWN",
+        "kind": "Risk",
+        "materiality": 98,
+        "owner": "AutoFDE",
+        "businessImpact": "Raw observations and Knowledge Hooks have no execution authority; SELECT, CONSTRUCT, and DO remain distinct and consequential actuation remains behind BRCE.",
+        "evidence": [
+          "path:AGENTS.md",
+          "path:README.md#exploit-only-boundary"
+        ],
+        "metrics": [],
+        "actions": []
+      }
+    }
+  ]
+}
