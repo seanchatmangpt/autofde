@@ -1,0 +1,29 @@
+schema = "chatman.federated-capability-owner.v1"
+version = "26.9.1"
+repository = "seanchatmangpt/autofde"
+owner_id = "repository:autofde"
+control_plane_repository = "seanchatmangpt/chatman-ecosystem"
+control_plane_subject = "git:7430dfc9b3ca138e703430d25de7c6f48a8d6ade"
+base_sha = "6c21cda73f7cc8873ea429f79f49c5b4b615c1fe"
+release_component = "autofde"
+release_role = "product"
+release_dependencies = ["ggen", "gymact", "mfact", "open-ontologies", "star-toml"]
+allowed_authorities = ["persist_control_plane", "modify_external_object"]
+simulation_only = false
+do_mode = "brokered"
+ambient_do = false
+automatic_irreversible_do = false
+
+[[capability]]
+id = "capability:persist-autofde-runtime"
+relationship = "owner"
+standing = "CANDIDATE"
+broker_required = false
+receipt_required = true
+
+[[capability]]
+id = "capability:broker-consequential-do"
+relationship = "owner"
+standing = "CANDIDATE"
+broker_required = true
+receipt_required = true
