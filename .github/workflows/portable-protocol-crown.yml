@@ -18,6 +18,7 @@ concurrency:
 
 env:
   RUST_TOOLCHAIN: nightly-2026-06-22
+  EXPECTED_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
 
 jobs:
   portable-protocol-crown:
@@ -26,12 +27,14 @@ jobs:
     steps:
       - name: Check out exact AutoFDE subject
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.EXPECTED_HEAD }}
 
       - name: Assert exact subject identity
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          test "$(git rev-parse HEAD)" = "${EXPECTED_HEAD}"
           test -f src/portable_protocol.rs
 
       - name: Install pinned Rust toolchain
@@ -41,7 +44,6 @@ jobs:
           rustup toolchain install "${RUST_TOOLCHAIN}" --profile minimal
           rustup override set "${RUST_TOOLCHAIN}"
           rustc --version
-          cargo --version
 
       - name: Refuse ambient actuation surface
         shell: bash
@@ -53,11 +55,9 @@ jobs:
           fi
           echo 'PORTABLE_PROTOCOL_NO_AMBIENT_ACTUATION'
 
-      - name: Execute portable authority/refusal court
+      - name: Execute dependency-closed portable authority/refusal court
         shell: bash
-        env:
-          RUSTC_WRAPPER: ""
-          SCCACHE_DISABLE: "1"
         run: |
           set -euo pipefail
-          cargo test --lib portable_protocol::tests -- --nocapture
+          rustc --edition=2021 --test src/portable_protocol.rs -o /tmp/portable_protocol_tests
+          /tmp/portable_protocol_tests --nocapture
