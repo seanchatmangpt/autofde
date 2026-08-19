@@ -1,0 +1,63 @@
+name: Portable Protocol Crown
+
+on:
+  pull_request:
+    paths:
+      - "src/portable_protocol.rs"
+      - "src/lib.rs"
+      - "Cargo.toml"
+      - ".github/workflows/portable-protocol-crown.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: autofde-portable-protocol-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  RUST_TOOLCHAIN: nightly-2026-06-22
+
+jobs:
+  portable-protocol-crown:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out exact AutoFDE subject
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Assert exact subject identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+          test -f src/portable_protocol.rs
+
+      - name: Install pinned Rust toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          rustup toolchain install "${RUST_TOOLCHAIN}" --profile minimal
+          rustup override set "${RUST_TOOLCHAIN}"
+          rustc --version
+          cargo --version
+
+      - name: Refuse ambient actuation surface
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -En 'std::process|Command::|TcpStream|UdpSocket|reqwest|hyper::|rusqlite|runtime::|BRCEBroker|\.act\(' src/portable_protocol.rs; then
+            echo 'REFUSED:PORTABLE_PROTOCOL_ACTUATION_SURFACE' >&2
+            exit 1
+          fi
+          echo 'PORTABLE_PROTOCOL_NO_AMBIENT_ACTUATION'
+
+      - name: Execute portable authority/refusal court
+        shell: bash
+        env:
+          RUSTC_WRAPPER: ""
+          SCCACHE_DISABLE: "1"
+        run: |
+          set -euo pipefail
+          cargo test --lib portable_protocol::tests -- --nocapture
