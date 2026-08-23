@@ -1,23 +1,23 @@
-# AutoFDE repository law
+# AutoFDE Agent Operating Contract
 
-This repository is the EXPLOIT-only product surface for AutoFDE.
+Scope: repository-wide unless a deeper `AGENTS.md` narrows a subtree. Live tree evidence outranks stale prose; nested rules may tighten but never silently weaken evidence, authority, replay, or publication law.
 
-## Canonical source
+## Preserve → Fence → Calculus
+Resolve repo/ref/base to an exact commit and read applicable doctrine, architecture/README, ontology sources, manifests, task runners, CI, generation, and release policy. Preserve public interfaces, canonical/generated boundaries, authority, receipts/replay, compatibility, and maximal reversible lawful options. Apply Chesterton's fence before deleting a boundary. One failed route is topology, not graph failure.
 
-- `ontology/autofde.ttl` plus the ordered modules in `ontology/source-bundle.txt` are the canonical product ontology capsule.
-- `ontology/bootstrap-to-breach.ttl` is the canonical executable case instance.
-- `ontology/shapes.ttl` is the admission contract.
-- Files under `generated/` are projections. Never hand-edit them.
-- `ggen.toml` is the only generation manifest.
+## Evidence
+Use `UNKNOWN | PARTIAL_ALIVE | ALIVE | BLOCKED | BUILD_BROKEN | UNSUPPORTED` plus typed `REFUSED_*`. `ALIVE` requires observed execution against the exact admitted subject. Track observed/admitted/executed/changed/verified/inferred/refused/blocked/unsupported separately. Inspection != execution; workflow != successful run; generated presence != deterministic replay; named receipt != replay-verified receipt.
 
-## Authority
+## Manufacture / authority
+`A = μ(O*)`; `R = receipt(A)`. Separate `SELECT`, `CONSTRUCT`, `DO`. Raw input, model/planner/generator/proof/hook output has no ambient execution authority. Knowledge Hooks manufacture intents, never actuate. BRCE is the exclusive consequential `DO` path; actuation requires the admitted authority intersection and a pre-actuation receipt. Zero unreceipted actuation.
 
-SELECT, CONSTRUCT, and DO are distinct. BRCE is the exclusive DO path. Knowledge Hooks manufacture intents and never actuate. Every actuation requires an admitted authority intersection and a pre-actuation receipt.
+## Repository-local law
+This repository is the AutoFDE **EXPLOIT-only** product surface. The canonical capsule is `ontology/autofde.ttl` plus the ordered modules in `ontology/source-bundle.txt`. `ontology/bootstrap-to-breach.ttl` is the canonical executable case instance; `ontology/shapes.ttl` is the admission contract; `ggen.toml` is the generation manifest. `generated/` contains projections and must not be hand-edited. Preserve the single admitted execution mode `autofde:ExploitOnly` unless the task explicitly changes the ontology and admission law.
 
-## Mode
+## Work / verify
+Follow `parse → orient → resolve → materialize → read doctrine → inspect → admit/refuse → diagnose/repair → construct → actuate → receipt → replay/hook → standing`. Prefer the existing lawful path and smallest coherent diff. Edit canonical ontology/manifest/generator sources rather than projections. No fabricated evidence, weakened tests, unrelated refactors, acceptance mocks, or unresolved production placeholders.
 
-AutoFDE consumes admitted inputs and manufactures bounded consequences. This repository has one execution mode: `autofde:ExploitOnly`.
+For the current repository crown, use the live documented crown target (presently `make crown-ontology`) and require the actual parsing, law-gate, deterministic-projection, generated-drift, and falsifier checks it invokes. If repository doctrine changes the crown later, discover that live rather than preserving a stale command here as truth. CI supplements local proof; it does not replace available execution.
 
-## Validation
-
-Run `make crown-ontology`. A change is not ALIVE until parsing, law gates, deterministic projection, generated-drift, and falsifier tests pass.
+## Publish / receipt
+Never silently move the admitted base. Unless explicitly instructed otherwise: purpose branch, intentional commit, non-force push, draft PR, no merge. Final receipt states repo/base/tree, O/O*, transports/failures, μ/changes/generated status, commands/exits, verification ladder, receipt/replay, branch/SHA/PR, scoped standing, and falsifiers.
