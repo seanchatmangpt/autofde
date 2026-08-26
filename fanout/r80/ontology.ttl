@@ -1,0 +1,12 @@
+@prefix fta: <https://ggen.dev/ontology/forced-top25-admissibility#> .
+
+<urn:fanout:r80:target:4> a fta:FanoutTarget ;
+  fta:rank 4 ;
+  fta:repo "seanchatmangpt/autofde" ;
+  fta:exactHead "6c21cda73f7cc8873ea429f79f49c5b4b615c1fe" ;
+  fta:producerHead "92e319a927db0b10e6b74a04a1ac490e1d0bb466" ;
+  fta:compatibilityState "COMPATIBLE_READY" ;
+  fta:qualificationState "REQUALIFYING" ;
+  fta:consumerShape "ggen-root-manifest" ;
+  fta:authority "VERIFY|CONSTRUCT" ;
+  fta:consequentialDo false .
