@@ -4,7 +4,7 @@
   fta:rank 4 ;
   fta:repo "seanchatmangpt/autofde" ;
   fta:exactHead "6c21cda73f7cc8873ea429f79f49c5b4b615c1fe" ;
-  fta:producerHead "7eb9a7767013bf2ce94f62ce57482afd041abdc7" ;
+  fta:producerHead "a658cda7066bba344e481173b5b52a0dc18c5c75" ;
   fta:compatibilityState "COMPATIBLE_READY" ;
   fta:qualificationState "REQUALIFYING" ;
   fta:consumerShape "ggen-root-manifest" ;
