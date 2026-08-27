@@ -1,0 +1,5 @@
+PREFIX clc: <https://ggen.dev/ontology/capability-lineage-consumer#>
+SELECT ?consumer WHERE {
+  ?consumer a clc:Consumer .
+  FILTER NOT EXISTS { ?consumer clc:receiptRequired true }
+}
