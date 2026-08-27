@@ -1,0 +1,5 @@
+PREFIX clc: <https://ggen.dev/ontology/capability-lineage-consumer#>
+SELECT ?consumer ?authority WHERE {
+  ?consumer a clc:Consumer ; clc:authority ?authority .
+  FILTER(STR(?authority) != "SELECT|CONSTRUCT|VERIFY")
+}
