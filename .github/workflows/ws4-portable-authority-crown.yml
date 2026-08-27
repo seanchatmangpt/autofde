@@ -1,0 +1,44 @@
+name: WS4 Portable Authority Crown
+
+on:
+  pull_request:
+    paths:
+      - 'src/portable_protocol.rs'
+      - 'src/lib.rs'
+      - 'requirements.txt'
+      - '.github/workflows/ws4-portable-authority-crown.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  portable-authority:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout exact subject
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Assert exact subject
+        run: test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha }}"
+      - name: Install pinned Rust
+        uses: dtolnay/rust-toolchain@nightly
+        with:
+          toolchain: nightly-2026-06-22
+      - name: Refuse ambient actuation surface
+        run: |
+          set -euo pipefail
+          if grep -En 'std::process|Command::|TcpStream|UdpSocket|reqwest|hyper::|rusqlite|runtime::|BRCEBroker|\.act\(' src/portable_protocol.rs; then
+            echo 'REFUSED:PORTABLE_PROTOCOL_ACTUATION_SURFACE' >&2
+            exit 1
+          fi
+      - name: Execute dependency-closed portable authority court
+        run: |
+          set -euo pipefail
+          rustc --edition=2021 --test src/portable_protocol.rs -o /tmp/portable_protocol_tests
+          /tmp/portable_protocol_tests --nocapture
+      - name: Install repository Python verifier dependencies
+        run: python3 -m pip install -r requirements.txt
+      - name: Execute repository ontology crown
+        run: make crown-ontology
