@@ -5,6 +5,7 @@ on:
     paths:
       - 'src/portable_protocol.rs'
       - 'src/lib.rs'
+      - 'requirements.txt'
       - '.github/workflows/ws4-portable-authority-crown.yml'
 
 permissions:
@@ -37,5 +38,7 @@ jobs:
           set -euo pipefail
           rustc --edition=2021 --test src/portable_protocol.rs -o /tmp/portable_protocol_tests
           /tmp/portable_protocol_tests --nocapture
+      - name: Install repository Python verifier dependencies
+        run: python3 -m pip install -r requirements.txt
       - name: Execute repository ontology crown
         run: make crown-ontology
