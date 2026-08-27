@@ -1,0 +1,15 @@
+@prefix clc: <https://ggen.dev/ontology/capability-lineage-consumer#> .
+
+clc:autofde a clc:Consumer ;
+  clc:repository "seanchatmangpt/autofde" ;
+  clc:exactBase "d803547355f5fa0febda58abe4d14154b5d54e71" ;
+  clc:sourcePack "capability-lineage-propagation-pack" ;
+  clc:authority "SELECT|CONSTRUCT|VERIFY" ;
+  clc:actuationAllowed false ;
+  clc:actuationPath "BRCE" ;
+  clc:sourceOwnership "ontology/autofde.ttl+ontology/source-bundle.txt" ;
+  clc:generatedOwnership "projection-only" ;
+  clc:receiptRequired true ;
+  clc:replayRequired true ;
+  clc:qualificationRequired true ;
+  clc:processIntelligenceOwner "wasm4pm/wasm4pm-compat" .
