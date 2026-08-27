@@ -1,0 +1,8 @@
+@prefix autofde: <https://seanchatman.github.io/autofde#> .
+
+<https://seanchatman.github.io/autofde/paas/BoundedConsequenceGuard>
+  a autofde:FalsifierCourt ;
+  autofde:requiresAdmittedCapability true ;
+  autofde:requiresAuthorityIntersection true ;
+  autofde:requiresDeclaredConsequence true ;
+  autofde:rejectsAmbientDo true .
