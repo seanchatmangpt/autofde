@@ -1,0 +1,7 @@
+@prefix autofde: <https://seanchatman.github.io/autofde#> .
+
+<https://seanchatman.github.io/autofde/paas/SourceGeneratedContract>
+  a autofde:OwnershipContract ;
+  autofde:canonicalSource "ontology/autofde.ttl+ontology/source-bundle.txt" ;
+  autofde:generatedArtifactsAreProjections true ;
+  autofde:generatedArtifactsEditable false .
