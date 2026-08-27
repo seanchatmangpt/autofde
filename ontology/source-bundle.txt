@@ -13,3 +13,12 @@ ontology/product.ttl
 ontology/phases.ttl
 ontology/generation-rules.ttl
 ontology/axioms.ttl
+ontology/paas/01_consumer_contract.ttl
+ontology/paas/02_authority_contract.ttl
+ontology/paas/03_receipt_contract.ttl
+ontology/paas/04_ocel_project_contract.ttl
+ontology/paas/05_source_generated_contract.ttl
+ontology/paas/06_pi_fence.ttl
+ontology/paas/07_exact_subject_guard.ttl
+ontology/paas/08_bounded_consequence_guard.ttl
+ontology/paas/09_consumer_manifest.ttl
