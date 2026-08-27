@@ -1,0 +1,8 @@
+@prefix autofde: <https://seanchatman.github.io/autofde#> .
+
+<https://seanchatman.github.io/autofde/paas/AuthorityContract>
+  a autofde:PaaSAuthorityContract ;
+  autofde:separatesSelectConstructDo true ;
+  autofde:doAuthority autofde:BRCE ;
+  autofde:requiresAuthorityIntersection true ;
+  autofde:requiresPreActuationReceipt true .
