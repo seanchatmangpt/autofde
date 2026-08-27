@@ -1,0 +1,8 @@
+@prefix autofde: <https://seanchatman.github.io/autofde#> .
+
+<https://seanchatman.github.io/autofde/paas/ProjectEvidenceContract>
+  a autofde:PaaSEvidenceContract ;
+  autofde:projectNumber 2 ;
+  autofde:ocelPath "ggen/ecosystem/ocel/current" ;
+  autofde:requiresDispatchIdentity true ;
+  autofde:ambientExecutionAuthority false .
