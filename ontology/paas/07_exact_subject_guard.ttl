@@ -1,0 +1,8 @@
+@prefix autofde: <https://seanchatmangpt.github.io/autofde/ontology#> .
+
+<https://seanchatmangpt.github.io/autofde/ontology/paas/ExactSubjectGuard>
+  a autofde:FalsifierCourt ;
+  autofde:rejectsMissingExactRepo true ;
+  autofde:rejectsMissingExactRef true ;
+  autofde:rejectsMissingExactSha true ;
+  autofde:rejectsStaleQualification true .

@@ -1,0 +1,7 @@
+@prefix autofde: <https://seanchatmangpt.github.io/autofde/ontology#> .
+
+<https://seanchatmangpt.github.io/autofde/ontology/paas/ProcessIntelligenceFence>
+  a autofde:OwnershipFence ;
+  autofde:implementationOwner "wasm4pm/wasm4pm-compat" ;
+  autofde:consumerMayIntegrate true ;
+  autofde:consumerMayCopyAlgorithm false .

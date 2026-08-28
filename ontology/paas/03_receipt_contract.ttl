@@ -1,0 +1,9 @@
+@prefix autofde: <https://seanchatmangpt.github.io/autofde/ontology#> .
+
+<https://seanchatmangpt.github.io/autofde/ontology/paas/ReceiptContract>
+  a autofde:PaaSReceiptContract ;
+  autofde:requiresSubjectIdentity true ;
+  autofde:requiresAuthorityIdentity true ;
+  autofde:requiresConsequenceIdentity true ;
+  autofde:requiresReplayIdentity true ;
+  autofde:requiresStanding true .

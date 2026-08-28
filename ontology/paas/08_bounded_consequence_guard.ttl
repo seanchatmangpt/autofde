@@ -1,0 +1,8 @@
+@prefix autofde: <https://seanchatmangpt.github.io/autofde/ontology#> .
+
+<https://seanchatmangpt.github.io/autofde/ontology/paas/BoundedConsequenceGuard>
+  a autofde:FalsifierCourt ;
+  autofde:requiresAdmittedCapability true ;
+  autofde:requiresAuthorityIntersection true ;
+  autofde:requiresDeclaredConsequence true ;
+  autofde:rejectsAmbientDo true .

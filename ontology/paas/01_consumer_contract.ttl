@@ -1,0 +1,7 @@
+@prefix autofde: <https://seanchatmangpt.github.io/autofde/ontology#> .
+
+<https://seanchatmangpt.github.io/autofde/ontology/paas/ConsumerContract>
+  a autofde:PaaSConsumerContract ;
+  autofde:executionMode autofde:ExploitOnly ;
+  autofde:requiresExactSubject true ;
+  autofde:requiresBoundedConsequence true .
