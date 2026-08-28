@@ -1,6 +1,6 @@
-@prefix autofde: <https://seanchatman.github.io/autofde#> .
+@prefix autofde: <https://seanchatmangpt.github.io/autofde/ontology#> .
 
-<https://seanchatman.github.io/autofde/paas/ConsumerContract>
+<https://seanchatmangpt.github.io/autofde/ontology/paas/ConsumerContract>
   a autofde:PaaSConsumerContract ;
   autofde:executionMode autofde:ExploitOnly ;
   autofde:requiresExactSubject true ;
