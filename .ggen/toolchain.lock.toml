@@ -1,0 +1,24 @@
+schema_version = 1
+[ggen]
+repository = "https://github.com/seanchatmangpt/ggen.git"
+version = "v26.8.27"
+commit = "df1e138a64c80e41090cff7c84fb62d77e03b734"
+[marketplace]
+repository = "https://github.com/seanchatmangpt/ggen-marketplace.git"
+commit = "4c4232515b43d40cef8288c43eacfab2c31ab485"
+[[binary]]
+target = "aarch64-apple-darwin"
+asset = "ggen-aarch64-apple-darwin.tar.gz"
+sha256 = "935234491e92c97d93ee44b9331c37755aa78d7e1e1f91f9e8c168599742f509"
+[[binary]]
+target = "x86_64-apple-darwin"
+asset = "ggen-x86_64-apple-darwin.tar.gz"
+sha256 = "ac13dbe359e8786a7f4f016cc604cce88c0b78d5ad7d18fdb0760b42c51f531e"
+[[binary]]
+target = "aarch64-unknown-linux-gnu"
+asset = "ggen-aarch64-unknown-linux-gnu.tar.gz"
+sha256 = "8125e4f98879bc2b68cc79251bd959a754a86413cf4f9d468be2a49121a51200"
+[[binary]]
+target = "x86_64-unknown-linux-gnu"
+asset = "ggen-x86_64-unknown-linux-gnu.tar.gz"
+sha256 = "ab442ced90a9836fd4eb07a5d61eb58293843cd515d864699fc0d0453444a035"
