@@ -1,6 +1,6 @@
-@prefix autofde: <https://seanchatman.github.io/autofde#> .
+@prefix autofde: <https://seanchatmangpt.github.io/autofde/ontology#> .
 
-<https://seanchatman.github.io/autofde/paas/ConsumerManifest>
+<https://seanchatmangpt.github.io/autofde/ontology/paas/ConsumerManifest>
   a autofde:PaaSConsumerManifest ;
   autofde:projectNumber 2 ;
   autofde:repo "seanchatmangpt/autofde" ;
