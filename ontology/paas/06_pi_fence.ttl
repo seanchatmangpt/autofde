@@ -1,6 +1,6 @@
-@prefix autofde: <https://seanchatman.github.io/autofde#> .
+@prefix autofde: <https://seanchatmangpt.github.io/autofde/ontology#> .
 
-<https://seanchatman.github.io/autofde/paas/ProcessIntelligenceFence>
+<https://seanchatmangpt.github.io/autofde/ontology/paas/ProcessIntelligenceFence>
   a autofde:OwnershipFence ;
   autofde:implementationOwner "wasm4pm/wasm4pm-compat" ;
   autofde:consumerMayIntegrate true ;
