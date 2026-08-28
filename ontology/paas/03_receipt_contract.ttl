@@ -1,6 +1,6 @@
-@prefix autofde: <https://seanchatman.github.io/autofde#> .
+@prefix autofde: <https://seanchatmangpt.github.io/autofde/ontology#> .
 
-<https://seanchatman.github.io/autofde/paas/ReceiptContract>
+<https://seanchatmangpt.github.io/autofde/ontology/paas/ReceiptContract>
   a autofde:PaaSReceiptContract ;
   autofde:requiresSubjectIdentity true ;
   autofde:requiresAuthorityIdentity true ;
