@@ -3,8 +3,8 @@
 <urn:fanout:r80:target:4> a fta:FanoutTarget ;
   fta:rank 4 ;
   fta:repo "seanchatmangpt/autofde" ;
-  fta:exactHead "6c21cda73f7cc8873ea429f79f49c5b4b615c1fe" ;
-  fta:producerHead "92e319a927db0b10e6b74a04a1ac490e1d0bb466" ;
+  fta:exactHead "f8e2d477dcb3e5084c341779f275505debd49c00" ;
+  fta:producerHead "9b2a278a16633336ded6c14bfbb2185763753319" ;
   fta:compatibilityState "COMPATIBLE_READY" ;
   fta:qualificationState "REQUALIFYING" ;
   fta:consumerShape "ggen-root-manifest" ;
