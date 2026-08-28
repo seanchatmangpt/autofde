@@ -1,6 +1,6 @@
-@prefix autofde: <https://seanchatman.github.io/autofde#> .
+@prefix autofde: <https://seanchatmangpt.github.io/autofde/ontology#> .
 
-<https://seanchatman.github.io/autofde/paas/ExactSubjectGuard>
+<https://seanchatmangpt.github.io/autofde/ontology/paas/ExactSubjectGuard>
   a autofde:FalsifierCourt ;
   autofde:rejectsMissingExactRepo true ;
   autofde:rejectsMissingExactRef true ;
