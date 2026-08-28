@@ -1,6 +1,6 @@
-@prefix autofde: <https://seanchatman.github.io/autofde#> .
+@prefix autofde: <https://seanchatmangpt.github.io/autofde/ontology#> .
 
-<https://seanchatman.github.io/autofde/paas/AuthorityContract>
+<https://seanchatmangpt.github.io/autofde/ontology/paas/AuthorityContract>
   a autofde:PaaSAuthorityContract ;
   autofde:separatesSelectConstructDo true ;
   autofde:doAuthority autofde:BRCE ;
