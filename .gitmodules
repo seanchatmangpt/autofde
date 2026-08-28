@@ -1,0 +1,6 @@
+[submodule ".ggen/runtime"]
+	path = .ggen/runtime
+	url = https://github.com/seanchatmangpt/ggen.git
+[submodule ".ggen/marketplace"]
+	path = .ggen/marketplace
+	url = https://github.com/seanchatmangpt/ggen-marketplace.git
